@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}
+  
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <form>
+    <div class="col m10">
+      <div class="row" style="margin-bottom: 0px">
+        <div class="col m9">
+          <span style="font-size: 20px; font-weight: normal; color:#666666;">Cek Ketersediaan Kendaraan</span>
+        </div>
+        <div class="col m3">
+          <div class="row" style="margin-bottom: 0px;">
+            <input type="text" name="date" class="date col m10" readonly placeholder="DD/MM/YYYY" style="text-align: right;" />
+          </div>
+        </div>
+      </div>
+      <hr>
+      <br>
+    </div>
+    <div class="col m2">
+      <button class="btn waves-effect waves-light" style="background-color: #1D73BE; margin: 0px;" type="submit" name="action">Search
+      </button>
+    </div>
+  </form>
+</div>
+<div class="row" style="padding-left: 20px;">
+  <ul class="collection col m10">
+    <li class="collection-item avatar" style="padding-left: 20px; margin:5px 0px">
+    <div class="row valign-wrapper" style="margin-bottom: 0px;">
+      <div class="col m2 valign">
+        <img src="{% static 'peminjaman/image/logoitb_header.png' %}" alt="" class="responsive-img">
+      </div>
+      <div class="col m10 valign">
+        <span class="title"><b>Bus AC 1</b></span>
+        <table>
+          <tr>
+            <td width="20%" style="padding: 5px 0">No. Polisi</td>
+            <td width="80%" style="padding: 5px 0">: D 111 AS</td>
+          </tr>
+          <tr>
+            <td width="20%" style="padding: 5px 0">Kapasitas</td>
+            <td width="80%" style="padding: 5px 0">: 29 seat</td>
+          </tr>
+        </table>
+      
+      </div>
+    </div>              
+    </li>
+    <li class="collection-item avatar" style="padding-left: 20px; margin: 5px 0px">
+    <div class="row valign-wrapper" style="margin-bottom: 0px;">
+      <div class="col s2 valign">
+        <img src="{% static 'peminjaman/image/logoitb_header.png' %}" alt="" class="responsive-img">
+      </div>
+      <div class="col m10 valign">
+        <span class="title"><b>Bus AC 1</b></span>
+        <table>
+          <tr>
+            <td width="20%" style="padding: 5px 0">No. Polisi</td>
+            <td width="80%" style="padding: 5px 0">: D 111 AS</td>
+          </tr>
+          <tr>
+            <td width="20%" style="padding: 5px 0">Kapasitas</td>
+            <td width="80%" style="padding: 5px 0">: 29 seat</td>
+          </tr>
+        </table>
+      
+      </div>
+    </div>              
+    </li>
+  </ul>
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+  $(function() {
+    $( ".date" ).datepicker({
+      dateFormat : 'dd/mm/yy',
+      showOn: "button",
+      buttonImage: "{% static 'peminjaman/image/calendar.png' %}",
+      buttonImageOnly: true,
+      buttonText: "Select date"
+    }); 
+  }); 
+</script>
+{% endblock %}

@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  Form Kendaraan
+{% endblock %}
+
+{% block content %}
+<br />
+<div class="row">
+  <div class="col s12">
+    <h5>Form Kendaraan Baru</h5>
+  </div>
+  <form id="form" class="col m12" action="{% url 'kendaraanCreate' %}" enctype="multipart/form-data" method="post">
+    {% csrf_token %}
+    {{kendaraan.nama}}
+    <div class="input-field col s12">
+        <input id="nama" name="nama" type="text" class="validate" value="">
+        <label for="nama">Nama Kendaraan*</label>
+    </div>
+
+    <div class="input-field col s12">
+        <select id="jenis" name="jenis">
+          <option value="" disabled selected>Pilih jenis kendaraan</option>
+          <option value="Kendaraan Titipan">Kendaraan Titipan</option>
+          <option value="Kendaraan Operasional">Kendaraan Operasional</option>
+          <option value="Kendaraan Operasional Pimpinan">Kendaraan Operasional Pimpinan</option>
+        </select>
+        <label for="jenis">Jenis Kendaraan*</label>
+    </div>
+
+    <div class="input-field col s12">
+        <input id="no_polisi" name="no_polisi" type="text" class="validate">
+        <label for="no_polisi">No Polisi*</label>
+    </div>
+
+    <div class="input-field col s12">
+        <input id="kapasitas" name="kapasitas" type="text" class="validate">
+        <label for="kapasitas">Kapasitas (seat)*</label>
+    </div>
+
+    <div class="input-field col s12">
+        <select id="supir_id" name="supir_id">
+          <option value="" disabled selected>Pilih nama supir</option>
+          {% for supir in all_supir %}
+            <option value="{{supir.id}}">{{supir.nama}}</option>
+          {% endfor %}
+        </select>
+        <label for="supir_id">Nama Supir*</label>
+    </div>
+
+    <div class="file-field input-field col s12">
+      <div class="btn" style="background-color: #1D73BE;">
+        <span>Foto</span>
+        <input type="file" name="foto">
+      </div>
+      <div class="file-path-wrapper">
+        <input class="file-path validate" type="text">
+      </div>
+    </div>
+
+    
+  </form>
+  <div class="col s12">
+    <p><strong><span id="error_message"></span></strong></p>
+    <button class="btn waves-effect waves-light right" style="background-color: #1D73BE; margin-top: 40px;" onclick="validateInput()" name="action">Save
+    </button>
+  </div>
+</div> 
+{% endblock %}
+
+{% block script %}
+<script type="text/javascript">
+  $(document).ready(function() {
+    $('#navbar-menu-kendaraan').addClass('active')
+    $('select').material_select();
+  });
+
+  function isInt(value) {
+    return !isNaN(value) && 
+           parseInt(Number(value)) == value && 
+           !isNaN(parseInt(value, 10));
+  }
+
+  function validateInput() {
+    $('#error_message').text('')
+    // Check nama
+    var nama = $('#nama').val()
+    console.log("Nama:"+nama)
+    if(nama.trim() == "") {
+      $('#nama').focus()
+      console.log("Missing: Nama")
+      $('#error_message').text("Please input nama kendaraan.")
+      return
+    }
+    // Check jenis
+    var jenis = $('#jenis').find(":selected").val();
+    console.log("Jenis:"+jenis)
+    if(jenis == "") {
+      $('#jenis').focus()
+      console.log("Missing: Jenis")
+      $('#error_message').text("Please select jenis kendaraan.")
+      return
+    }
+    // Check jenis
+    var no_polisi = $('#no_polisi').val();
+    console.log("Nopol:"+no_polisi)
+    if(no_polisi.trim() == "") {
+      $('#no_polisi').focus()
+      console.log("Missing: No Polisi")
+      $('#error_message').text("Please input nomor polisi kendaraan.")
+      return
+    }
+    // Check kapasitas
+    var kapasitas = $('#kapasitas').val();
+    console.log("Kapasitas:"+kapasitas)
+    if(kapasitas.trim() == "") {
+      $('#kapasitas').focus()
+      console.log("Missing: Kapasitas")
+      $('#error_message').text("Please input kapasitas kendaraan.")
+      return
+    }
+    if(!isInt(kapasitas)) {
+      $('#kapasitas').focus()
+      console.log("ErrorType: Kapasitas")
+      $('#error_message').text("Please enter a number as kapasitas kendaraan.")
+      return 
+    }
+    if(parseInt(kapasitas) <= 0) {
+      $('#kapasitas').focus()
+      console.log("ErrorValue: Kapasitas")
+      $('#error_message').text("Please enter a valid positive integer as kapasitas kendaraan.")
+      return  
+    }
+    // Check supir_id
+    var supir_id = $('#supir_id').find(":selected").val();
+    console.log("Supir_id:"+supir_id)
+    if(supir_id.trim() == "") {
+      $('#supir_id').focus()
+      console.log("Missing: Supir ID")
+      $('#error_message').text("Please select nama supir kendaraan.")
+      return
+    }
+
+    $('#form').submit()
+  }
+</script>
+{% endblock %}      
+      

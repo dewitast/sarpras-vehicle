@@ -1,0 +1,172 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Detail Peminjaman Kendaraan
+{% endblock %}
+
+{% block content %}
+<br />
+<div class="row">
+    <div class="col m12">
+        <span style="font-size: 20px; font-weight: normal; color:#666666;">Detail Peminjaman Kendaraan</span>
+        <a class="right waves-effect waves-light btn-flat" href="#modal1">
+            <i class="large material-icons">delete</i>
+        </a>
+        <a class="right waves-effect waves-teal btn-flat" href="{% url 'peminjamanEditForm' peminjaman.id %}">
+            <i class="large material-icons">mode_edit</i>
+        </a>
+
+        <p>
+            {% if peminjaman.status == 0 %}
+                <strong>Status:</strong> Belum Transfer
+            {% else %}
+                {% if peminjaman.status == 1 %}
+                    <strong>Status:</strong> Sudah Transfer
+                {% else %}
+                    {% if peminjaman.status == 2 %}
+                        <strong>Status:</strong> Sudah Selesai
+                    {% else %}
+                        <strong>Status:</strong> Dibatalkan
+                    {% endif %}
+                {% endif %}
+            {% endif %}
+        </p>
+
+        <p>
+            <strong>Nama Peminjam:</strong> {{ peminjam.nama }} <br />
+            <strong>No Telp. Peminjam:</strong> {{ telepon_peminjam.no_telepon }} <br />
+            <strong>Bagian Jurusan Peminjam:</strong> {{ peminjam.bagian_jurusan }}
+        </p>
+        <p>
+            <strong>Kendaraan:</strong> {{ mobil.nama }} <br />
+            <strong>Nama Supir:</strong> {{ supir.nama }}
+        </p>
+        <p>
+            <strong>Acara:</strong> {{ peminjaman.acara }} <br />
+            <strong>Tujuan:</strong> {{ peminjaman.tujuan }} <br />
+            <strong>Tempat Berkumpul:</strong> {{ peminjaman.tempat_berkumpul }} <br />
+            <strong>Keterangan:</strong> {{ peminjaman.keterangan }}
+        </p>
+        <p>
+            <strong>Tanggal Booking:</strong> {{ peminjaman.tanggal_booking_formatted }} <br />
+            <strong>Tanggal Pemakaian:</strong> {{ peminjaman.tanggal_pemakaian_formatted }} <br />
+            <strong>Tanggal Pengembalian:</strong> {{ peminjaman.tanggal_pengembalian_formatted }} <br />
+            <strong>Waktu Berangkat:</strong> {{ peminjaman.waktu_berangkat }} <br />
+            <strong>Waktu Datang:</strong> {{ peminjaman.waktu_datang }}
+        </p>
+
+        <p>
+            <strong>Odometer Sebelum:</strong> {{ peminjaman.odometer_sebelum }} <br />
+            <strong>Odometer Sesudah:</strong> {{ peminjaman.odometer_sesudah }}
+        </p>
+
+        <p>
+            <strong>No Surat:</strong> {{ peminjaman.no_surat }} <br />
+            <strong>Tanggal Surat:</strong> {{ peminjaman.tanggal_surat_formatted }}  <br />
+            {% if peminjaman.bukti_transfer == 1 %}
+                <strong>Bukti Transfer:</strong> Ada
+            {% else %}
+                <strong>Bukti Transfer:</strong> Tidak Ada
+            {% endif %}
+        </p>
+
+        <div class="row">
+            {% if peminjaman.foto_bukti_transfer %}
+                <h6><strong>Foto Bukti Transfer</strong></h6>
+                <div class="col m3">
+                    <img class="materialboxed" width="200" height="200" src="{{ peminjaman.foto_bukti_transfer.url }}">
+                    {% if user.is_authenticated %}
+                        <h7 class="center-align"><a href="{% url 'deleteBuktiTransfer' peminjaman.id %}">Delete this photo</a></h7>
+                    {% endif %}
+                </div>
+            {% else %}
+                <p>Belum ada bukti transfer.</p>
+            {% endif %}
+        </div>
+
+        <div class="row">
+            {% if peminjaman.foto_form_akhir %}
+                <h6><strong>Foto Form Akhir</strong></h6>
+                <div class="col m3">
+                    <img class="materialboxed" width="300" height="auto" src="{{ peminjaman.foto_form_akhir.url }}">
+                    {% if user.is_authenticated %}
+                        <h7 class="center-align"><a href="{% url 'deleteFormAkhir' peminjaman.id %}">Delete this photo</a></h7>
+                    {% endif %}
+                </div>
+            {% else %}
+                <p>Belum ada bukti form akhir.</p>
+            {% endif %}
+        </div>
+
+        {% if user.is_authenticated and not peminjaman.foto_bukti_transfer %}
+        <form action="{% url 'uploadBuktiTransfer' peminjaman.id %}" enctype="multipart/form-data" method="post" class="right">
+            {% csrf_token %}
+            <div class="file-field input-field col s12">
+              <div class="btn" style="background-color: #1D73BE;">
+                <span>Upload Bukti Transfer</span>
+                <input type="file" name="foto_bukti_transfer" id="foto_bukti_transfer">
+              </div>
+              <div id="foto_bukti_transfer_path" class="file-path-wrapper" style="display: none;">
+                <input class="file-path validate" type="text">
+              </div>
+            </div>
+              <button id="foto_bukti_transfer_submit" class="btn waves-effect waves-light right" style="background-color: #1D73BE; display: none;" type="submit" name="action">Save
+              </button>
+        </form>
+        {% endif %}
+
+        {% if user.is_authenticated and not peminjaman.foto_form_akhir %}
+        <form action="{% url 'uploadFormAkhir' peminjaman.id %}" enctype="multipart/form-data" method="post" class="right">
+            {% csrf_token %}
+            <div class="file-field input-field col s12">
+              <div class="btn" style="background-color: #1D73BE;">
+                <span>Upload Form Akhir</span>
+                <input type="file" name="foto_form_akhir" id="foto_form_akhir">
+              </div>
+              <div id="foto_form_akhir_path" class="file-path-wrapper" style="display: none;">
+                <input class="file-path validate" type="text">
+              </div>
+            </div>
+              <button id="foto_form_akhir_submit" class="btn waves-effect waves-light right" style="background-color: #1D73BE; display: none;" type="submit" name="action">Save
+              </button>
+        </form>
+        {% endif %}
+
+
+    </div>
+</div>
+<!-- Modal Structure -->
+<div id="modal1" class="modal">
+<div class="modal-content">
+  <h4>Delete this peminjaman?</h4>
+  <p>Are you sure you want to delete this peminjaman?</p>
+</div>
+<div class="modal-footer">
+    <a href="#" class="modal-action modal-close waves-effect waves-green btn-flat">Cancel</a>
+    <a class="modal-action modal-close waves-effect waves-green btn-flat" href="{% url 'peminjamanDelete' peminjaman.id %}" title="Delete">
+        Delete
+    </a>
+</div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script type="text/javascript">
+    $('#navbar-menu-peminjaman').addClass('active')
+    $(document).ready(function(){
+        // the "href" attribute of .modal-trigger must specify the modal ID that wants to be triggered
+        $('.modal').modal();
+    });
+
+    $('#foto_form_akhir').change(function() {
+        console.log($('#foto_form_akhir').val())
+        $('#foto_form_akhir_path').show()
+        $('#foto_form_akhir_submit').show()
+    })
+    $('#foto_bukti_transfer').change(function() {
+        console.log($('#foto_bukti_transfer').val())
+        $('#foto_bukti_transfer_path').show()
+        $('#foto_bukti_transfer_submit').show()
+    })
+</script>
+{% endblock %}
