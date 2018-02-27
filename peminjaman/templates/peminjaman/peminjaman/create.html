@@ -15,6 +15,69 @@
 
 		<div class="row">
 			<div class="col m12">
+				<h5>Data Peminjaman</h5>
+			</div>
+
+			<div class="input-field col s6">
+	          <input id="no_surat" name="no_surat" type="text" class="validate">
+	          <label for="no_surat">No Surat*</label>
+		    </div>
+
+		    <div class="input-field col s6">
+	          <input id="tanggal_surat" name="tanggal_surat" type="date" class="datepicker">
+	          <label for="tanggal_surat">Tanggal Surat*</label>
+		    </div>
+
+			<div class="input-field col s12">
+	          <input id="acara" name="acara" type="text" class="validate">
+	          <label for="acara">Acara*</label>
+		    </div>
+
+		    <div class="input-field col s12">
+	          <input id="tujuan" name="tujuan" type="text" class="validate">
+	          <label for="tujuan">Tujuan*</label>
+		    </div>
+
+		    <div class="input-field col s12">
+	          <input id="tanggal_booking" name="tanggal_booking" type="date" class="datepicker">
+	          <label for="tanggal_booking">Tanggal Booking*</label>
+		    </div>
+
+		    <div class="input-field col s6">
+	          <input id="tanggal_pemakaian" name="tanggal_pemakaian" type="date" class="datepicker">
+	          <label for="tanggal_pemakaian">Tanggal Pemakaian*</label>
+		    </div>
+
+		    <div class="input-field col s6">
+	          <input id="tanggal_pemakaian" name="tanggal_pengembalian" type="date" class="datepicker">
+	          <label for="tanggal_pengembalian">Tanggal Pengembalian*</label>
+		    </div>
+
+		    <div class="input-field col s6">
+		      <span>Waktu Berangkat*</span>
+	          <input id="waktu_berangkat" name="waktu_berangkat" class="timepicker">
+	          <!-- <label for="waktu_berangkat">Waktu Berangkat*</label> -->
+		    </div>
+
+		    <div class="input-field col s6">
+		      <span>Waktu Datang*</span>
+	          <input id="waktu_datang" name="waktu_datang" class="timepicker">
+	          <!-- <label for="waktu_datang">Waktu Datang*</label> -->
+		    </div>
+
+		    <div class="input-field col s12">
+	          <input id="tempat_berkumpul" name="tempat_berkumpul" type="text" class="validate">
+	          <label for="tempat_berkumpul">Tempat Berkumpul*</label>
+		    </div>
+
+		    <div class="input-field col s12">
+	          <textarea id="keterangan" name="keterangan" class="materialize-textarea"></textarea>
+	          <label for="keterangan">Keterangan</label>
+		    </div>
+	    </div>
+
+		<div class="row">
+			<div class="col m12">
 				<h5>Data Peminjam</h5>
 			</div>
 			<div class="input-field col s6">
@@ -27,9 +90,9 @@
 	          <label for="no_telepon_peminjam">No Telp Peminjam*</label>
 		    </div>
 
-	   </div>
+	    </div>
 
-	   <div class="row">
+	    <div class="row">
 	   		<div class="col m12">
 	   			<h5>Data Kendaraan</h5>
 	   		</div>
@@ -46,6 +109,7 @@
 					<p>No Mobil are available. Please create new Mobil first in Admin panel.</p>
 				{% endif %}
 		    </div>
+
 		    <div class="input-field col s6">
 		    	{% if all_supir %}
 		    		<select id="supir_id" name="supir_id">
@@ -59,58 +123,6 @@
 					<p>No Supir are available. Please create new Supir first in Admin panel.</p>
 				{% endif %}
 		    </div>
-	   </div>
-
-		<div class="row">
-			<div class="col m12">
-				<h5>Data Peminjaman</h5>
-			</div>
-			<div class="input-field col s12">
-	          <input id="acara" name="acara" type="text" class="validate">
-	          <label for="acara">Acara*</label>
-		    </div>
-
-		    <div class="input-field col s12">
-	          <input id="tujuan" name="tujuan" type="text" class="validate">
-	          <label for="tujuan">Tujuan*</label>
-		    </div>
-
-			<div class="input-field col s6">
-	          <input id="tanggal_booking" name="tanggal_booking" type="date" class="datepicker">
-	          <label for="tanggal_booking">Tanggal Booking*</label>
-		    </div>
-
-	     	<div class="input-field col s6">
-	          <input id="tanggal_pemakaian" name="tanggal_pemakaian" type="date" class="datepicker">
-	          <label for="tanggal_pemakaian">Tanggal Pemakaian*</label>
-		    </div>
-
-		    <div class="input-field col s6">
-		      <span>Waktu Berangkat*</span>
-	          <input id="waktu_berangkat" name="waktu_berangkat" class="timepicker">
-	          <!-- <label for="waktu_berangkat">Waktu Berangkat*</label> -->
-		    </div>
-
-		    <div class="input-field col s6">
-		      <span>Waktu Datang*</span>
-	          <input id="waktu_datang" name="waktu_datang" class="timepicker">
-	          <!-- <label for="waktu_datang">Waktu Datang*</label> -->
-		    </div>
-
-		    <div class="input-field col s6">
-	          <input id="tanggal_pemakaian" name="tanggal_pengembalian" type="date" class="datepicker">
-	          <label for="tanggal_pengembalian">Tanggal Pengembalian*</label>
-		    </div>
-
-		    <div class="input-field col s12">
-	          <input id="tempat_berkumpul" name="tempat_berkumpul" type="text" class="validate">
-	          <label for="tempat_berkumpul">Tempat Berkumpul*</label>
-		    </div>
-
-		    <div class="input-field col s12">
-	          <textarea id="keterangan" name="keterangan" class="materialize-textarea"></textarea>
-	          <label for="keterangan">Keterangan</label>
-		    </div>
 
 		    <div class="input-field col s6">
 		    	<input name="odometer_sebelum" type="text" class="validate">
@@ -122,19 +134,9 @@
 	          <label for="odometer_sesudah">Odometer Sesudah</label>
 		    </div>
 	    </div>
-
+	    <br />
 	    <div class="row">
-	   		<div class="input-field col s6">
-	          <input id="no_surat" name="no_surat" type="text" class="validate">
-	          <label for="no_surat">No Surat*</label>
-		    </div>
-
-		    <div class="input-field col s6">
-	          <input id="tanggal_surat" name="tanggal_surat" type="date" class="datepicker">
-	          <label for="tanggal_surat">Tanggal Surat*</label>
-		    </div>
-
-		    <div class="input-field col s6">
+			<div class="input-field col s6">
 				<select id="bukti_transfer" name="bukti_transfer">
 					<option value="" disabled selected>Pilih</option>
 					<option value="0">Tidak Ada</option>
@@ -162,8 +164,7 @@
 		        <input class="file-path validate" type="text">
 		      </div>
 		    </div>
-
-		</div>
+	    </div>
 
 	</form>
 	<div class="col m12">
