@@ -226,10 +226,8 @@ def peminjamanCreate(request):
 
             # Create new Peminjaman Kendaraaan record
             bukti_transfer = request.POST['bukti_transfer']
-            foto_bukti_transfer = request.FILES.get('foto_bukti_transfer', False)
-            foto_form_akhir = request.FILES.get('foto_form_akhir', False)
-            if foto_bukti_transfer == False:
-                foto_bukti_transfer = None
+            foto_bukti_transfer = request.FILES.get('foto_bukti_transfer', None)
+            foto_form_akhir = request.FILES.get('foto_form_akhir', None)
             no_surat = request.POST['no_surat']
             tanggal_surat = process_date(request.POST['tanggal_surat'])
             tanggal_booking = process_date(request.POST['tanggal_booking'])
@@ -369,8 +367,8 @@ def uploadBuktiTransfer(request, peminjaman_id):
     else:
         # Create new FotoMobil record
         peminjaman = get_object_or_404(PeminjamanKendaraan, pk=peminjaman_id)
-        foto_bukti_transfer = request.FILES.get('foto_bukti_transfer', False)
-        if foto_bukti_transfer != False:
+        foto_bukti_transfer = request.FILES.get('foto_bukti_transfer', None)
+        if foto_bukti_transfer != None:
             peminjaman.foto_bukti_transfer = foto_bukti_transfer
             peminjaman.bukti_transfer = 1 # Ada
             peminjaman.save()
@@ -392,8 +390,8 @@ def uploadFormAkhir(request, peminjaman_id):
     else:
         # Create new FotoMobil record
         peminjaman = get_object_or_404(PeminjamanKendaraan, pk=peminjaman_id)
-        foto_form_akhir = request.FILES.get('foto_form_akhir', False)
-        if foto_form_akhir != False:
+        foto_form_akhir = request.FILES.get('foto_form_akhir', None)
+        if foto_form_akhir != None:
             peminjaman.foto_form_akhir = foto_form_akhir
             peminjaman.save()
         return HttpResponseRedirect(reverse('peminjamanDetail', args=(peminjaman.id,)))
