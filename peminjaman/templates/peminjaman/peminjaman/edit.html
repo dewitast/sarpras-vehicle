@@ -50,18 +50,13 @@
 				<h6>Data Peminjam</h6>
 			</div>
 			<div class="input-field col s6">
-	          <input id="nama_peminjam" name="nama_peminjam" type="text" class="validate" value="{{peminjam.nama}}">
+	          <input id="nama_peminjam" name="nama_peminjam" type="text" class="validate" value="{{peminjaman.nama_peminjam}}">
 	          <label for="nama_peminjam">Nama Peminjam</label>
 		    </div>
 
 		    <div class="input-field col s6">
-	          <input id="no_telepon_peminjam" name="no_telepon_peminjam" type="text" class="validate" value="{{telepon_peminjam.no_telepon}}">
+	          <input id="no_telepon_peminjam" name="no_telepon_peminjam" type="text" class="validate" value="{{peminjaman.no_telp_peminjam}}">
 	          <label for="no_telepon_peminjam">No Telp Peminjam</label>
-		    </div>
-
-		    <div class="input-field col s6">
-	          <input id="bagian_jurusan" name="bagian_jurusan" type="text" class="validate" value="{{peminjam.bagian_jurusan}}">
-	          <label for="bagian_jurusan">Bagian Jurusan</label>
 		    </div>
 	   </div>
 
@@ -248,14 +243,6 @@
 			console.log("Missing: no telepon peminjam")
 			$('#no_telepon_peminjam').focus()
 			$('#error_message').text('Please input No Telepon Peminjam.')
-			return
-		}
-
-		var bagian_jurusan_peminjam = $('#bagian_jurusan').val()
-		if(bagian_jurusan_peminjam.trim() == "") {
-			console.log("Missing: bagian jurusan peminjam")
-			$('#bagian_jurusan').focus()
-			$('#error_message').text('Please input Bagian Jurusan Peminjam.')
 			return
 		}
 

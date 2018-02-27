@@ -10,14 +10,6 @@ class TeleponSupir(models.Model):
 	supir = models.ForeignKey(Supir, on_delete=models.CASCADE)
 	no_telepon = models.CharField(max_length=100)
 
-class Peminjam(models.Model):
-	nama = models.CharField(max_length=100)
-	bagian_jurusan = models.CharField(max_length=100)
-
-class TeleponPeminjam(models.Model):
-	peminjam = models.ForeignKey(Peminjam, on_delete=models.CASCADE)
-	no_telepon = models.CharField(max_length=100)
-
 class Mobil(models.Model):
 	no_polisi = models.CharField(max_length=100)
 	nama = models.CharField(max_length=100)
@@ -31,7 +23,8 @@ class FotoMobil(models.Model):
 
 class PeminjamanKendaraan(models.Model):
 	supir = models.ForeignKey(Supir, on_delete=models.CASCADE)
-	peminjam = models.ForeignKey(Peminjam, on_delete=models.CASCADE)
+	nama_peminjam = models.CharField(max_length=100)
+	no_telp_peminjam = models.CharField(max_length=100)
 	mobil = models.ForeignKey(Mobil, on_delete=models.CASCADE)
 	bukti_transfer = models.IntegerField()
 	foto_bukti_transfer = models.ImageField(upload_to='bukti transfer peminjaman/')

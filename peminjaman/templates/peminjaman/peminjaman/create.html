@@ -27,10 +27,6 @@
 	          <label for="no_telepon_peminjam">No Telp Peminjam*</label>
 		    </div>
 
-		    <div class="input-field col s6">
-	          <input id="bagian_jurusan" name="bagian_jurusan" type="text" class="validate">
-	          <label for="bagian_jurusan">Bagian Jurusan*</label>
-		    </div>
 	   </div>
 
 	   <div class="row">
@@ -218,6 +214,7 @@
 	});
 
 	function validateInput() {
+		// Check nama peminjam
 		$('#error_message').text('')
 		var nama_peminjam = $('#nama_peminjam').val()
 		if(nama_peminjam.trim() == "") {
@@ -227,19 +224,12 @@
 			return
 		}
 
+		// Check no telepon peminjam
 		var no_telepon_peminjam = $('#no_telepon_peminjam').val()
 		if(no_telepon_peminjam.trim() == "") {
 			console.log("Missing: no telepon peminjam")
 			$('#no_telepon_peminjam').focus()
 			$('#error_message').text('Please input No Telepon Peminjam.')
-			return
-		}
-
-		var bagian_jurusan_peminjam = $('#bagian_jurusan').val()
-		if(bagian_jurusan_peminjam.trim() == "") {
-			console.log("Missing: bagian jurusan peminjam")
-			$('#bagian_jurusan').focus()
-			$('#error_message').text('Please input Bagian Jurusan Peminjam.')
 			return
 		}
 
@@ -280,7 +270,6 @@
 		}
 
 		var tanggal_booking = $('#tanggal_booking').val()
-		// console.log(tanggal_booking)
 		if(tanggal_booking == "") {
 			console.log("Missing: tanggal_booking")
 			$('#tanggal_booking').focus()
@@ -289,7 +278,6 @@
 		}
 
 		var tanggal_pemakaian = $('#tanggal_pemakaian').val()
-		// console.log(tanggal_pemakaian)
 		if(tanggal_pemakaian == "") {
 			console.log("Missing: tanggal_pemakaian")
 			$('#tanggal_pemakaian').focus()
@@ -298,7 +286,6 @@
 		}
 
 		var tanggal_pengembalian = $('#tanggal_pengembalian').val()
-		// console.log(tanggal_pengembalian)
 		if(tanggal_pengembalian == "") {
 			console.log("Missing: tanggal_pengembalian")
 			$('#tanggal_pengembalian').focus()

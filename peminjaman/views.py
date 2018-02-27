@@ -10,7 +10,7 @@ from django.utils.timezone import datetime #important if using timezones
 import django_excel as excel
 import xlwt
 
-from .models import PeminjamanKendaraan, Mobil, Supir, Peminjam, TeleponPeminjam, FotoMobil, TeleponSupir
+from .models import PeminjamanKendaraan, Mobil, Supir, FotoMobil, TeleponSupir
 
 ###################################################################################################################
 #
@@ -126,11 +126,6 @@ def peminjaman(request):
         setattr(peminjaman, 'tanggal_booking_formatted', peminjaman.tanggal_booking.strftime('%d %B %Y'))
         setattr(peminjaman, 'tanggal_pengembalian_formatted', peminjaman.tanggal_pengembalian.strftime('%d %B %Y'))
         setattr(peminjaman, 'tanggal_surat_formatted', peminjaman.tanggal_surat.strftime('%d %B %Y'))
-        peminjam = get_object_or_404(Peminjam, pk=peminjaman.peminjam_id)
-        setattr(peminjaman, 'nama_peminjam', peminjam.nama)
-        setattr(peminjaman, 'bagian_jurusan_peminjam', peminjam.bagian_jurusan)
-        telp_peminjam = get_object_or_404(TeleponPeminjam, peminjam_id=peminjaman.peminjam_id)
-        setattr(peminjaman, 'no_telp_peminjam', telp_peminjam.no_telepon)
         kendaraan = get_object_or_404(Mobil, pk=peminjaman.mobil_id)
         setattr(peminjaman, 'nama_kendaraan', kendaraan.nama)
         supir = get_object_or_404(Supir, pk=peminjaman.supir_id)
@@ -152,20 +147,16 @@ def peminjamanDetail(request, peminjaman_id):
         return HttpResponseRedirect(reverse('login'))
     else:
         peminjaman = get_object_or_404(PeminjamanKendaraan, pk=peminjaman_id)
-        peminjam = get_object_or_404(Peminjam, pk=peminjaman.peminjam_id)
         mobil = get_object_or_404(Mobil, pk=peminjaman.mobil_id)
         supir = get_object_or_404(Supir, pk=peminjaman.supir_id)
-        telepon_peminjam = TeleponPeminjam.objects.all().filter(peminjam_id=peminjam.id)[0]
         setattr(peminjaman, 'tanggal_booking_formatted', peminjaman.tanggal_booking.strftime('%d %B %Y'))
         setattr(peminjaman, 'tanggal_pemakaian_formatted', peminjaman.tanggal_pemakaian.strftime('%d %B %Y'))
         setattr(peminjaman, 'tanggal_pengembalian_formatted', peminjaman.tanggal_pengembalian.strftime('%d %B %Y'))
         setattr(peminjaman, 'tanggal_surat_formatted', peminjaman.tanggal_surat.strftime('%d %B %Y'))
         context = {
             'peminjaman': peminjaman,
-            'peminjam': peminjam,
             'mobil': mobil,
             'supir': supir,
-            'telepon_peminjam': telepon_peminjam,
         }
         return render(request, 'peminjaman/peminjaman/detail.html', context)
 
@@ -231,18 +222,9 @@ def peminjamanCreate(request):
         try:
             # Create new Peminjam record
             nama_peminjam = request.POST['nama_peminjam']
-            bagian_jurusan = request.POST['bagian_jurusan']
-            peminjam = Peminjam(nama=nama_peminjam, bagian_jurusan=bagian_jurusan)
-            peminjam.save()
-
-            # Create new TeleponPeminjam record
-            peminjam_id = peminjam.id
-            no_telepon = request.POST['no_telepon_peminjam']
-            telepon_peminjam = TeleponPeminjam(peminjam_id=peminjam_id, no_telepon=no_telepon)
-            telepon_peminjam.save()
+            no_telp_peminjam = request.POST['no_telepon_peminjam']
 
             # Create new Peminjaman Kendaraaan record
-            peminjam_id = peminjam.id
             bukti_transfer = request.POST['bukti_transfer']
             foto_bukti_transfer = request.FILES.get('foto_bukti_transfer', False)
             foto_form_akhir = request.FILES.get('foto_form_akhir', False)
@@ -269,7 +251,8 @@ def peminjamanCreate(request):
             supir_id = request.POST['supir_id']
             STATUS = 0     # status peminjaman
             peminjaman = PeminjamanKendaraan(
-                peminjam_id=peminjam_id,
+                nama_peminjam=nama_peminjam,
+                no_telp_peminjam=no_telp_peminjam,
                 bukti_transfer=bukti_transfer,
                 foto_bukti_transfer=foto_bukti_transfer,
                 foto_form_akhir=foto_form_akhir,
@@ -309,18 +292,14 @@ def peminjamanEditForm(request, peminjaman_id):
         setattr(peminjaman, 'tanggal_pengembalian_formatted', peminjaman.tanggal_pengembalian.strftime('%Y-%m-%d'))
         setattr(peminjaman, 'tanggal_surat_formatted', peminjaman.tanggal_surat.strftime('%Y-%m-%d'))
 
-        peminjam = get_object_or_404(Peminjam, pk=peminjaman.peminjam_id)
         mobil = get_object_or_404(Mobil, pk=peminjaman.mobil_id)
         supir = get_object_or_404(Supir, pk=peminjaman.supir_id)
-        telepon_peminjam = TeleponPeminjam.objects.all().filter(peminjam_id=peminjam.id)[0]
         all_mobil = Mobil.objects.all()
         all_supir = Supir.objects.all()
         context = {
             'peminjaman': peminjaman,
-            'peminjam': peminjam,
             'mobil': mobil,
             'supir': supir,
-            'telepon_peminjam': telepon_peminjam,
             'all_mobil': all_mobil,
             'all_supir': all_supir,
         }
@@ -334,15 +313,8 @@ def peminjamanEdit(request, peminjaman_id):
             # Edit Peminjaman Kendaraaan record
             peminjaman = get_object_or_404(PeminjamanKendaraan, pk=peminjaman_id)
 
-            peminjam = get_object_or_404(Peminjam, pk=peminjaman.peminjam_id)
-            peminjam.nama = request.POST['nama_peminjam']
-            peminjam.bagian_jurusan = request.POST['bagian_jurusan']
-            peminjam.save()
-
-
-            telepon_peminjam = get_object_or_404(TeleponPeminjam, peminjam_id=peminjaman.peminjam_id)
-            telepon_peminjam.no_telepon = request.POST['no_telepon_peminjam']
-            telepon_peminjam.save()
+            peminjaman.nama_peminjam = request.POST['nama_peminjam']
+            peminjaman.no_telp_peminjam = request.POST['no_telepon_peminjam']
 
             odometer_sebelum = request.POST['odometer_sebelum']
             if odometer_sebelum == "":
