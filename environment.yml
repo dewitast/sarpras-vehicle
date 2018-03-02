@@ -34,7 +34,7 @@ dependencies:
 - !!python/unicode
   'zlib=1.2.8=vc9_3'
 - pip:
-  - django==1.10.6
+  - django==1.11.10
   - django-excel==0.0.6
   - et-xmlfile==1.0.1
   - jdcal==1.3
