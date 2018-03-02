@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block title %}Tata Cara Peminjaman{% endblock %}
+
+{% block content %}
+<br />
+<div class="row">
+  <div class="col m12">
+    <h5>Tata Cara Peminjaman Kendaraan</h5>
+    <hr>
+    <br>
+    <h5>Prosedur Peminjaman </h5>
+    <p>
+      <ol>
+        <li>Menghubungi Petugas Pool Kendaraan Untuk Koordinasi Pemakaian Kendaraan.
+        </li>
+        <li>Membuat surat peminjaman ke Direktorat Sarana dan Prasarana ITB paling lambat 5 hari kerja sebelum peminjaman.
+        </li>
+        <li>Setelah disetujui oleh Direktur Sarana dan Prasarana ITB, membayar tarif yang telah ditentukan ke rekening Penampungan Kemitraan ITB No. 0900002017  PT Bank Negara Indonesia ( BNI Persero) Perguruan Tinggi Bandung  Jl. Tamansari No. 80 Bandung dan BNI Kampus ITB Jl. Ganesha 10 Bandung.
+        </li>
+        <li>Bukti pembayaran dikirim kepada C.q. Sekretariat Direktorat Sarana dan Prasarana ITB, Gedung CRCS Jl. Ganesha 10 Bandung, Telp. +86010100 atau +86010110.
+        </li>
+        <li>Direktorat Sarana dan Prasarana mengeluarkan ijin pemakaian.
+        </li>
+      </ol>
+    </p>
+    <br>
+    <h5>Ketentuan lain </h5>
+      <p>Belum termasuk  Biaya Bahan Bakar, Tol, Parkir, dan Uang Pengemudi/Kenek.</p>
+  </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+$(document).on('change','#year',function(){
+    alert("PROBANDO");
+});
+
+  $('#navbar-menu-tatacara').addClass('active')
+
+  window.onload = function() {
+  };
+
+</script>
+{% endblock %}
