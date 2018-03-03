@@ -22,14 +22,9 @@ class FotoMobil(models.Model):
 	foto = models.ImageField(upload_to='kendaraan/')
 
 class PeminjamanKendaraan(models.Model):
-	supir = models.ForeignKey(Supir, on_delete=models.CASCADE)
 	nama_peminjam = models.CharField(max_length=100)
 	no_telp_peminjam = models.CharField(max_length=100)
-	#bagian_jurusan_peminjam = models.CharField(max_length=100)
-	mobil = models.ForeignKey(Mobil, on_delete=models.CASCADE)
-	bukti_transfer = models.IntegerField()
-	foto_bukti_transfer = models.ImageField(upload_to='bukti transfer peminjaman/')
-	foto_form_akhir = models.ImageField(upload_to='bukti form akhir/')
+	bagian_jurusan_peminjam = models.CharField(max_length=100)
 	no_surat = models.CharField(max_length=100)
 	tanggal_surat = models.DateTimeField()
 	tanggal_booking = models.DateTimeField()
@@ -44,3 +39,7 @@ class PeminjamanKendaraan(models.Model):
 	tempat_berkumpul = models.CharField(max_length=100)
 	keterangan = models.CharField(max_length=200)
 	status = models.IntegerField()
+
+class MobilPeminjaman(models.Model):
+	peminjaman = models.ForeignKey(PeminjamanKendaraan, on_delete=models.CASCADE)
+	mobil = models.ForeignKey(Mobil, on_delete=models.CASCADE)

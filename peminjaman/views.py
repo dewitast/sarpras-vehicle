@@ -10,7 +10,7 @@ from django.utils.timezone import datetime #important if using timezones
 import django_excel as excel
 import xlwt
 
-from .models import PeminjamanKendaraan, Mobil, Supir, FotoMobil, TeleponSupir
+from .models import PeminjamanKendaraan, Mobil, Supir, FotoMobil, TeleponSupir, MobilPeminjaman
 
 ###################################################################################################################
 #
@@ -120,6 +120,7 @@ def peminjaman(request):
 
     days = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]
     years = [2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027]
+    all_supir = Supir.objects.all()
     for peminjaman in all_peminjaman:
         setattr(peminjaman, 'tanggal_pemakaian_formatted', peminjaman.tanggal_pemakaian.strftime('%d %B %Y'))
         setattr(peminjaman, 'tanggal_booking_formatted', peminjaman.tanggal_booking.strftime('%d %B %Y'))
@@ -146,16 +147,18 @@ def peminjamanDetail(request, peminjaman_id):
         return HttpResponseRedirect(reverse('login'))
     else:
         peminjaman = get_object_or_404(PeminjamanKendaraan, pk=peminjaman_id)
-        mobil = get_object_or_404(Mobil, pk=peminjaman.mobil_id)
-        supir = get_object_or_404(Supir, pk=peminjaman.supir_id)
+        mobilpeminjaman = MobilPeminjaman.objects.filter(peminjaman_id=peminjaman.id)
+        data_mobil = []
+        for entry in mobilpeminjaman:
+            mobil = Mobil.objects.filter(pk=entry.mobil_id)[0]
+            data_mobil.append(mobil)
         setattr(peminjaman, 'tanggal_booking_formatted', peminjaman.tanggal_booking.strftime('%d %B %Y'))
         setattr(peminjaman, 'tanggal_pemakaian_formatted', peminjaman.tanggal_pemakaian.strftime('%d %B %Y'))
         setattr(peminjaman, 'tanggal_pengembalian_formatted', peminjaman.tanggal_pengembalian.strftime('%d %B %Y'))
         setattr(peminjaman, 'tanggal_surat_formatted', peminjaman.tanggal_surat.strftime('%d %B %Y'))
         context = {
             'peminjaman': peminjaman,
-            'mobil': mobil,
-            'supir': supir,
+            'all_mobil' : data_mobil,
         }
         return render(request, 'peminjaman/peminjaman/detail.html', context)
 
@@ -164,10 +167,11 @@ def peminjamanForm(request):
         return HttpResponseRedirect(reverse('login'))
     else:
         all_mobil = Mobil.objects.all()
-        all_supir = Supir.objects.all()
+        MAX_KENDARAAN = 5
         context = {
             'all_mobil': all_mobil,
-            'all_supir': all_supir,
+            'MAX_KENDARAAN' : MAX_KENDARAAN,
+            'LOOP_RANGE' : range(MAX_KENDARAAN),
         }
         return render(request, 'peminjaman/peminjaman/create.html', context)
 
@@ -222,20 +226,12 @@ def peminjamanCreate(request):
             # Create new Peminjam record
             nama_peminjam = request.POST['nama_peminjam']
             no_telp_peminjam = request.POST['no_telepon_peminjam']
+            bagian_jurusan_peminjam = request.POST.get('bagian_jurusan', None)
 
             # Create new Peminjaman Kendaraaan record
-            bukti_transfer = request.POST['bukti_transfer']
-            foto_bukti_transfer = request.FILES.get('foto_bukti_transfer', None)
-            foto_form_akhir = request.FILES.get('foto_form_akhir', None)
             no_surat = request.POST['no_surat']
             tanggal_surat = process_date(request.POST['tanggal_surat'])
             tanggal_booking = process_date(request.POST['tanggal_booking'])
-            odometer_sebelum = request.POST['odometer_sebelum']
-            if odometer_sebelum == "":
-                odometer_sebelum = None
-            odometer_sesudah = request.POST['odometer_sesudah']
-            if odometer_sesudah == "":
-                odometer_sesudah = None
             acara = request.POST['acara']
             tujuan = request.POST['tujuan']
             tanggal_pemakaian = process_date(request.POST['tanggal_pemakaian'])
@@ -244,20 +240,14 @@ def peminjamanCreate(request):
             tanggal_pengembalian = process_date(request.POST['tanggal_pengembalian'])
             tempat_berkumpul = request.POST['tempat_berkumpul']
             keterangan = request.POST.get('keterangan', '')
-            mobil_id = request.POST['mobil_id']
-            supir_id = request.POST['supir_id']
             STATUS = 0     # status peminjaman
             peminjaman = PeminjamanKendaraan(
                 nama_peminjam=nama_peminjam,
                 no_telp_peminjam=no_telp_peminjam,
-                bukti_transfer=bukti_transfer,
-                foto_bukti_transfer=foto_bukti_transfer,
-                foto_form_akhir=foto_form_akhir,
+                bagian_jurusan_peminjam=bagian_jurusan_peminjam,
                 no_surat=no_surat,
                 tanggal_surat=tanggal_surat,
                 tanggal_booking=tanggal_booking,
-                odometer_sebelum=odometer_sebelum,
-                odometer_sesudah=odometer_sesudah,
                 acara=acara,
                 tujuan=tujuan,
                 tanggal_pemakaian=tanggal_pemakaian,
@@ -266,17 +256,22 @@ def peminjamanCreate(request):
                 waktu_datang=waktu_datang,
                 tempat_berkumpul=tempat_berkumpul,
                 keterangan=keterangan,
-                mobil_id=mobil_id,
-                supir_id=supir_id,
                 status=STATUS
                 )
             peminjaman.save()
+            jumlah_kendaraan = int(request.POST['jumlah_kendaraan'])
+            for i in range(jumlah_kendaraan):
+                mobil_id = request.POST.get('mobil_id' + str(i))
+                mobilpeminjaman = MobilPeminjaman(
+                    peminjaman_id = peminjaman.id,
+                    mobil_id = mobil_id
+                    )
+                mobilpeminjaman.save()
         except (KeyError):
             # Redisplay the form
-            return render(request, 'peminjaman/peminjaman/create.html', {
-                'error_message': "You didn't fill all the form :("
-                })
+            return HttpResponseRedirect(reverse('peminjamanForm'))
         else:
+            # Display detail peminjaman
             return HttpResponseRedirect(reverse('peminjamanDetail', args=(peminjaman.id,)))
 
 def peminjamanEditForm(request, peminjaman_id):
@@ -927,22 +922,20 @@ def download_car_report(request, kendaraan_id):
     return response
 
 def cek(request):
-	tanggal_pemakaian = request.POST['date']
-	year = tanggal_pemakaian.replace(',', '').split(' ')[2]
-	month = mapMonth(tanggal_pemakaian.replace(',', '').split(' ')[1])
-	day = tanggal_pemakaian.replace(',', '').split(' ')[0]
-	if len(day) == 1:
-		day = '0'+day
-	date = year+'-'+month+'-'+day+' 00:00Z'
-	mobil_id = request.POST['mobil_id']
-	peminjaman = PeminjamanKendaraan.objects.filter(mobil_id=mobil_id, tanggal_pemakaian=date).exclude(status=3)
-	count = 0
-	for p in peminjaman:
-		count += 1
-	if count == 0:
-		return HttpResponse("True")
-	else:
-		return HttpResponse("False")
+    tanggal_pemakaian = request.POST['date']
+    year = tanggal_pemakaian.replace(',', '').split(' ')[2]
+    month = mapMonth(tanggal_pemakaian.replace(',', '').split(' ')[1])
+    day = tanggal_pemakaian.replace(',', '').split(' ')[0]
+    if len(day) == 1:
+        day = '0'+day
+    date = year+'-'+month+'-'+day+' 00:00Z'
+    mobil_id = request.POST['mobil_id']
+    all_peminjaman = MobilPeminjaman.objects.filter(mobil_id=mobil_id);
+    for peminjaman in all_peminjaman:
+        detail_peminjaman = PeminjamanKendaraan.filter(pk=peminjaman.peminjaman_id, tanggal_pemakaian=date).exclude(status=3)
+        if len(detail_peminjaman)>0:
+            return HttpResponse("False")
+    return HttpResponse("True")
 
 def mapMonth(name):
 	if name == "January":
