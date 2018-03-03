@@ -18,39 +18,19 @@
 				<h5>Data Peminjaman</h5>
 			</div>
 
-			<div class="input-field col s6">
-	          <input id="no_surat" name="no_surat" type="text" class="validate">
-	          <label for="no_surat">No Surat*</label>
-		    </div>
-
-		    <div class="input-field col s6">
-	          <input id="tanggal_surat" name="tanggal_surat" type="date" class="datepicker">
-	          <label for="tanggal_surat">Tanggal Surat*</label>
-		    </div>
-
 			<div class="input-field col s12">
-	          <input id="acara" name="acara" type="text" class="validate">
-	          <label for="acara">Acara*</label>
-		    </div>
-
-		    <div class="input-field col s12">
-	          <input id="tujuan" name="tujuan" type="text" class="validate">
-	          <label for="tujuan">Tujuan*</label>
-		    </div>
-
-		    <div class="input-field col s12">
 	          <input id="tanggal_booking" name="tanggal_booking" type="date" class="datepicker">
 	          <label for="tanggal_booking">Tanggal Booking*</label>
 		    </div>
 
 		    <div class="input-field col s6">
 	          <input id="tanggal_pemakaian" name="tanggal_pemakaian" type="date" class="datepicker">
-	          <label for="tanggal_pemakaian">Tanggal Pemakaian*</label>
+	          <label for="tanggal_pemakaian">Rencana Tanggal Pemakaian*</label>
 		    </div>
 
 		    <div class="input-field col s6">
 	          <input id="tanggal_pemakaian" name="tanggal_pengembalian" type="date" class="datepicker">
-	          <label for="tanggal_pengembalian">Tanggal Pengembalian*</label>
+	          <label for="tanggal_pengembalian">Rencana Tanggal Pengembalian*</label>
 		    </div>
 
 		    <div class="input-field col s6">
@@ -67,7 +47,27 @@
 
 		    <div class="input-field col s12">
 	          <input id="tempat_berkumpul" name="tempat_berkumpul" type="text" class="validate">
-	          <label for="tempat_berkumpul">Tempat Berkumpul*</label>
+	          <label for="tempat_berkumpul">Asal*</label>
+		    </div>
+
+		    <div class="input-field col s12">
+	          <input id="tujuan" name="tujuan" type="text" class="validate">
+	          <label for="tujuan">Tujuan*</label>
+		    </div>
+
+		    <div class="input-field col s12">
+	          <input id="acara" name="acara" type="text" class="validate">
+	          <label for="acara">Acara*</label>
+		    </div>
+
+			<div class="input-field col s6">
+	          <input id="no_surat" name="no_surat" type="text" class="validate">
+	          <label for="no_surat">No Surat Pemohon*</label>
+		    </div>
+
+		    <div class="input-field col s6">
+	          <input id="tanggal_surat" name="tanggal_surat" type="date" class="datepicker">
+	          <label for="tanggal_surat">Tanggal Surat*</label>
 		    </div>
 
 		    <div class="input-field col s12">
@@ -87,7 +87,12 @@
 
 		    <div class="input-field col s6">
 	          <input id="no_telepon_peminjam" name="no_telepon_peminjam" type="text" class="validate">
-	          <label for="no_telepon_peminjam">No Telp Peminjam*</label>
+	          <label for="no_telepon_peminjam">No. Kontak Peminjam*</label>
+		    </div>
+
+		    <div class="input-field col s12">
+	          <input id="bagian_jurusan" name="bagian_jurusan" type="text" class="validate">
+	          <label for="bagian_jurusan">Bagian/Jurusan</label>
 		    </div>
 
 	    </div>
@@ -101,7 +106,7 @@
 		    		<select id="mobil_id" name="mobil_id">
 		    			<option value="" disabled selected>Pilih Kendaraan</option>
 						{% for mobil in all_mobil %}
-							<option value="{{mobil.id}}" supir_id="{{mobil.supir_id}}">{{mobil.nama}}</option>
+							<option value="{{mobil.id}}">{{mobil.nama}}</option>
 						{% endfor %}
 					</select>
 					<label>Kendaraan*</label>
@@ -110,61 +115,44 @@
 				{% endif %}
 		    </div>
 
-		    <div class="input-field col s6">
-		    	{% if all_supir %}
-		    		<select id="supir_id" name="supir_id">
-		    			<option class="supir_option" value="" disabled selected>Pilih Supir</option>
-						{% for supir in all_supir %}
-							<option class="supir_option" value="{{supir.id}}">{{supir.nama}}</option>
-						{% endfor %}
-					</select>
-					<label>Supir*</label>
-				{% else %}
-					<p>No Supir are available. Please create new Supir first in Admin panel.</p>
-				{% endif %}
+	    </div>
+
+	    <div class="row">
+			<div class="col m12">
+				<h5>Rincian Biaya</h5>
+			</div>
+			<div class="input-field col s12">
+	          <input id="biaya_perawatan" name="biaya_perawatan" type="number" class="validate" step="1000" min="0">
+	          <label for="biaya_perawatan">Biaya Perawatan (Rp.)*</label>
 		    </div>
 
-		    <div class="input-field col s6">
-		    	<input name="odometer_sebelum" type="text" class="validate">
-	          <label for="odometer_sebelum">Odometer Sebelum</label>
+		    <div class="input-field col s12">
+	          <input id="biaya_bbm" name="biaya_bbm" type="number" class="validate" step="1000" min="0">
+	          <label for="biaya_bbm">BBM (Rp.)*</label>
 		    </div>
 
-		    <div class="input-field col s6">
-		    	<input name="odometer_sesudah" type="text" class="validate">
-	          <label for="odometer_sesudah">Odometer Sesudah</label>
+		    <div class="input-field col s12">
+	          <input id="biaya_supir" name="biaya_supir" type="number" class="validate" step="1000" min="0">
+	          <label for="biaya_supir">Uang Lelah Sopir (Rp.)*</label>
 		    </div>
+
+		    <div class="input-field col s12">
+	          <input id="biaya_tol" name="biaya_tol" type="number" class="validate" step="1000" min="0">
+	          <label for="biaya_tol">Tol (Rp.)*</label>
+		    </div>
+
+		    <div class="input-field col s12">
+	          <input id="biaya_parkir" name="biaya_parkir" type="number" class="validate" step="1000" min="0">
+	          <label for="biaya_parkir">Parkir (Rp.)*</label>
+		    </div>
+
+		    <div class="input-field col s12">
+	          <input id="biaya_penginapan" name="biaya_penginapan" type="text" class="validate" step="1000" min="0">
+	          <label for="biaya_penginapan">Penginapan (Rp.)*</label>
+		    </div>
+
 	    </div>
 	    <br />
-	    <div class="row">
-			<div class="input-field col s6">
-				<select id="bukti_transfer" name="bukti_transfer">
-					<option value="" disabled selected>Pilih</option>
-					<option value="0">Tidak Ada</option>
-					<option value="1">Ada</option>
-				</select>
-				<label>Ada Bukti Transfer?*</label>
-		    </div>
-
-		    <div id="foto-bukti-transfer" class="file-field input-field col s12">
-		      <div class="btn" style="background-color: #1D73BE;">
-		        <span>Foto Bukti Transfer</span>
-		        <input type="file" name="foto_bukti_transfer" id="foto_bukti_transfer">
-		      </div>
-		      <div class="file-path-wrapper">
-		        <input class="file-path validate" type="text">
-		      </div>
-		    </div>
-
-		    <div id="foto-form-akhir" class="file-field input-field col s12">
-		      <div class="btn" style="background-color: #1D73BE;">
-		        <span>Foto Form Akhir</span>
-		        <input type="file" name="foto_form_akhir" id="foto_form_akhir">
-		      </div>
-		      <div class="file-path-wrapper">
-		        <input class="file-path validate" type="text">
-		      </div>
-		    </div>
-	    </div>
 
 	</form>
 	<div class="col m12">
@@ -186,7 +174,6 @@
 		$('select').material_select();
 		$(document).ready(function(){
 		    $('input.timepicker').timepicker({});
-				$("#foto-bukti-transfer").hide();
 		});
 	});
 	// Initialize date picker
@@ -195,27 +182,7 @@
 		selectYears: 15 // Creates a dropdown of 15 years to control year
 	});
 
-	$('#bukti_transfer').on('change', function () {
-		var optionSelected = $("option:selected", this);
-		var valueSelected = this.value;
-
-		if(valueSelected == 1){
-		   $("#foto-bukti-transfer").show();
-		} else {
-		   $("#foto-bukti-transfer").hide();
-		}
-	});
-
-	$('#mobil_id').on('change', function() {
-		var option = $('option:selected', this).attr('supir_id');
-		console.log(option)
-		$('#supir_id').val(option)
-	   	// re-initialize material-select
-	   	$('#supir_id').material_select();
-	});
-
 	function validateInput() {
-		// Check nama peminjam
 		$('#error_message').text('')
 		var nama_peminjam = $('#nama_peminjam').val()
 		if(nama_peminjam.trim() == "") {
@@ -225,7 +192,6 @@
 			return
 		}
 
-		// Check no telepon peminjam
 		var no_telepon_peminjam = $('#no_telepon_peminjam').val()
 		if(no_telepon_peminjam.trim() == "") {
 			console.log("Missing: no telepon peminjam")
@@ -234,23 +200,12 @@
 			return
 		}
 
-		// Check mobil_id
 	    var mobil_id = $('#mobil_id').find(":selected").val();
 	    console.log("mobil_id:"+mobil_id)
 	    if(mobil_id.trim() == "") {
 			$('#mobil_id').focus()
 			console.log("Missing: Mobil ID")
 			$('#error_message').text("Please select Kendaraan.")
-			return
-	    }
-
-		// Check supir_id
-	    var supir_id = $('#supir_id').find(":selected").val();
-	    console.log("Supir_id:"+supir_id)
-	    if(supir_id.trim() == "") {
-			$('#supir_id').focus()
-			console.log("Missing: Supir ID")
-			$('#error_message').text("Please select Nama Supir Kendaraan.")
 			return
 	    }
 
@@ -312,7 +267,6 @@
 		}
 
 		var tanggal_surat = $('#tanggal_surat').val()
-		// console.log(tanggal_surat)
 		if(tanggal_surat == "") {
 			console.log("Missing: tanggal_surat")
 			$('#tanggal_surat').focus()
@@ -320,16 +274,22 @@
 			return
 		}
 
-		var bukti_transfer = $('#bukti_transfer').find(":selected").val();
-	    console.log("bukti_transfer:"+bukti_transfer)
-	    if(bukti_transfer.trim() == "") {
-			$('#bukti_transfer').focus()
-			console.log("Missing: bukti_transfer")
-			$('#error_message').text("Please select Ada Bukti Transfer?.")
+		var waktu_berangkat = $('#waktu_berangkat').val()
+		if(waktu_berangkat == "") {
+			console.log("Missing: waktu_berangkat")
+			$('#waktu_berangkat').focus()
+			$('#error_message').text('Please input Waktu Berangkat.')
 			return
-	    }
+		}
 
-	 	console.log(tanggal_pemakaian)
+		var waktu_datang = $('#waktu_datang').val()
+		if(waktu_datang == "") {
+			console.log("Missing: waktu_datang")
+			$('#waktu_datang').focus()
+			$('#error_message').text('Please input Waktu Datang.')
+			return
+		}
+
 		$.post("/cek/",
 	    {
 	    	csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,

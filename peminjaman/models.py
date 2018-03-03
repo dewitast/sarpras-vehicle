@@ -25,6 +25,7 @@ class PeminjamanKendaraan(models.Model):
 	supir = models.ForeignKey(Supir, on_delete=models.CASCADE)
 	nama_peminjam = models.CharField(max_length=100)
 	no_telp_peminjam = models.CharField(max_length=100)
+	#bagian_jurusan_peminjam = models.CharField(max_length=100)
 	mobil = models.ForeignKey(Mobil, on_delete=models.CASCADE)
 	bukti_transfer = models.IntegerField()
 	foto_bukti_transfer = models.ImageField(upload_to='bukti transfer peminjaman/')
