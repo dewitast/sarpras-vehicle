@@ -100,6 +100,9 @@ def peminjaman(request):
     today_month = datetime.today().strftime('%B')
     today_year = datetime.today().strftime('%Y')
     all_peminjaman = PeminjamanKendaraan.objects.all()
+    for peminjaman in all_peminjaman:
+        data_mobil = MobilPeminjaman.objects.filter(peminjaman_id=peminjaman.id)
+        setattr(peminjaman, 'all_kendaraan', data_mobil)
     all_kendaraan = Mobil.objects.all()
     data_kendaraan = []
     for kendaraan in all_kendaraan:
@@ -120,18 +123,12 @@ def peminjaman(request):
 
     days = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]
     years = [2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027]
-    all_supir = Supir.objects.all()
     for peminjaman in all_peminjaman:
         setattr(peminjaman, 'tanggal_pemakaian_formatted', peminjaman.tanggal_pemakaian.strftime('%d %B %Y'))
         setattr(peminjaman, 'tanggal_booking_formatted', peminjaman.tanggal_booking.strftime('%d %B %Y'))
         setattr(peminjaman, 'tanggal_pengembalian_formatted', peminjaman.tanggal_pengembalian.strftime('%d %B %Y'))
         setattr(peminjaman, 'tanggal_surat_formatted', peminjaman.tanggal_surat.strftime('%d %B %Y'))
-        kendaraan = get_object_or_404(Mobil, pk=peminjaman.mobil_id)
-        setattr(peminjaman, 'nama_kendaraan', kendaraan.nama)
-        supir = get_object_or_404(Supir, pk=peminjaman.supir_id)
-        setattr(peminjaman, 'nama_supir', supir.nama)
     context = {
-        'all_supir': all_supir,
         'days': days,
         'years': years,
         'today_month': today_month,
@@ -287,7 +284,6 @@ def peminjamanEditForm(request, peminjaman_id):
         mobil = get_object_or_404(Mobil, pk=peminjaman.mobil_id)
         supir = get_object_or_404(Supir, pk=peminjaman.supir_id)
         all_mobil = Mobil.objects.all()
-        all_supir = Supir.objects.all()
         context = {
             'peminjaman': peminjaman,
             'mobil': mobil,

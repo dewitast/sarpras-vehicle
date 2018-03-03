@@ -56,7 +56,6 @@
                     <th rowspan="2">No</th>
                     <th rowspan="2">Jenis Kendaraan</th>
                     <th rowspan="2">Nopol</th>
-                    <th rowspan="2">Pengemudi</th>
                     {% for day in days %}
                         <th class="header-table">{{day}}</th>
                     {% endfor %}
@@ -71,13 +70,6 @@
                                 <td>{{forloop.counter}}</td>
                                 <td>{{kendaraan.nama}}</td>
                                 <td>{{kendaraan.no_polisi}}</td>
-                                <td>
-                                    {% for supir in all_supir %}
-                                        {% if supir.id == kendaraan.supir_id %}
-                                            {{supir.nama}}
-                                        {% endif %}
-                                    {% endfor %}
-                                </td>
                                  {% for day in days %}
                                     <td class='day-cell' day='{{day}}'></td>
                                 {% endfor %}
@@ -93,69 +85,57 @@
     </div>
 </div>
 {% for peminjaman in all_peminjaman %}
-<!-- Modal Structure -->
-    <div id="modalpeminjaman{{peminjaman.id}}" class="modal modal-fixed-footer">
-        <div class="modal-content">
-        {% if user.is_authenticated %}
-          <h4>{{peminjaman.tanggal_pemakaian_formatted}}</h4>
-          {% if peminjaman.status == 0 %}
-            <span class="new badge yellow" data-badge-caption="Belum Transfer"></span>
-          {% else %}
-            {% if peminjaman.status == 1 %}
-              <span class="new badge blue" data-badge-caption="Sudah Transfer"></span>
-            {% else %}
-                {% if peminjaman.status == 2 %}
-                  <span class="new badge" data-badge-caption="Sudah Selesai"></span>
-                {% else %}
-                  <span class="new badge red" data-badge-caption="Dibatalkan"></span>
-                {% endif %}
-            {% endif %}
-          {% endif %}
-          <p>
-              <strong>Nama Peminjam</strong>: {{peminjaman.nama_peminjam}} <br />
-              <strong>No Telp Peminjam</strong>: {{peminjaman.no_telp_peminjam}} <br />
-          </p>
-          <p>
-              <strong>Kendaraan</strong>: {{peminjaman.nama_kendaraan}} <br />
-              <strong>Supir</strong>: {{peminjaman.nama_supir}} <br />
-          </p>
-          <p>
-            <strong>Acara</strong>: {{peminjaman.acara}}<br />
-            <strong>Tujuan</strong>: {{peminjaman.tujuan}}<br />
-            <strong>Tempat Berkumpul</strong>: {{peminjaman.tempat_berkumpul}}<br />
-            <strong>Keterangan</strong>: {{peminjaman.keterangan}}
-          </p>
-          <p>
-            <strong>Tanggal Booking</strong>: {{peminjaman.tanggal_booking_formatted}}<br />
-            <strong>Tanggal Pemakaian</strong>: {{peminjaman.tanggal_pemakaian_formatted}}<br />
-            <strong>Tanggal Pengembalian</strong>: {{peminjaman.tanggal_pengembalian_formatted}}<br />
-            <strong>Waktu Berangkat:</strong> {{ peminjaman.waktu_berangkat }} <br />
-            <strong>Waktu Datang:</strong> {{ peminjaman.waktu_datang }}
-          </p>
-          <p>
-            <strong>No Surat</strong>: {{peminjaman.no_surat}}<br />
-            <strong>Tanggal Surat</strong>: {{peminjaman.tanggal_surat_formatted}}<br />
-            <strong>Ada Bukti Transfer?</strong>:
-                {% if peminjaman.bukti_transfer == 1 %}
-                    Ada
-                {% else %}
-                    Tidak Ada
-                {% endif %}
-          </p>
-        {% else %}
-            <h4>{{peminjaman.tanggal_pemakaian_formatted}}</h4>
-            <p>{{peminjaman.nama_kendaraan}} sudah dibooking pada tanggal ini.</p>
-        {% endif %}
-        </div>
-        <div class="modal-footer">
-            <a href="#" class="modal-action modal-close waves-effect waves-green btn-flat ">Close</a>
+    {% for kendaraan in peminjaman.all_kendaraan %}
+    <!-- Modal Structure -->
+        <div id="modalpeminjaman{{peminjaman.id}}" class="modal modal-fixed-footer">
+            <div class="modal-content">
             {% if user.is_authenticated %}
-                <a href="{% url 'peminjamanDetail' peminjaman.id %}" class="modal-action modal-close waves-effect waves-green btn-flat ">Detail</a>
+              <h4>{{peminjaman.tanggal_pemakaian_formatted}}</h4>
+              {% if peminjaman.status == 0 %}
+                <span class="new badge yellow" data-badge-caption="Belum Transfer"></span>
+              {% else %}
+                {% if peminjaman.status == 1 %}
+                  <span class="new badge blue" data-badge-caption="Sudah Transfer"></span>
+                {% else %}
+                    {% if peminjaman.status == 2 %}
+                      <span class="new badge" data-badge-caption="Sudah Selesai"></span>
+                    {% else %}
+                      <span class="new badge red" data-badge-caption="Dibatalkan"></span>
+                    {% endif %}
+                {% endif %}
+              {% endif %}
+              <p>
+                  <strong>Nama Peminjam</strong>: {{peminjaman.nama_peminjam}} <br />
+                  <strong>No Telp Peminjam</strong>: {{peminjaman.no_telp_peminjam}} <br />
+              </p>
+              <p>
+                <strong>Acara</strong>: {{peminjaman.acara}}<br />
+                <strong>Tujuan</strong>: {{peminjaman.tujuan}}<br />
+                <strong>Asal</strong>: {{peminjaman.tempat_berkumpul}}<br />
+                <strong>Keterangan</strong>: {{peminjaman.keterangan}}
+              </p>
+              <p>
+                <strong>Tanggal Booking</strong>: {{peminjaman.tanggal_booking_formatted}}<br />
+                <strong>Tanggal Pemakaian</strong>: {{peminjaman.tanggal_pemakaian_formatted}}<br />
+                <strong>Tanggal Pengembalian</strong>: {{peminjaman.tanggal_pengembalian_formatted}}<br />
+                <strong>Waktu Berangkat:</strong> {{ peminjaman.waktu_berangkat }} <br />
+                <strong>Waktu Datang:</strong> {{ peminjaman.waktu_datang }}
+              </p>
+            {% else %}
+                <h4>{{peminjaman.tanggal_pemakaian_formatted}}</h4>
+                <p>{{peminjaman.nama_kendaraan}} sudah dibooking pada tanggal ini.</p>
             {% endif %}
+            </div>
+            <div class="modal-footer">
+                <a href="#" class="modal-action modal-close waves-effect waves-green btn-flat ">Close</a>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'peminjamanDetail' peminjaman.id %}" class="modal-action modal-close waves-effect waves-green btn-flat ">Detail</a>
+                {% endif %}
+            </div>
         </div>
-    </div>
 
-    <span id="peminjaman{{peminjaman.id}}" style="display: none;" class="peminjaman" tanggal='{{peminjaman.tanggal_pemakaian}}' kendaraan_id="{{peminjaman.mobil_id}}"></span>
+        <span id="peminjaman{{peminjaman.id}}" style="display: none;" class="peminjaman" tanggal='{{peminjaman.tanggal_pemakaian}}' kendaraan_id="{{kendaraan.mobil_id}}"></span>
+    {% endfor %}
 {% endfor %}
 {% endblock %}
 
