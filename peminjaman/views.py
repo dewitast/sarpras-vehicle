@@ -355,50 +355,6 @@ def peminjamanDelete(request, peminjaman_id):
         peminjaman.delete()
         return HttpResponseRedirect(reverse('peminjaman'))
 
-def uploadBuktiTransfer(request, peminjaman_id):
-    if not request.user.is_authenticated:
-        return HttpResponseRedirect(reverse('login'))
-    else:
-        # Create new FotoMobil record
-        peminjaman = get_object_or_404(PeminjamanKendaraan, pk=peminjaman_id)
-        foto_bukti_transfer = request.FILES.get('foto_bukti_transfer', None)
-        if foto_bukti_transfer != None:
-            peminjaman.foto_bukti_transfer = foto_bukti_transfer
-            peminjaman.bukti_transfer = 1 # Ada
-            peminjaman.save()
-        return HttpResponseRedirect(reverse('peminjamanDetail', args=(peminjaman.id,)))
-
-def deleteBuktiTransfer(request, peminjaman_id):
-    if not request.user.is_authenticated:
-        return HttpResponseRedirect(reverse('login'))
-    else:
-        peminjaman = get_object_or_404(PeminjamanKendaraan, pk=peminjaman_id)
-        peminjaman.foto_bukti_transfer = None
-        peminjaman.bukti_transfer = 0 # Ada
-        peminjaman.save()
-        return HttpResponseRedirect(reverse('peminjamanDetail', args=(peminjaman_id,)))
-
-def uploadFormAkhir(request, peminjaman_id):
-    if not request.user.is_authenticated:
-        return HttpResponseRedirect(reverse('login'))
-    else:
-        # Create new FotoMobil record
-        peminjaman = get_object_or_404(PeminjamanKendaraan, pk=peminjaman_id)
-        foto_form_akhir = request.FILES.get('foto_form_akhir', None)
-        if foto_form_akhir != None:
-            peminjaman.foto_form_akhir = foto_form_akhir
-            peminjaman.save()
-        return HttpResponseRedirect(reverse('peminjamanDetail', args=(peminjaman.id,)))
-
-def deleteFormAkhir(request, peminjaman_id):
-    if not request.user.is_authenticated:
-        return HttpResponseRedirect(reverse('login'))
-    else:
-        peminjaman = get_object_or_404(PeminjamanKendaraan, pk=peminjaman_id)
-        peminjaman.foto_form_akhir = None
-        peminjaman.save()
-        return HttpResponseRedirect(reverse('peminjamanDetail', args=(peminjaman_id,)))
-
 ###################################################################################################################
 #
 # Supir

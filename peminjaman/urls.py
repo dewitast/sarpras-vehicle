@@ -30,14 +30,6 @@ urlpatterns = [
     url(r'^peminjaman/(?P<peminjaman_id>[0-9]+)/change/$', views.peminjamanEdit, name='peminjamanEdit'),
     # ex: /peminjaman/5/delete
     url(r'^peminjaman/(?P<peminjaman_id>[0-9]+)/delete/$', views.peminjamanDelete, name='peminjamanDelete'),
-    # ex: /peminjaman/5/uploadFoto
-    url(r'^peminjaman/(?P<peminjaman_id>[0-9]+)/uploadFoto/$', views.uploadBuktiTransfer, name='uploadBuktiTransfer'),
-	# ex: /peminjaman/5/uploadFormAkhir
-    url(r'^peminjaman/(?P<peminjaman_id>[0-9]+)/uploadFormAkhir/$', views.uploadFormAkhir, name='uploadFormAkhir'),
-    # ex: /peminjaman/5/deleteFoto
-    url(r'^peminjaman/(?P<peminjaman_id>[0-9]+)/deleteFoto/$', views.deleteBuktiTransfer, name='deleteBuktiTransfer'),
-	# ex: /peminjaman/5/deleteFormAkhir
-    url(r'^peminjaman/(?P<peminjaman_id>[0-9]+)/deleteFormAkhir/$', views.deleteFormAkhir, name='deleteFormAkhir'),
 
     ###################################################################################################################
     #
