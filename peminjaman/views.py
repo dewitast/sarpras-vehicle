@@ -14,6 +14,13 @@ from .models import PeminjamanKendaraan, Mobil, Supir, FotoMobil, TeleponSupir, 
 
 ###################################################################################################################
 #
+# Global variable
+#
+###################################################################################################################
+MAX_KENDARAAN = 5
+
+###################################################################################################################
+#
 # Dashboard
 #
 ###################################################################################################################
@@ -164,7 +171,6 @@ def peminjamanForm(request):
         return HttpResponseRedirect(reverse('login'))
     else:
         all_mobil = Mobil.objects.all()
-        MAX_KENDARAAN = 5
         context = {
             'all_mobil': all_mobil,
             'MAX_KENDARAAN' : MAX_KENDARAAN,
@@ -265,6 +271,8 @@ def peminjamanCreate(request):
                 biaya_tol=biaya_tol,
                 biaya_parkir=biaya_parkir,
                 biaya_penginapan=biaya_penginapan,
+                odometer_sebelum='',
+                odometer_sesudah='',
                 status=STATUS
                 )
             peminjaman.save()
@@ -293,15 +301,14 @@ def peminjamanEditForm(request, peminjaman_id):
         setattr(peminjaman, 'tanggal_pengembalian_formatted', peminjaman.tanggal_pengembalian.strftime('%Y-%m-%d'))
         setattr(peminjaman, 'tanggal_surat_formatted', peminjaman.tanggal_surat.strftime('%Y-%m-%d'))
 
-        mobil = get_object_or_404(Mobil, pk=peminjaman.mobil_id)
-        supir = get_object_or_404(Supir, pk=peminjaman.supir_id)
+        mobil_peminjaman = list(MobilPeminjaman.objects.filter(peminjaman_id=peminjaman_id))
         all_mobil = Mobil.objects.all()
         context = {
             'peminjaman': peminjaman,
-            'mobil': mobil,
-            'supir': supir,
+            'data_mobil': mobil_peminjaman,
             'all_mobil': all_mobil,
-            'all_supir': all_supir,
+            'MAX_KENDARAAN' : MAX_KENDARAAN,
+            'LOOP_RANGE' : range(MAX_KENDARAAN),
         }
         return render(request, 'peminjaman/peminjaman/edit.html', context)
 
@@ -315,24 +322,23 @@ def peminjamanEdit(request, peminjaman_id):
 
             peminjaman.nama_peminjam = request.POST['nama_peminjam']
             peminjaman.no_telp_peminjam = request.POST['no_telepon_peminjam']
+            peminjaman.bagian_jurusan_peminjam = request.POST['bagian_jurusan']
 
-            odometer_sebelum = request.POST['odometer_sebelum']
-            if odometer_sebelum == "":
-                odometer_sebelum = None
-            odometer_sesudah = request.POST['odometer_sesudah']
-            if odometer_sesudah == "":
-                odometer_sesudah = None
             peminjaman.status = request.POST['status']
-            peminjaman.mobil_id = request.POST['mobil_id']
-            peminjaman.supir_id = request.POST['supir_id']
             peminjaman.acara = request.POST['acara']
             peminjaman.tujuan = request.POST['tujuan']
             peminjaman.tempat_berkumpul = request.POST['tempat_berkumpul']
             peminjaman.keterangan = request.POST['keterangan']
             peminjaman.no_surat = request.POST['no_surat']
-            peminjaman.bukti_transfer = request.POST['bukti_transfer']
-            peminjaman.odometer_sebelum = odometer_sebelum
-            peminjaman.odometer_sesudah = odometer_sesudah
+            peminjaman.waktu_berangkat = process_time(request.POST['waktu_berangkat'])
+            peminjaman.waktu_datang = process_time(request.POST['waktu_datang'])
+
+            peminjaman.biaya_perawatan = request.POST['biaya_perawatan']
+            peminjaman.biaya_bbm = request.POST['biaya_bbm']
+            peminjaman.biaya_supir = request.POST['biaya_supir']
+            peminjaman.biaya_tol = request.POST['biaya_tol']
+            peminjaman.biaya_parkir = request.POST['biaya_parkir']
+            peminjaman.biaya_penginapan = request.POST['biaya_penginapan']
 
             tanggal_booking = request.POST['tanggal_booking']
             if '-' not in tanggal_booking:

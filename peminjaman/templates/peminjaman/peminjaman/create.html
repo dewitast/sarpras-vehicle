@@ -174,16 +174,18 @@
     $('#navbar-menu-peminjaman').addClass('active')
     function addInput() {
     	var jumlah_kendaraan = document.getElementById('jumlah_kendaraan').value;
-    	if (jumlah_kendaraan>{{MAX_KENDARAAN}}) {
-    		document.getElementById('jumlah_kendaraan').value = {{MAX_KENDARAAN}};
-    		jumlah_kendaraan = {{MAX_KENDARAAN}};
-    	}
-    	for (i=0;i<{{MAX_KENDARAAN}};++i) {
-    		$('#mobil' + i).hide();
-    	}
-    	for (i=0;i<jumlah_kendaraan;++i) {
-    		$('#mobil' + i).show();
-    	}
+    	if (jumlah_kendaraan != "") {
+	    	if (jumlah_kendaraan>{{MAX_KENDARAAN}}) {
+	    		document.getElementById('jumlah_kendaraan').value = {{MAX_KENDARAAN}};
+	    		jumlah_kendaraan = {{MAX_KENDARAAN}};
+	    	}
+	    	for (i=0;i<{{MAX_KENDARAAN}};++i) {
+	    		$('#mobil' + i).hide();
+	    	}
+	    	for (i=0;i<jumlah_kendaraan;++i) {
+	    		$('#mobil' + i).show();
+	    	}
+	    }
     }
 </script>
 <script type="text/javascript">
@@ -242,6 +244,118 @@
 			return
 		}
 
+	    var acara = $('#acara').val()
+		if(acara.trim() == "") {
+			console.log("Missing: acara")
+			$('#acara').focus()
+			$('#error_message').text('Please input Acara.')
+			return
+		}
+
+		var tujuan = $('#tujuan').val()
+		if(tujuan.trim() == "") {
+			console.log("Missing: tujuan")
+			$('#tujuan').focus()
+			$('#error_message').text('Please input Tujuan.')
+			return
+		}
+
+		var tanggal_booking = $('#tanggal_booking').val()
+		if(tanggal_booking == "") {
+			console.log("Missing: tanggal_booking")
+			$('#tanggal_booking').focus()
+			$('#error_message').text('Please input Tanggal Booking.')
+			return
+		}
+
+		var tempat_berkumpul = $('#tempat_berkumpul').val()
+		if(tempat_berkumpul.trim() == "") {
+			console.log("Missing: tempat_berkumpul")
+			$('#tempat_berkumpul').focus()
+			$('#error_message').text('Please input Tempat Berkumpul.')
+			return
+		}
+
+		var no_surat = $('#no_surat').val()
+		if(no_surat.trim() == "") {
+			console.log("Missing: no_surat")
+			$('#no_surat').focus()
+			$('#error_message').text('Please input No Surat.')
+			return
+		}
+
+		var tanggal_surat = $('#tanggal_surat').val()
+		if(tanggal_surat == "") {
+			console.log("Missing: tanggal_surat")
+			$('#tanggal_surat').focus()
+			$('#error_message').text('Please input Tanggal Surat.')
+			return
+		}
+
+		var waktu_berangkat = $('#waktu_berangkat').val()
+		if(waktu_berangkat == "") {
+			console.log("Missing: waktu_berangkat")
+			$('#waktu_berangkat').focus()
+			$('#error_message').text('Please input Waktu Berangkat.')
+			return
+		}
+
+		var waktu_datang = $('#waktu_datang').val()
+		if(waktu_datang == "") {
+			console.log("Missing: waktu_datang")
+			$('#waktu_datang').focus()
+			$('#error_message').text('Please input Waktu Datang.')
+			return
+		}
+
+		var biaya_perawatan = $('#biaya_perawatan').val()
+		if (biaya_perawatan == "") {
+			console.log("Missing: biaya_perawatan")
+			$('#biaya_perawatan').focus()
+			$('#error_message').text('Please input Biaya Perawatan')
+			return
+		}
+
+		var biaya_bbm = $('#biaya_bbm').val()
+		if (biaya_bbm == "") {
+			console.log("Missing: biaya_bbm")
+			$('#biaya_bbm').focus()
+			$('#error_message').text('Please input Biaya BBM')
+			return
+		}
+
+		var biaya_supir = $('#biaya_supir').val()
+		if (biaya_supir == "") {
+			console.log("Missing: biaya_supir")
+			$('#biaya_supir').focus()
+			$('#error_message').text('Please input Biaya Supir')
+			return
+		}
+
+		var biaya_tol = $('#biaya_tol').val()
+		if (biaya_tol == "") {
+			console.log("Missing: biaya_tol")
+			$('#biaya_tol').focus()
+			$('#error_message').text('Please input Biaya Tol')
+			return
+		}
+
+		var biaya_parkir = $('#biaya_parkir').val()
+		if (biaya_parkir == "") {
+			console.log("Missing: biaya_parkir")
+			$('#biaya_parkir').focus()
+			$('#error_message').text('Please input Biaya Parkir')
+			return
+		}
+
+		var biaya_penginapan = $('#biaya_penginapan').val()
+		if (biaya_penginapan == "") {
+			console.log("Missing: biaya_penginapan")
+			$('#biaya_penginapan').focus()
+			$('#error_message').text('Please input Biaya Penginapan')
+			return
+		}
+
 		for (i=0;i<jumlah_kendaraan;++i) {
 			console.log('yes');
 		    var mobil_id = $('#mobil_id' + i).find(":selected").val();
@@ -259,11 +373,7 @@
 		        mobil_id: mobil_id
 		    },
 		    function(data, status){
-		        //alert("Data: " + data + "\nStatus: " + status);
-		        if(data == "True") {
-		        	$('#form').submit()
-		        }
-		        else {
+		        if data == "False" {
 		        	console.log("Date not OK")
 					$('#error_message').text('Kendaraan is used on the selected date. Please select another Kendaraan or Tanggal Pemakaian.')
 					return
@@ -271,77 +381,7 @@
 		    });
 		}
 
-	    var acara = $('#acara').val()
-		if(acara.trim() == "") {
-			console.log("Missing: acara")
-			$('#acara').focus()
-			$('#error_message').text('Please input Acara.')
-			return
-		}
-		console.log('acara');
-
-		var tujuan = $('#tujuan').val()
-		if(tujuan.trim() == "") {
-			console.log("Missing: tujuan")
-			$('#tujuan').focus()
-			$('#error_message').text('Please input Tujuan.')
-			return
-		}
-		console.log('tujuan');
-
-		var tanggal_booking = $('#tanggal_booking').val()
-		if(tanggal_booking == "") {
-			console.log("Missing: tanggal_booking")
-			$('#tanggal_booking').focus()
-			$('#error_message').text('Please input Tanggal Booking.')
-			return
-		}
-		console.log('tanggal_booking');
-
-		var tempat_berkumpul = $('#tempat_berkumpul').val()
-		if(tempat_berkumpul.trim() == "") {
-			console.log("Missing: tempat_berkumpul")
-			$('#tempat_berkumpul').focus()
-			$('#error_message').text('Please input Tempat Berkumpul.')
-			return
-		}
-		console.log('asal');
-
-		var no_surat = $('#no_surat').val()
-		if(no_surat.trim() == "") {
-			console.log("Missing: no_surat")
-			$('#no_surat').focus()
-			$('#error_message').text('Please input No Surat.')
-			return
-		}
-		console.log('no surat');
-
-		var tanggal_surat = $('#tanggal_surat').val()
-		if(tanggal_surat == "") {
-			console.log("Missing: tanggal_surat")
-			$('#tanggal_surat').focus()
-			$('#error_message').text('Please input Tanggal Surat.')
-			return
-		}
-		console.log('tgl surat');
-
-		var waktu_berangkat = $('#waktu_berangkat').val()
-		if(waktu_berangkat == "") {
-			console.log("Missing: waktu_berangkat")
-			$('#waktu_berangkat').focus()
-			$('#error_message').text('Please input Waktu Berangkat.')
-			return
-		}
-		console.log('waktu_berangkat');
-
-		var waktu_datang = $('#waktu_datang').val()
-		if(waktu_datang == "") {
-			console.log("Missing: waktu_datang")
-			$('#waktu_datang').focus()
-			$('#error_message').text('Please input Waktu Datang.')
-			return
-		}
-		console.log('waktu_datang');
+		$('#form').submit()
 	}
 </script>
 {% endblock %}

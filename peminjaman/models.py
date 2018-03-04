@@ -47,7 +47,7 @@ class PeminjamanKendaraan(models.Model):
 	status = models.IntegerField()
 
 	def getTotalBiaya(self):
-		return self.biaya_penginapan + self.biaya_bbm + self.biaya_supir + self.biaya_tol + self.biaya_parkir + self.biaya_penginapan
+		return self.biaya_perawatan + self.biaya_bbm + self.biaya_supir + self.biaya_tol + self.biaya_parkir + self.biaya_penginapan
 
 class MobilPeminjaman(models.Model):
 	peminjaman = models.ForeignKey(PeminjamanKendaraan, on_delete=models.CASCADE)

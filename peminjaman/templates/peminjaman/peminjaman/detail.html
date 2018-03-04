@@ -69,14 +69,15 @@
             <strong>Tanggal Surat Pemohon:</strong> {{ peminjaman.tanggal_surat_formatted }}  <br />
         </p>
 
+        {% load humanize %}
         <p>
-            <strong>Biaya Perawatan:</strong> Rp. {{ peminjaman.biaya_perawatan }} <br />
-            <strong>Biaya BBM:</strong> Rp. {{ peminjaman.biaya_bbm }}  <br />
-            <strong>Biaya Supir:</strong> Rp. {{ peminjaman.biaya_supir }}  <br />
-            <strong>Biaya Tol:</strong> Rp. {{ peminjaman.tol }}  <br />
-            <strong>Biaya Parkir:</strong> Rp. {{ peminjaman.biaya_parkir }}  <br />
-            <strong>Biaya Penginapan:</strong> Rp. {{ peminjaman.biaya_penginapan }}  <br />
-            <strong>Biaya Total:</strong> Rp. {{ peminjaman.getTotalBiaya() }}  <br />
+            <strong>Biaya Perawatan:</strong> Rp. {{ peminjaman.biaya_perawatan|intcomma }} <br />
+            <strong>Biaya BBM:</strong> Rp. {{ peminjaman.biaya_bbm|intcomma }}  <br />
+            <strong>Biaya Supir:</strong> Rp. {{ peminjaman.biaya_supir|intcomma }}  <br />
+            <strong>Biaya Tol:</strong> Rp. {{ peminjaman.tol|intcomma }}  <br />
+            <strong>Biaya Parkir:</strong> Rp. {{ peminjaman.biaya_parkir|intcomma }}  <br />
+            <strong>Biaya Penginapan:</strong> Rp. {{ peminjaman.biaya_penginapan|intcomma }}  <br />
+            <strong>Biaya Total:</strong> Rp. {{ peminjaman.getTotalBiaya|intcomma }}  <br />
         </p>
     </div>
 </div>
