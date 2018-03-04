@@ -19,9 +19,13 @@
 
     <div class="input-field col m2">
         <select id="year">
-            <option value="" disabled>Choose year</option>
+            <option value="" disabled selected>Choose year</option>
             {% for year in years %}
-                <option value="{{year}}">{{year}}</option>
+                <option value="{{year}}"
+                    {% ifequal year|slugify today_year %}
+                        selected
+                    {% endifequal %}
+                >{{year}}</option>
             {% endfor %}
         </select>
         <label>Year</label>
@@ -147,11 +151,8 @@
     $('#'+current_month).addClass('active')
     var current_year = '{{today_year}}'
 
-    // $('#{{today_year}}').addClass('active')
-
     $(document).ready(function() {
         $('select').material_select();
-        $('#year').addClass('selected')
         // the "href" attribute of .modal-trigger must specify the modal ID that wants to be triggered
         $('.modal').modal();
 

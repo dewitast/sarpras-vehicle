@@ -111,22 +111,6 @@ def peminjaman(request):
         data_mobil = MobilPeminjaman.objects.filter(peminjaman_id=peminjaman.id)
         setattr(peminjaman, 'all_kendaraan', data_mobil)
     all_kendaraan = Mobil.objects.all()
-    data_kendaraan = []
-    for kendaraan in all_kendaraan:
-        k = {}
-        k['id'] = kendaraan.id
-        years = []
-        for year in range(2017, 2028):
-            months = []
-            for month in range(1,13):
-                # for peminjaman in all_peminjaman:
-                #     peminjaman = {}
-                # months.append(peminjaman)
-                for i in range(0,31):
-                    months.append('haha')
-            years.append(months)
-        k['years'] = years
-        data_kendaraan.append(k)
 
     days = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]
     years = [2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027]
@@ -142,7 +126,6 @@ def peminjaman(request):
         'today_year': today_year,
         'all_peminjaman': all_peminjaman,
         'all_kendaraan': all_kendaraan,
-        'data_kendaraan': data_kendaraan,
     }
     return render(request, 'peminjaman/peminjaman/index.html', context)
 
