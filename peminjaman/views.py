@@ -237,6 +237,12 @@ def peminjamanCreate(request):
             tanggal_pengembalian = process_date(request.POST['tanggal_pengembalian'])
             tempat_berkumpul = request.POST['tempat_berkumpul']
             keterangan = request.POST.get('keterangan', '')
+            biaya_perawatan = request.POST['biaya_perawatan']
+            biaya_bbm = request.POST['biaya_bbm']
+            biaya_supir = request.POST['biaya_supir']
+            biaya_tol = request.POST['biaya_tol']
+            biaya_parkir = request.POST['biaya_parkir']
+            biaya_penginapan = request.POST['biaya_penginapan']
             STATUS = 0     # status peminjaman
             peminjaman = PeminjamanKendaraan(
                 nama_peminjam=nama_peminjam,
@@ -253,6 +259,12 @@ def peminjamanCreate(request):
                 waktu_datang=waktu_datang,
                 tempat_berkumpul=tempat_berkumpul,
                 keterangan=keterangan,
+                biaya_perawatan=biaya_perawatan,
+                biaya_bbm=biaya_bbm,
+                biaya_supir=biaya_supir,
+                biaya_tol=biaya_tol,
+                biaya_parkir=biaya_parkir,
+                biaya_penginapan=biaya_penginapan,
                 status=STATUS
                 )
             peminjaman.save()

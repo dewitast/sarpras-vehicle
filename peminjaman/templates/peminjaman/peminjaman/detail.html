@@ -68,6 +68,16 @@
             <strong>No Surat Pemohon:</strong> {{ peminjaman.no_surat }} <br />
             <strong>Tanggal Surat Pemohon:</strong> {{ peminjaman.tanggal_surat_formatted }}  <br />
         </p>
+
+        <p>
+            <strong>Biaya Perawatan:</strong> Rp. {{ peminjaman.biaya_perawatan }} <br />
+            <strong>Biaya BBM:</strong> Rp. {{ peminjaman.biaya_bbm }}  <br />
+            <strong>Biaya Supir:</strong> Rp. {{ peminjaman.biaya_supir }}  <br />
+            <strong>Biaya Tol:</strong> Rp. {{ peminjaman.tol }}  <br />
+            <strong>Biaya Parkir:</strong> Rp. {{ peminjaman.biaya_parkir }}  <br />
+            <strong>Biaya Penginapan:</strong> Rp. {{ peminjaman.biaya_penginapan }}  <br />
+            <strong>Biaya Total:</strong> Rp. {{ peminjaman.getTotalBiaya() }}  <br />
+        </p>
     </div>
 </div>
 <!-- Modal Structure -->

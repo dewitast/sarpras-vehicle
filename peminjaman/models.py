@@ -38,7 +38,16 @@ class PeminjamanKendaraan(models.Model):
 	tanggal_pengembalian = models.DateTimeField()
 	tempat_berkumpul = models.CharField(max_length=100)
 	keterangan = models.CharField(max_length=200)
+	biaya_perawatan = models.IntegerField()
+	biaya_bbm = models.IntegerField()
+	biaya_supir = models.IntegerField()
+	biaya_tol = models.IntegerField()
+	biaya_parkir = models.IntegerField()
+	biaya_penginapan = models.IntegerField()
 	status = models.IntegerField()
+
+	def getTotalBiaya(self):
+		return self.biaya_penginapan + self.biaya_bbm + self.biaya_supir + self.biaya_tol + self.biaya_parkir + self.biaya_penginapan
 
 class MobilPeminjaman(models.Model):
 	peminjaman = models.ForeignKey(PeminjamanKendaraan, on_delete=models.CASCADE)
