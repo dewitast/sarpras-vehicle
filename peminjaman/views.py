@@ -355,10 +355,9 @@ def peminjamanEdit(request, peminjaman_id):
             peminjaman.save()
         except (KeyError):
             # Redisplay the form
-            return render(request, 'peminjaman/peminjaman/edit.html', {
-                'error_message': "You didn't fill all the form :("
-                })
+            return HttpResponseRedirect(reverse('peminjamanEdit'))
         else:
+            # Display peminjaman detail
             return HttpResponseRedirect(reverse('peminjamanDetail', args=(peminjaman.id,)))
 
 def peminjamanDelete(request, peminjaman_id):
