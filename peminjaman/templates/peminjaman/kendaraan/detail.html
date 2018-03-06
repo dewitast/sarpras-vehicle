@@ -29,14 +29,21 @@ Detail Kendaraan
         <h6><strong>Foto</strong></h6>
         {% if all_foto %}
             <div class="row">
-                {% for foto in all_foto %}
                     <div class="col m3">
-                        <img class="materialboxed" width="200" height="200" src="{{ foto.foto.url }}">
-                        {% if user.is_authenticated %}
-                            <h7 class="center-align"><a href="{% url 'kendaraanDeleteFoto' kendaraan.id foto.id  %}">Delete this photo</a></h7>
-                        {% endif %}
-                    </div>
+                            <div class="w3-content w3-display-container" width="200" height="200">
+                {% for foto in all_foto %}
+                                <img class="materialboxed" width="200" height="200" src="{{ foto.foto.url }}">   
+                                {% if user.is_authenticated %}
+                                <h7 class="center-align"><a href="{% url 'kendaraanDeleteFoto' kendaraan.id foto.id  %}">Delete this photo</a></h7>
+                                {% endif %}
+                                </img> 
                 {% endfor %}
+                                <button class="w3-button w3-black w3-display-left" onclick="plusDivs(-1)">&#10094;</button>
+                                <button class="w3-button w3-black w3-display-right" onclick="plusDivs(1)">&#10095;</button>
+                            </div>
+                    </div>
+                    
+                
             </div>
         {% else %}
             <p>No picture for this kendaraan.</p>
@@ -98,5 +105,26 @@ Detail Kendaraan
       console.log('{{ kendaraan.nama }}');
       window.location='/download_car_report/'+ '{{ kendaraan.id }}';
     }
+    var slideIndex = 1;
+    showDivs(slideIndex);
+    
+    function plusDivs(n) {
+      showDivs(slideIndex += n);
+    }
+    
+    function showDivs(n) {
+      var i;
+      var x = document.getElementsByClassName("materialboxed");
+      var y = document.getElementsByClassName("center-align");
+      if (n > x.length) {slideIndex = 1}    
+      if (n < 1) {slideIndex = x.length}
+      for (i = 0; i < x.length; i++) {
+         x[i].style.display = "none";  
+         y[i].style.display = "none";
+      }
+      x[slideIndex-1].style.display = "block";  
+      y[slideIndex-1].style.display = "block";
+    }
 </script>
+
 {% endblock %}
