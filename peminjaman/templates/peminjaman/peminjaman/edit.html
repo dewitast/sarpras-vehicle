@@ -411,7 +411,6 @@
 		}
 
 		for (i=0;i<jumlah_kendaraan;++i) {
-			console.log('yes');
 		    var mobil_id = $('#mobil_id' + i).find(":selected").val();
 		    if(mobil_id.trim() == "") {
 				$('#mobil_id' + i).focus()
@@ -419,7 +418,14 @@
 				$('#error_message').text("Please select Kendaraan.")
 				return
 		    }
-		    console.log(mobil_id);
+		    for (j=i+1;j<jumlah_kendaraan;++j) {
+		    	var mobil_id2 = $('#mobil_id' + j).find(":selected").val();
+		    	if (mobil_id == mobil_id2) {
+		    		$('#mobil_id' + i).focus()
+					$('#error_message').text("Please select different Kendaraan.")
+					return
+		    	}
+		    }
 		    $.post("/cek/",
 		    {
 		    	csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
@@ -427,7 +433,7 @@
 		        mobil_id: mobil_id
 		    },
 		    function(data, status){
-		        if (data == "False") {
+		        if data == "False" {
 		        	console.log("Date not OK")
 					$('#error_message').text('Kendaraan is used on the selected date. Please select another Kendaraan or Tanggal Pemakaian.')
 					return
