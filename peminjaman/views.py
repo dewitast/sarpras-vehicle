@@ -8,6 +8,9 @@ from django.urls import reverse
 from django.contrib.auth import authenticate, logout
 from django.utils.timezone import datetime #important if using timezones
 import django_excel as excel
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
+from reportlab.pdfbase.pdfmetrics import stringWidth
 import xlwt
 
 from .models import PeminjamanKendaraan, Mobil, Supir, FotoMobil, TeleponSupir, MobilPeminjaman
@@ -603,9 +606,105 @@ def loginForm(request):
 
 ###################################################################################################################
 #
-# REPORT
+# REPORT / FORM
 #
 ###################################################################################################################
+def export_peminjaman_form(request, peminjaman_id):
+    # Set Response
+    FILENAME = 'Form_Peminjaman_' + peminjaman_id;
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="' + FILENAME + '.pdf"'
+
+    # Database
+    peminjaman = get_object_or_404(PeminjamanKendaraan, pk=peminjaman_id)
+
+    # Size
+    FONT_SIZE = 12
+    LINE_WIDTH = .3
+    LINE_DIFF = FONT_SIZE + int(LINE_WIDTH * FONT_SIZE)
+
+    # Setup
+    can = canvas.Canvas(response)
+    can.setLineWidth(LINE_WIDTH)
+
+    # Content
+    title = 'FORMULIR PERSETUJUAN PEMINJAMAN KENDARAAN'
+    nomor = 'Nomor :'
+    content_left = ['No. Booking', 'Pemohon', 'Unit Kerja', 'Hari', 'Tanggal', 'Tujuan', 'Acara']
+    day = datetime.strptime(peminjaman.tanggal_pemakaian.strftime('%d %B %Y'), '%d %B %Y').strftime('%A')
+    peminjaman_left = [str(peminjaman.id), peminjaman.nama_peminjam, 'a',dayToHari(day), peminjaman.tanggal_pemakaian.strftime('%d/%m/%Y') +
+                        ' s.d. ' + peminjaman.tanggal_pengembalian.strftime('%d/%m/%Y'), peminjaman.tujuan, peminjaman.acara]
+    content_right = ['No. Surat Pemohon', 'Contact Person', 'Telp.', 'Pukul']
+    peminjaman_right = [peminjaman.no_surat, peminjaman.nama_peminjam, peminjaman.no_telp_peminjam, str(peminjaman.waktu_berangkat)]
+    rincian_biaya = 'Rincian biaya :'
+    content_biaya = ['Biaya Perawatan', 'BBM', 'Uang Lelah Sopir', 'Tol', 'Parkir', 'Penginapan', 'Jumlah Total']
+    peminjaman_biaya = [peminjaman.biaya_perawatan, peminjaman.biaya_bbm, peminjaman.biaya_supir, peminjaman.biaya_tol,
+                        peminjaman.biaya_parkir, peminjaman.biaya_penginapan, peminjaman.getTotalBiaya()]
+
+    # Position
+    x = 72
+    y = 736
+    xpos = 0 # X-Position of colon
+
+    # Write
+    x += 220
+    can.setFont('Helvetica-Bold', FONT_SIZE + 2)
+    can.drawCentredString(x, y, title)
+    y -= LINE_DIFF
+    can.setFont('Helvetica-Bold', FONT_SIZE)
+    can.drawCentredString(x, y, nomor)
+    xpos = stringWidth(nomor, 'Helvetica-Bold', FONT_SIZE)
+    can.drawString(x + xpos + 1, y, peminjaman_id)
+    y -= 2*LINE_DIFF
+    tempy = y;
+    x += 10
+    can.setFont('Helvetica', FONT_SIZE)
+    xpos = 0
+    for content in content_right:
+        can.drawString(x, tempy, content)
+        tempy -= LINE_DIFF
+        xpos = max(xpos, stringWidth(content, 'Helvetica', FONT_SIZE))
+    x += xpos + 1
+    tempy = y
+    for fill in peminjaman_right:
+        can.drawString(x, tempy, ':')
+        can.drawString(x+5, tempy, fill)
+        tempy -= LINE_DIFF
+    x -= 230
+    x -= xpos + 1
+    xpos = 0
+    tempy = y
+    for content in content_left:
+        can.drawString(x, tempy, content)
+        tempy -= LINE_DIFF
+        xpos = max(xpos, stringWidth(content, 'Helvetica', FONT_SIZE))
+    x += xpos + 1
+    for fill in peminjaman_left:
+        can.drawString(x, y, ':')
+        can.drawString(x+5, y, fill)
+        y -= LINE_DIFF
+    y -= LINE_DIFF
+    x -= xpos + 1
+    can.drawString(x, y, rincian_biaya)
+    y -= 2*LINE_DIFF
+    xpos = 0
+    tempy = y
+    for biaya in content_biaya:
+        can.drawString(x, tempy, biaya)
+        tempy -= LINE_DIFF
+        xpos = max(xpos, stringWidth(biaya, 'Helvetica', FONT_SIZE))
+    x += xpos + 1
+    for fill in peminjaman_biaya:
+        can.drawString(x, y, ': Rp. ')
+        can.drawString(x+30, y, '{:,}'.format(fill))
+        y -= LINE_DIFF
+    x -= xpos + 1
+
+    # Finish
+    can.showPage()
+    can.save()
+    return response
+
 def download_report(request, month, year):
     all_kendaraan = Mobil.objects.all()
     all_peminjaman = PeminjamanKendaraan.objects.all()

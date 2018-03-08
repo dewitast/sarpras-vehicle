@@ -206,7 +206,7 @@
 		    </div>
 
 		    <div class="input-field col s12">
-	          <input id="biaya_penginapan" name="biaya_penginapan" type="text" class="validate" step="1000" min="0" value="{{ peminjaman.biaya_penginapan }}">
+	          <input id="biaya_penginapan" name="biaya_penginapan" type="number" class="validate" step="1000" min="0" value="{{ peminjaman.biaya_penginapan }}">
 	          <label for="biaya_penginapan">Penginapan (Rp.)*</label>
 		    </div>
 
@@ -433,7 +433,7 @@
 		        mobil_id: mobil_id
 		    },
 		    function(data, status){
-		        if data == "False" {
+		        if (data == "False") {
 		        	console.log("Date not OK")
 					$('#error_message').text('Kendaraan is used on the selected date. Please select another Kendaraan or Tanggal Pemakaian.')
 					return

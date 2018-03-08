@@ -44,4 +44,5 @@ dependencies:
   - pyexcel-webio==0.0.11
   - pyexcel-xlsx==0.3.0
   - texttable==0.8.8
+  - reportlab==3.4.0
 prefix: !!python/unicode 'C:\Users\user\Anaconda2\envs\django'

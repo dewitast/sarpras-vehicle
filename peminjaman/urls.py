@@ -84,6 +84,12 @@ urlpatterns = [
 	###################################################################################################################
 	url(r'^loginForm/$', views.loginForm, name='loginForm'),
 
+    ###################################################################################################################
+    #
+    # REPORT / FORM
+    #
+    ###################################################################################################################
+    url(r'^export/peminjaman/(?P<peminjaman_id>[0-9]+)/$', views.export_peminjaman_form, name='export_peminjaman_form'),
 	url(r'^download_report/(?P<month>[0-9]+)/(?P<year>[0-9]+)/$', views.download_peminjaman_report, name='download_report'),
 	url(r'^download_car_report/(?P<kendaraan_id>[0-9]+)/$', views.download_car_report, name='download_car_report'),
 	url(r'^cek/$', views.cek, name='cek'),
