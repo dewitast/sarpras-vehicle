@@ -56,7 +56,7 @@
                     <th rowspan="2">No</th>
                     <th rowspan="2">Jenis Kendaraan</th>
                     <th rowspan="2">Nopol</th>
-                    
+                    <th rowspan="2">Pengemudi</th>
                     {% for day in days %}
                         <th class="header-table">{{day}}</th>
                     {% endfor %}
@@ -71,6 +71,13 @@
                                 <td>{{forloop.counter}}</td>
                                 <td>{{kendaraan.nama}}</td>
                                 <td>{{kendaraan.no_polisi}}</td>
+                                <td>
+                                    {% for supir in all_supir %}
+                                        {% if supir.id == kendaraan.supir_id %}
+                                            {{supir.nama}}
+                                        {% endif %}
+                                    {% endfor %}
+                                </td>
                                  {% for day in days %}
                                     <td class='day-cell' day='{{day}}'></td>
                                 {% endfor %}
