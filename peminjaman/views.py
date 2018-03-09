@@ -5,12 +5,15 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect, HttpResponse
 from django.template import loader
 from django.urls import reverse
+from django.conf import settings
 from django.contrib.auth import authenticate, logout
 from django.utils.timezone import datetime #important if using timezones
 import django_excel as excel
 from reportlab.lib.pagesizes import letter
+from reportlab.lib.utils import ImageReader
 from reportlab.pdfgen import canvas
 from reportlab.pdfbase.pdfmetrics import stringWidth
+from reportlab.platypus import Image
 import xlwt
 
 from .models import PeminjamanKendaraan, Mobil, Supir, FotoMobil, TeleponSupir, MobilPeminjaman
@@ -628,8 +631,11 @@ def export_peminjaman_form(request, peminjaman_id):
     can.setLineWidth(LINE_WIDTH)
 
     # Content
+    ditsarpras = 'Direktorat Sarana dan Prasarana'
+    institut = 'Institut Teknologi Bandung'
+    alamat = 'JL. Ganesha 10 Bandung. Telp (022) 86010100'
     title = 'FORMULIR PERSETUJUAN PEMINJAMAN KENDARAAN'
-    nomor = 'Nomor :'
+    nomor = 'Nomor : '
     content_left = ['No. Booking', 'Pemohon', 'Unit Kerja', 'Hari', 'Tanggal', 'Tujuan', 'Acara']
     day = datetime.strptime(peminjaman.tanggal_pemakaian.strftime('%d %B %Y'), '%d %B %Y').strftime('%A')
     peminjaman_left = [str(peminjaman.id), peminjaman.nama_peminjam, 'a',dayToHari(day), peminjaman.tanggal_pemakaian.strftime('%d/%m/%Y') +
@@ -640,24 +646,60 @@ def export_peminjaman_form(request, peminjaman_id):
     content_biaya = ['Biaya Perawatan', 'BBM', 'Uang Lelah Sopir', 'Tol', 'Parkir', 'Penginapan', 'Jumlah Total']
     peminjaman_biaya = [peminjaman.biaya_perawatan, peminjaman.biaya_bbm, peminjaman.biaya_supir, peminjaman.biaya_tol,
                         peminjaman.biaya_parkir, peminjaman.biaya_penginapan, peminjaman.getTotalBiaya()]
+    disetujui = 'Disetujui/Tidak disetujui'
+    posisi_penanda_tangan = 'Direktorat Sarana dan Prasarana'
+    nama_penanda_tangan = 'Wahyu Srigutomo.,S.Si.,M.Si.,Ph.D.'
+    nip_penanda_tangan = 'NIP. ' + '197007131997021001'
+    jumlah = 'Jumlah*       = Rp. ...........................'
+    keterangan_jumlah1 = '* Nominal yang ditransfer ke rekening'
+    keterangan_jumlah2 = 'penampungan kemitraan ITB'
+    nama_transfer = 'Penampungan Kemitraan ITB'
+    nomor_rekening = '0900002017'
+    footer = [['Mohon semua penyelesaian administrasi dapat dilunasi sebelum penggunaan ke '],
+                [nama_transfer, ' rekening nomor : ', nomor_rekening, ' pada PT Bank Negara'],
+                ['Indonesia (BNI Persero) tbk. Cabang ITB Jl. Tamansari No.80 Bandung dan BNI-Kampus'],
+                ['ITB. Untuk meudahkan penelusuran, fotocopy bukti pembayaran mohon dikirim kepada'],
+                ['Direktorat Sarana dan Prasarana Jl. Ganesha 10 Bandung. Tlp (022) 2507910']]
 
     # Position
     x = 72
-    y = 736
+    y = 778
     xpos = 0 # X-Position of colon
 
-    # Write
+    # Header
+    xoffset = 60
+    can.setFont('Helvetica-Bold', FONT_SIZE + 3)
+    can.drawString(x+xoffset, y, ditsarpras)
+    y -= LINE_DIFF
+    can.setFont('Helvetica-Bold', FONT_SIZE + 2)
+    can.drawString(x+xoffset, y, institut)
+    y -= LINE_DIFF
+    can.setFont('Helvetica-Bold', FONT_SIZE + 1)
+    can.drawString(x+xoffset, y, alamat)
+
+    # Logo
+    base_url = '{0}://{1}{2}logo.png'.format(request.scheme, request.get_host(), settings.MEDIA_URL)
+    logo = ImageReader(base_url)
+    width, height = logo.getSize()
+    aspect = height / float(width)
+    logo_img = Image(base_url, width=width/4, height = width*aspect/4)
+    y -= LINE_DIFF / 2
+    logo_img.drawOn(can, x, y)
+    y -= LINE_DIFF / 2
+
+    # Title
+    y -= 3*LINE_DIFF
     x += 220
     can.setFont('Helvetica-Bold', FONT_SIZE + 2)
     can.drawCentredString(x, y, title)
     y -= LINE_DIFF
     can.setFont('Helvetica-Bold', FONT_SIZE)
-    can.drawCentredString(x, y, nomor)
-    xpos = stringWidth(nomor, 'Helvetica-Bold', FONT_SIZE)
-    can.drawString(x + xpos + 1, y, peminjaman_id)
+    can.drawCentredString(x, y, nomor + peminjaman_id)
     y -= 2*LINE_DIFF
     tempy = y;
     x += 10
+
+    # Form
     can.setFont('Helvetica', FONT_SIZE)
     xpos = 0
     for content in content_right:
@@ -685,7 +727,10 @@ def export_peminjaman_form(request, peminjaman_id):
         y -= LINE_DIFF
     y -= LINE_DIFF
     x -= xpos + 1
+
+    # Biaya
     can.drawString(x, y, rincian_biaya)
+    can.setFont('Helvetica-Bold', FONT_SIZE)
     y -= 2*LINE_DIFF
     xpos = 0
     tempy = y
@@ -695,10 +740,47 @@ def export_peminjaman_form(request, peminjaman_id):
         xpos = max(xpos, stringWidth(biaya, 'Helvetica', FONT_SIZE))
     x += xpos + 1
     for fill in peminjaman_biaya:
-        can.drawString(x, y, ': Rp. ')
-        can.drawString(x+30, y, '{:,}'.format(fill))
+        can.drawString(x+50, y, ': Rp. ')
+        can.drawString(x+80, y, '{:,}'.format(fill))
         y -= LINE_DIFF
     x -= xpos + 1
+
+    # Tanda Tangan
+    xoffset = 105
+    can.setFont('Helvetica-Bold', FONT_SIZE)
+    y -= 3*LINE_DIFF
+    can.drawCentredString(x+xoffset, y, disetujui)
+    can.drawString(x+2.2*xoffset, y, jumlah)
+    y -= LINE_DIFF
+    can.drawCentredString(x+xoffset, y, posisi_penanda_tangan)
+    y -= LINE_DIFF
+    can.setFont('Helvetica', FONT_SIZE)
+    can.drawString(x+2.2*xoffset, y, keterangan_jumlah1)
+    y -= LINE_DIFF
+    can.drawString(x+2.2*xoffset, y, keterangan_jumlah2)
+    can.setFont('Helvetica-Bold', FONT_SIZE)
+    y -= 4*LINE_DIFF
+    can.drawCentredString(x+xoffset, y, nama_penanda_tangan)
+    nama_length = stringWidth(nama_penanda_tangan, 'Helvetica-Bold', FONT_SIZE)
+    can.line(x+xoffset-nama_length//2, y-2, x+xoffset+nama_length//2, y-2)
+    y -= LINE_DIFF
+    can.drawCentredString(x+xoffset, y, nip_penanda_tangan)
+
+    # Keterangan
+    can.setFont('Helvetica', FONT_SIZE-1)
+    y -= 3*LINE_DIFF
+    for line in footer:
+        xtemp = x
+        for sentence in line:
+            if sentence == nama_transfer or sentence == nomor_rekening:
+                can.setFont('Helvetica-Bold', FONT_SIZE-1)
+                can.drawString(xtemp, y, sentence)
+                xtemp += stringWidth(sentence, 'Helvetica-Bold', FONT_SIZE-1)
+            else:
+                can.setFont('Helvetica', FONT_SIZE-1)
+                can.drawString(xtemp, y, sentence)
+                xtemp += stringWidth(sentence, 'Helvetica', FONT_SIZE-1)
+        y -= LINE_DIFF
 
     # Finish
     can.showPage()
