@@ -134,6 +134,7 @@
                 <a href="#" class="modal-action modal-close waves-effect waves-green btn-flat ">Close</a>
                 {% if user.is_authenticated %}
                     <a href="{% url 'peminjamanDetail' peminjaman.id %}" class="modal-action modal-close waves-effect waves-green btn-flat ">Detail</a>
+                    <a href="{% url 'export_peminjaman_form' peminjaman.id %}" class="modal-action modal-close waves-effect waves-blue btn-flat ">Print</a>
                 {% endif %}
             </div>
         </div>

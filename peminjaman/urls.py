@@ -1,4 +1,7 @@
 from django.conf.urls import url
+from django.conf import settings
+from django.conf.urls.static import static
+
 
 from . import views
 
@@ -96,4 +99,4 @@ urlpatterns = [
 	url(r'^download_report/(?P<month>[0-9]+)/(?P<year>[0-9]+)/$', views.download_peminjaman_report, name='download_report'),
 	url(r'^download_car_report/(?P<kendaraan_id>[0-9]+)/$', views.download_car_report, name='download_car_report'),
 	url(r'^cek/$', views.cek, name='cek'),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
