@@ -80,6 +80,9 @@
             <strong>Biaya Total:</strong> Rp. {{ peminjaman.getTotalBiaya|intcomma }}  <br />
         </p>
     </div>
+    <button class="btn waves-effect waves-light" style="background-color: #1D73BE; margin-top: 40px;" onclick="location.href='{% url 'peminjamanFormFinal' peminjaman.id %}'" name="action">
+            Isi Form Final
+    </button>
 </div>
 <!-- Modal Structure -->
 <div id="modal1" class="modal">
@@ -93,6 +96,7 @@
         Delete
     </a>
 </div>
+
 </div>
 {% endblock %}
 
