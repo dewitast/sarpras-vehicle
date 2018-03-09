@@ -379,6 +379,8 @@ def formFinalEdit(request, peminjaman_id):
             Mobil_Peminjaman = list(MobilPeminjaman.objects.filter(peminjaman_id=peminjaman_id))
             for daftar_mobil in Mobil_Peminjaman:
                 daftar_mobil.odometer_sebelum = request.POST['odometer_sebelum'+str(daftar_mobil.mobil.id)]
+                daftar_mobil.odometer_sesudah = request.POST['odometer_sesudah'+str(daftar_mobil.mobil.id)]
+
                 daftar_mobil.save()
             return HttpResponseRedirect(reverse('peminjaman'))
         except:
