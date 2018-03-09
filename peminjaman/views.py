@@ -257,8 +257,8 @@ def peminjamanCreate(request):
                 biaya_tol=biaya_tol,
                 biaya_parkir=biaya_parkir,
                 biaya_penginapan=biaya_penginapan,
-                odometer_sebelum='',
-                odometer_sesudah='',
+                odometer_sebelum=0,
+                odometer_sesudah=0,
                 status=STATUS
                 )
             peminjaman.save()
@@ -354,6 +354,32 @@ def peminjamanDelete(request, peminjaman_id):
         peminjaman.delete()
         return HttpResponseRedirect(reverse('peminjaman'))
 
+
+#Form Final
+def peminjamanFormFinal(request, peminjaman_id):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse('login'))
+    else:
+        mobil_peminjaman = list(MobilPeminjaman.objects.filter(peminjaman_id=peminjaman_id))
+        context = {
+            'mobil_peminjaman' : mobil_peminjaman,
+            'peminjaman_id' : peminjaman_id,
+        }
+        return render(request, 'peminjaman/peminjaman/formFinal.html', context)
+
+def formFinalEdit(request, peminjaman_id):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse('login'))
+    else:
+        try:
+            # Edit Peminjaman Kendaraaan odomoter record
+            Mobil_Peminjaman = list(MobilPeminjaman.objects.filter(peminjaman_id=peminjaman_id))
+            for daftar_mobil in Mobil_Peminjaman:
+                daftar_mobil.odometer_sebelum = request.POST['odometer_sebelum'+str(daftar_mobil.mobil.id)]
+                daftar_mobil.save()
+            return HttpResponseRedirect(reverse('peminjaman'))
+        except:
+            return HttpResponseRedirect(reverse('peminjamanFormFinal', args=(peminjaman_id,)))
 ###################################################################################################################
 #
 # Supir
