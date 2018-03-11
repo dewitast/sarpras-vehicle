@@ -50,7 +50,7 @@ Detail Kendaraan
 
         <div class="file-field input-field" style="margin-top:0px;">
           <a onclick="downloadCarReport()" class="btn waves-effect waves-light right" style="background-color: #26a69a;" name="action">Export Excel</a>
-        </div>
+        </div> 
 
         <form action="{% url 'kendaraanUploadFoto' kendaraan.id %}" enctype="multipart/form-data" method="post" class="right">
             {% csrf_token %}
