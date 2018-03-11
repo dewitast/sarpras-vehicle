@@ -122,7 +122,6 @@ def peminjaman(request):
     years = [2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027]
     for peminjaman in all_peminjaman:
         setattr(peminjaman, 'tanggal_pemakaian_formatted', peminjaman.tanggal_pemakaian.strftime('%d %B %Y'))
-        setattr(peminjaman, 'tanggal_booking_formatted', peminjaman.tanggal_booking.strftime('%d %B %Y'))
         setattr(peminjaman, 'tanggal_pengembalian_formatted', peminjaman.tanggal_pengembalian.strftime('%d %B %Y'))
         setattr(peminjaman, 'tanggal_surat_formatted', peminjaman.tanggal_surat.strftime('%d %B %Y'))
     context = {
