@@ -9,14 +9,29 @@
 	<div class="col s12">
 		<h5> Form Peminjaman Final </h5>	
 	</div>
-	<form action="{% url 'formFinalEdit' peminjaman_id %}" method="post" id ="formfinal">
+	<input type="hidden" id="jumlah_kendaraan" name="jumlah_kendaraan" value="{{mobil_peminjaman|length}}">
+	<form action="{% url 'formFinalEdit' peminjaman_id %}" method="post" id ="formfinal" enctype="multipart/form-data" >
 		{% csrf_token %}
 		<div class="row">
 			<ul>
 			{% for daftar_mobil in mobil_peminjaman %}	
 				<li>{{daftar_mobil.mobil.nama}}</li>
-
+				
+				<div class="input-field col s12">
+					{% if all_supir %}
+						<select id="supir_id{{forloop.counter}}" name="supir_id{{forloop.counter}}">
+							<option class="supir_option" value="" disabled selected>Pilih Supir</option>
+							{% for supir in all_supir %}
+									<option class="supir_option"  value="{{supir.id}}">{{ supir.nama }}
+									</option>
+							{% endfor %}
+						</select>
+						<label>Supir*</label>
+					{% else %}			
+						<p> No Supir are available. Please insert supir data first in Admin panel.</p>
+					{% endif %}
 				{% with daftar_mobil.mobil.id as id_mobil %}
+				</div>
 				<div class="input-field col s12">
 		          <input id="odometer_sebelum{{id_mobil}}" name="odometer_sebelum{{id_mobil}}" type="number" class="validate" min="0" >
 		          <label for="odometer_sebelum{{id_mobil}}">Odometer Sebelum (km.)*</label>
@@ -31,6 +46,7 @@
 			</ul>
 		</div>
 	</form>
+
 	<div class="col m12">
 		<p><strong id="error_message"></strong></p>
 		<button class="btn waves-effect waves-light" style="background-color: #1D73BE; margin-top: 40px;" onclick="validateInput()" name="action">
@@ -42,15 +58,46 @@
 
 {% block script %}
 <script type="text/javascript">
+	// Initialize select
+	$(document).ready(function() {
+		$('select').material_select();
+		$(document).ready(function(){
+		    $('input.timepicker').timepicker({});
+		});
+	});
+
 	function validateInput() {
 		$('#error_message').text('')
+		//cek validasi option
+		var jumlah_kendaraan = document.getElementById('jumlah_kendaraan').value;
+		
+		for(i=0;i<jumlah_kendaraan;++i) {
+			var supir_id = $('#supir_id' + i).find(":selected").val();
+			if(supir_id == "") {
+				$('#supir_id' + i).focus()
+				console.log("Missing: SUPIR ID" + i)
+				$('#error_message').text("Please select Supir.")
+				return
+		    }
+		    for (j=i+1;j<jumlah_kendaraan;++j) {
+		    	var supir_id2 = $('#supir_id' + j).find(":selected").val();
+		    	if (supir_id == supir_id2) {
+		    		$('#supir_id' + i).focus()
+					$('#error_message').text("Please select different Supir.")
+					return
+		    	}
+			}
+		}
+		
+		//Cek validasi input odometer
 		var nodes = document.querySelectorAll("input[type=number]");
 		var benar = 1;
-		for(var i =0;i<nodes.length;i++)
+		for(var i =0;i<nodes.length;i++) {
 			if(nodes[i].value == "") {
 				benar = 0;
 				break;
 			}
+		}
 		if(!benar)
 				$('#error_message').text('Lengkapi Odometer')
 		else
