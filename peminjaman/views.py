@@ -364,9 +364,11 @@ def peminjamanFormFinal(request, peminjaman_id):
         return HttpResponseRedirect(reverse('login'))
     else:
         mobil_peminjaman = list(MobilPeminjaman.objects.filter(peminjaman_id=peminjaman_id))
+        all_supir = list(Supir.objects.all());
         context = {
             'mobil_peminjaman' : mobil_peminjaman,
             'peminjaman_id' : peminjaman_id,
+            'all_supir': all_supir,
         }
         return render(request, 'peminjaman/peminjaman/formFinal.html', context)
 
@@ -377,10 +379,14 @@ def formFinalEdit(request, peminjaman_id):
         try:
             # Edit Peminjaman Kendaraaan odomoter record
             Mobil_Peminjaman = list(MobilPeminjaman.objects.filter(peminjaman_id=peminjaman_id))
+            counter = 1
             for daftar_mobil in Mobil_Peminjaman:
                 daftar_mobil.odometer_sebelum = request.POST['odometer_sebelum'+str(daftar_mobil.mobil.id)]
                 daftar_mobil.odometer_sesudah = request.POST['odometer_sesudah'+str(daftar_mobil.mobil.id)]
-
+                supir_id = request.POST['supir_id'+str(counter)]
+                counter=counter+1
+                supir = get_object_or_404(Supir, pk =supir_id)
+                daftar_mobil.supir = supir;
                 daftar_mobil.save()
             return HttpResponseRedirect(reverse('peminjaman'))
         except:

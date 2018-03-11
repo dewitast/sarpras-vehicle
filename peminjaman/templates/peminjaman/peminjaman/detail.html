@@ -51,8 +51,10 @@
                 {% endif %}
                 {% if daftar_mobil.odometer_sesudah is not None %}
                         <strong>Odometer Sebelum:</strong> {{ daftar_mobil.odometer_sesudah|floatformat:0 }} km<br />
-                    </p>
+                    
                 {% endif %}
+                         <strong>Supir:</strong> {{ daftar_mobil.supir.nama}}<br />
+                    </p>
             {% endfor %}
             </ol>
         </p>
