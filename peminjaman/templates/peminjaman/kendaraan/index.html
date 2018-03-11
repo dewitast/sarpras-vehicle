@@ -32,10 +32,14 @@
                                         <a href="{% url 'kendaraanDetail' kendaraan.id %}" class="blue-text">
                                             {% if f.count > 0 %}
                                                     {% for photo in f.foto %}
-                                                        <img class="materialbox_{{forloop.parentloop.counter}}" width="300" height="300" src="{{ photo.foto.url }}" style="display:none">                 
+                                                        {% if forloop.counter == 1 %}
+                                                        <img class="materialbox_{{forloop.parentloop.counter}}" width="300" height="300" src="{{ photo.foto.url }}" >                 
+                                                        {% else %}
+                                                            <img class="materialbox_{{forloop.parentloop.counter}}" width="300" height="300" src="{{ photo.foto.url }}" style="display:none">
+                                                        {% endif %}
                                                     {% endfor %}
                                             {% else %}
-                                                <img src="{% static 'peminjaman/image/default.png' %}">
+                                                <img width="300" height="300" src="{% static 'peminjaman/image/default.png' %}">
                                             {% endif %}
                                         </a>
                                     {% else %}
@@ -74,11 +78,6 @@
 <script type="text/javascript">
     $('#navbar-menu-kendaraan').addClass('active')
 
-    window.onload = function() {
-        for (i = 1; i < 200; i++) {
-            showDivs(1, i);
-        }
-    }
     var slideIndex = 1;
     showDivs(slideIndex, loop);
     function plusDivs(n, loop) {
