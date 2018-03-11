@@ -10,14 +10,6 @@ class TeleponSupir(models.Model):
 	supir = models.ForeignKey(Supir, on_delete=models.CASCADE)
 	no_telepon = models.CharField(max_length=100)
 
-class Peminjam(models.Model):
-	nama = models.CharField(max_length=100)
-	bagian_jurusan = models.CharField(max_length=100)
-
-class TeleponPeminjam(models.Model):
-	peminjam = models.ForeignKey(Peminjam, on_delete=models.CASCADE)
-	no_telepon = models.CharField(max_length=100)
-
 class Mobil(models.Model):
 	no_polisi = models.CharField(max_length=100)
 	nama = models.CharField(max_length=100)
@@ -30,12 +22,9 @@ class FotoMobil(models.Model):
 	foto = models.ImageField(upload_to='kendaraan/')
 
 class PeminjamanKendaraan(models.Model):
-	supir = models.ForeignKey(Supir, on_delete=models.CASCADE)
-	peminjam = models.ForeignKey(Peminjam, on_delete=models.CASCADE)
-	mobil = models.ForeignKey(Mobil, on_delete=models.CASCADE)
-	bukti_transfer = models.IntegerField()
-	foto_bukti_transfer = models.ImageField(upload_to='bukti transfer peminjaman/')
-	foto_form_akhir = models.ImageField(upload_to='bukti form akhir/')
+	nama_peminjam = models.CharField(max_length=100)
+	no_telp_peminjam = models.CharField(max_length=100)
+	bagian_jurusan_peminjam = models.CharField(max_length=100)
 	no_surat = models.CharField(max_length=100)
 	tanggal_surat = models.DateTimeField()
 	tanggal_booking = models.DateTimeField()
@@ -49,4 +38,20 @@ class PeminjamanKendaraan(models.Model):
 	tanggal_pengembalian = models.DateTimeField()
 	tempat_berkumpul = models.CharField(max_length=100)
 	keterangan = models.CharField(max_length=200)
+	biaya_perawatan = models.IntegerField()
+	biaya_bbm = models.IntegerField()
+	biaya_supir = models.IntegerField()
+	biaya_tol = models.IntegerField()
+	biaya_parkir = models.IntegerField()
+	biaya_penginapan = models.IntegerField()
 	status = models.IntegerField()
+
+	def getTotalBiaya(self):
+		return self.biaya_perawatan + self.biaya_bbm + self.biaya_supir + self.biaya_tol + self.biaya_parkir + self.biaya_penginapan
+
+class MobilPeminjaman(models.Model):
+	peminjaman = models.ForeignKey(PeminjamanKendaraan, on_delete=models.CASCADE)
+	mobil = models.ForeignKey(Mobil, on_delete=models.CASCADE)
+	odometer_sebelum = models.FloatField(null=True)
+	odometer_sesudah = models.FloatField(null=True)
+	supir = models.ForeignKey(Supir, on_delete=models.CASCADE)

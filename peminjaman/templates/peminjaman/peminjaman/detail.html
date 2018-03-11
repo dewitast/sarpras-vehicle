@@ -15,6 +15,9 @@
         <a class="right waves-effect waves-teal btn-flat" href="{% url 'peminjamanEditForm' peminjaman.id %}">
             <i class="large material-icons">mode_edit</i>
         </a>
+        <a class="right waves-effect waves-teal btn-flat" href="{% url 'export_peminjaman_form' peminjaman.id %}">
+            <i class="large material-icons">print</i>
+        </a>
 
         <p>
             {% if peminjaman.status == 0 %}
@@ -33,18 +36,32 @@
         </p>
 
         <p>
-            <strong>Nama Peminjam:</strong> {{ peminjam.nama }} <br />
-            <strong>No Telp. Peminjam:</strong> {{ telepon_peminjam.no_telepon }} <br />
-            <strong>Bagian Jurusan Peminjam:</strong> {{ peminjam.bagian_jurusan }}
+            <strong>Nama Peminjam:</strong> {{ peminjaman.nama_peminjam }} <br />
+            <strong>No Telp. Peminjam:</strong> {{ peminjaman.no_telp_peminjam }} <br />
+            <strong>Bagian/Jurusan:</strong> {{ peminjaman.bagian_jurusan_peminjam }} <br />
         </p>
         <p>
-            <strong>Kendaraan:</strong> {{ mobil.nama }} <br />
-            <strong>Nama Supir:</strong> {{ supir.nama }}
+            <strong>Kendaraan:</strong>
+            <ol>
+            {% for daftar_mobil in mobilpeminjaman %}
+                <li> {{ daftar_mobil.mobil.nama }} {{ daftar_mobil.mobil.no_polisi }} </li>
+                {% if daftar_mobil.odometer_sebelum is not None %}
+                    <p>
+                        <strong>Odometer Sebelum:</strong> {{ daftar_mobil.odometer_sebelum|floatformat:0 }} km<br />
+                {% endif %}
+                {% if daftar_mobil.odometer_sesudah is not None %}
+                        <strong>Odometer Sebelum:</strong> {{ daftar_mobil.odometer_sesudah|floatformat:0 }} km<br />
+                    
+                {% endif %}
+                         <strong>Supir:</strong> {{ daftar_mobil.supir.nama}}<br />
+                    </p>
+            {% endfor %}
+            </ol>
         </p>
         <p>
             <strong>Acara:</strong> {{ peminjaman.acara }} <br />
             <strong>Tujuan:</strong> {{ peminjaman.tujuan }} <br />
-            <strong>Tempat Berkumpul:</strong> {{ peminjaman.tempat_berkumpul }} <br />
+            <strong>Asal:</strong> {{ peminjaman.tempat_berkumpul }} <br />
             <strong>Keterangan:</strong> {{ peminjaman.keterangan }}
         </p>
         <p>
@@ -61,79 +78,24 @@
         </p>
 
         <p>
-            <strong>No Surat:</strong> {{ peminjaman.no_surat }} <br />
-            <strong>Tanggal Surat:</strong> {{ peminjaman.tanggal_surat_formatted }}  <br />
-            {% if peminjaman.bukti_transfer == 1 %}
-                <strong>Bukti Transfer:</strong> Ada
-            {% else %}
-                <strong>Bukti Transfer:</strong> Tidak Ada
-            {% endif %}
+            <strong>No Surat Pemohon:</strong> {{ peminjaman.no_surat }} <br />
+            <strong>Tanggal Surat Pemohon:</strong> {{ peminjaman.tanggal_surat_formatted }}  <br />
         </p>
 
-        <div class="row">
-            {% if peminjaman.foto_bukti_transfer %}
-                <h6><strong>Foto Bukti Transfer</strong></h6>
-                <div class="col m3">
-                    <img class="materialboxed" width="200" height="200" src="{{ peminjaman.foto_bukti_transfer.url }}">
-                    {% if user.is_authenticated %}
-                        <h7 class="center-align"><a href="{% url 'deleteBuktiTransfer' peminjaman.id %}">Delete this photo</a></h7>
-                    {% endif %}
-                </div>
-            {% else %}
-                <p>Belum ada bukti transfer.</p>
-            {% endif %}
-        </div>
-
-        <div class="row">
-            {% if peminjaman.foto_form_akhir %}
-                <h6><strong>Foto Form Akhir</strong></h6>
-                <div class="col m3">
-                    <img class="materialboxed" width="300" height="auto" src="{{ peminjaman.foto_form_akhir.url }}">
-                    {% if user.is_authenticated %}
-                        <h7 class="center-align"><a href="{% url 'deleteFormAkhir' peminjaman.id %}">Delete this photo</a></h7>
-                    {% endif %}
-                </div>
-            {% else %}
-                <p>Belum ada bukti form akhir.</p>
-            {% endif %}
-        </div>
-
-        {% if user.is_authenticated and not peminjaman.foto_bukti_transfer %}
-        <form action="{% url 'uploadBuktiTransfer' peminjaman.id %}" enctype="multipart/form-data" method="post" class="right">
-            {% csrf_token %}
-            <div class="file-field input-field col s12">
-              <div class="btn" style="background-color: #1D73BE;">
-                <span>Upload Bukti Transfer</span>
-                <input type="file" name="foto_bukti_transfer" id="foto_bukti_transfer">
-              </div>
-              <div id="foto_bukti_transfer_path" class="file-path-wrapper" style="display: none;">
-                <input class="file-path validate" type="text">
-              </div>
-            </div>
-              <button id="foto_bukti_transfer_submit" class="btn waves-effect waves-light right" style="background-color: #1D73BE; display: none;" type="submit" name="action">Save
-              </button>
-        </form>
-        {% endif %}
-
-        {% if user.is_authenticated and not peminjaman.foto_form_akhir %}
-        <form action="{% url 'uploadFormAkhir' peminjaman.id %}" enctype="multipart/form-data" method="post" class="right">
-            {% csrf_token %}
-            <div class="file-field input-field col s12">
-              <div class="btn" style="background-color: #1D73BE;">
-                <span>Upload Form Akhir</span>
-                <input type="file" name="foto_form_akhir" id="foto_form_akhir">
-              </div>
-              <div id="foto_form_akhir_path" class="file-path-wrapper" style="display: none;">
-                <input class="file-path validate" type="text">
-              </div>
-            </div>
-              <button id="foto_form_akhir_submit" class="btn waves-effect waves-light right" style="background-color: #1D73BE; display: none;" type="submit" name="action">Save
-              </button>
-        </form>
-        {% endif %}
-
-
+        {% load humanize %}
+        <p>
+            <strong>Biaya Perawatan:</strong> Rp. {{ peminjaman.biaya_perawatan|intcomma }} <br />
+            <strong>Biaya BBM:</strong> Rp. {{ peminjaman.biaya_bbm|intcomma }}  <br />
+            <strong>Biaya Supir:</strong> Rp. {{ peminjaman.biaya_supir|intcomma }}  <br />
+            <strong>Biaya Tol:</strong> Rp. {{ peminjaman.biaya_tol|intcomma }}  <br />
+            <strong>Biaya Parkir:</strong> Rp. {{ peminjaman.biaya_parkir|intcomma }}  <br />
+            <strong>Biaya Penginapan:</strong> Rp. {{ peminjaman.biaya_penginapan|intcomma }}  <br />
+            <strong>Biaya Total:</strong> Rp. {{ peminjaman.getTotalBiaya|intcomma }}  <br />
+        </p>
     </div>
+    <button class="btn waves-effect waves-light" style="background-color: #1D73BE; margin-top: 40px;" onclick="location.href='{% url 'peminjamanFormFinal' peminjaman.id %}'" name="action">
+            Isi Form Final
+    </button>
 </div>
 <!-- Modal Structure -->
 <div id="modal1" class="modal">
@@ -147,6 +109,7 @@
         Delete
     </a>
 </div>
+
 </div>
 {% endblock %}
 
@@ -157,16 +120,5 @@
         // the "href" attribute of .modal-trigger must specify the modal ID that wants to be triggered
         $('.modal').modal();
     });
-
-    $('#foto_form_akhir').change(function() {
-        console.log($('#foto_form_akhir').val())
-        $('#foto_form_akhir_path').show()
-        $('#foto_form_akhir_submit').show()
-    })
-    $('#foto_bukti_transfer').change(function() {
-        console.log($('#foto_bukti_transfer').val())
-        $('#foto_bukti_transfer_path').show()
-        $('#foto_bukti_transfer_submit').show()
-    })
 </script>
 {% endblock %}
