@@ -152,6 +152,7 @@ def peminjamanDetail(request, peminjaman_id):
         context = {
             'peminjaman': peminjaman,
             'all_mobil' : data_mobil,
+            'mobilpeminjaman' :mobilpeminjaman,
         }
         return render(request, 'peminjaman/peminjaman/detail.html', context)
 

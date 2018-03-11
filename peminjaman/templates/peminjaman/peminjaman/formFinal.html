@@ -17,7 +17,6 @@
 				<li>{{daftar_mobil.mobil.nama}}</li>
 
 				{% with daftar_mobil.mobil.id as id_mobil %}
-					{% with daftar_mobil.mobil.odometer_sebelum as nilai %}
 				<div class="input-field col s12">
 		          <input id="odometer_sebelum{{id_mobil}}" name="odometer_sebelum{{id_mobil}}" type="number" class="validate" min="0" >
 		          <label for="odometer_sebelum{{id_mobil}}">Odometer Sebelum (km.)*</label>
@@ -26,7 +25,6 @@
 		          <input id="odometer_sesudah{{id_mobil}}" name="odometer_sesudah{{id_mobil}}" type="number" class="validate" min="0" >
 		          <label for="odometer_sesudah{{id_mobil}}">Odometer Sesudah (km.)*</label>
 			    </div>
-			    	{% endwith %}
 			    {% endwith %}
 			
 			{% endfor %}

@@ -43,8 +43,16 @@
         <p>
             <strong>Kendaraan:</strong>
             <ol>
-            {% for mobil in all_mobil %}
-                <li> {{ mobil.nama }} {{ mobil.no_polisi }} </li>
+            {% for daftar_mobil in mobilpeminjaman %}
+                <li> {{ daftar_mobil.mobil.nama }} {{ daftar_mobil.mobil.no_polisi }} </li>
+                {% if daftar_mobil.odometer_sebelum is not None %}
+                    <p>
+                        <strong>Odometer Sebelum:</strong> {{ daftar_mobil.odometer_sebelum|floatformat:0 }} km<br />
+                {% endif %}
+                {% if daftar_mobil.odometer_sesudah is not None %}
+                        <strong>Odometer Sebelum:</strong> {{ daftar_mobil.odometer_sesudah|floatformat:0 }} km<br />
+                    </p>
+                {% endif %}
             {% endfor %}
             </ol>
         </p>
