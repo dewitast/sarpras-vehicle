@@ -232,6 +232,10 @@
 	    		document.getElementById('jumlah_kendaraan').value = {{MAX_KENDARAAN}};
 	    		jumlah_kendaraan = {{MAX_KENDARAAN}};
 	    	}
+	    	if (jumlah_kendaraan<=0) {
+	    		document.getElementById('jumlah_kendaraan').value = 1;
+	    		jumlah_kendaraan = 1;
+	    	}
 	    	for (i=0;i<{{MAX_KENDARAAN}};++i) {
 	    		$('#mobil' + i).hide();
 	    	}
