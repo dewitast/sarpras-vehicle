@@ -102,7 +102,7 @@
 	   			<h5>Data Kendaraan</h5>
 	   		</div>
 	   		<div class="input-field col s12">
-	          <input id="jumlah_kendaraan" name="jumlah_kendaraan" type="number" class="validate" onkeyup="addInput()" max="{{MAX_KENDARAAN}}">
+	          <input id="jumlah_kendaraan" name="jumlah_kendaraan" type="number" class="validate" onkeyup="addInput()" max="{{MAX_KENDARAAN}}" value="1">
 	          <label for="jumlah_kendaraan">Jumlah Kendaraan*</label>
 		    </div>
 		    {% for i in LOOP_RANGE %}
@@ -187,6 +187,7 @@
 	    	}
 	    }
     }
+    addInput();
 </script>
 <script type="text/javascript">
 	// Initialize select
