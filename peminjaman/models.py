@@ -54,3 +54,4 @@ class MobilPeminjaman(models.Model):
 	mobil = models.ForeignKey(Mobil, on_delete=models.CASCADE)
 	odometer_sebelum = models.FloatField(null=True)
 	odometer_sesudah = models.FloatField(null=True)
+	supir = models.ForeignKey(Supir, on_delete=models.CASCADE)
