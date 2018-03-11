@@ -79,10 +79,6 @@
     $('#navbar-menu-kendaraan').addClass('active')
 
     var slideIndex = 1;
-    showDivs(slideIndex, loop);
-    function plusDivs(n, loop) {
-      showDivs(slideIndex += n, loop);
-    }
     function showDivs(n, loop) {
       var i;
       var x = document.getElementsByClassName("materialbox_" + loop);
@@ -93,5 +89,9 @@
       }
       x[slideIndex-1].style.display = "block";  
     }
+    function plusDivs(n, loop) {
+      showDivs(slideIndex += n, loop);
+    }
+    
 </script>
 {% endblock %}
