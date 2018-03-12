@@ -38,16 +38,6 @@
         <label for="kapasitas">Kapasitas (seat)*</label>
     </div>
 
-    <div class="input-field col s12">
-        <select id="supir_id" name="supir_id">
-          <option value="" disabled selected>Pilih nama supir</option>
-          {% for supir in all_supir %}
-            <option value="{{supir.id}}">{{supir.nama}}</option>
-          {% endfor %}
-        </select>
-        <label for="supir_id">Nama Supir*</label>
-    </div>
-
     <div class="file-field input-field col s12">
       <div class="btn" style="background-color: #1D73BE;">
         <span>Foto</span>

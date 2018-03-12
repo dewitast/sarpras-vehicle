@@ -49,21 +49,6 @@
         <input id="kapasitas" name="kapasitas" type="text" class="validate" value="{{kendaraan.kapasitas}}">
         <label for="kapasitas">Kapasitas (seat)</label>
     </div>
-
-    <div class="input-field col s12">
-        <select id="supir_id" name="supir_id">
-          <option value="" disabled>Pilih nama supir</option>
-          {% for supir in all_supir %}
-            {% if supir.id == kendaraan.supir_id %}
-              <option selected value="{{supir.id}}">{{supir.nama}}</option>
-            {% else %}
-              <option value="{{supir.id}}">{{supir.nama}}</option>
-            {% endif %}
-            }
-          {% endfor %}
-        </select>
-        <label for="supir_id">Nama Supir*</label>
-    </div>
   </form>
 
   <div class="col s12">

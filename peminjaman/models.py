@@ -15,7 +15,6 @@ class Mobil(models.Model):
 	nama = models.CharField(max_length=100)
 	jenis = models.CharField(max_length=100)
 	kapasitas = models.IntegerField()
-	supir = models.ForeignKey(Supir, on_delete=models.CASCADE)
 
 class FotoMobil(models.Model):
 	mobil = models.ForeignKey(Mobil, on_delete=models.CASCADE)

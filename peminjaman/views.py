@@ -504,7 +504,6 @@ def kendaraan(request):
     all_kendaraan = Mobil.objects.all()
     fotos = []
     for kendaraan in all_kendaraan:
-        setattr(kendaraan, 'nama_supir', get_object_or_404(Supir, pk=kendaraan.supir_id).nama)
         try:
             all_foto = FotoMobil.objects.filter(mobil_id=kendaraan.id)
             k = {}
@@ -531,10 +530,8 @@ def kendaraanDetail(request, kendaraan_id):
     # else:
     mobil = get_object_or_404(Mobil, pk=kendaraan_id)
     all_foto = FotoMobil.objects.filter(mobil_id=kendaraan_id)
-    supir = get_object_or_404(Supir, pk=mobil.supir_id)
     context = {
         'kendaraan': mobil,
-        'supir': supir,
         'all_foto': all_foto,
     }
     return render(request, 'peminjaman/kendaraan/detail.html', context)
@@ -543,11 +540,7 @@ def kendaraanForm(request):
     if not request.user.is_authenticated:
         return HttpResponseRedirect(reverse('login'))
     else:
-        all_supir = Supir.objects.all()
-        context = {
-            'all_supir': all_supir,
-        }
-        return render(request, 'peminjaman/kendaraan/create.html', context)
+        return render(request, 'peminjaman/kendaraan/create.html')
 
 def kendaraanCreate(request):
     if not request.user.is_authenticated:
@@ -559,8 +552,7 @@ def kendaraanCreate(request):
             jenis = request.POST['jenis']
             no_polisi = request.POST['no_polisi']
             kapasitas = request.POST['kapasitas']
-            supir_id = request.POST['supir_id']
-            mobil = Mobil(nama=nama, jenis=jenis, no_polisi=no_polisi, kapasitas=kapasitas, supir_id=supir_id)
+            mobil = Mobil(nama=nama, jenis=jenis, no_polisi=no_polisi, kapasitas=kapasitas)
             mobil.save()
 
             foto = request.FILES.get('foto', False)
@@ -569,10 +561,8 @@ def kendaraanCreate(request):
                 foto_mobil.save()
 
         except KeyError as e:
-            # Redispla    y the form
-            return render(request, 'peminjaman/kendaraan/create.html', {
-                'error_message': "Error %s" % str(e)
-                })
+            # Redisplay the form
+            return HttpResponseRedirect(reverse('peminjamanForm'))
         else:
             return HttpResponseRedirect(reverse('kendaraan'))
 
@@ -581,10 +571,8 @@ def kendaraanEditForm(request, kendaraan_id):
         return HttpResponseRedirect(reverse('login'))
     else:
         mobil = get_object_or_404(Mobil, pk=kendaraan_id)
-        all_supir = Supir.objects.all()
         context = {
             'kendaraan': mobil,
-            'all_supir': all_supir,
         }
         return render(request, 'peminjaman/kendaraan/edit.html', context)
 
@@ -599,13 +587,10 @@ def kendaraanEdit(request, kendaraan_id):
             kendaraan.jenis = request.POST['jenis']
             kendaraan.kapasitas = request.POST['kapasitas']
             kendaraan.no_polisi = request.POST['no_polisi']
-            kendaraan.supir_id = request.POST['supir_id']
             kendaraan.save()
         except (KeyError):
             # Redisplay the form
-            return render(request, 'kendaraan/kendaraan/edit.html', {
-                'error_message': "You didn't fill all the form :("
-                })
+            return HttpResponseRedirect(reverse('kendaraanEditForm'))
         else:
             return HttpResponseRedirect(reverse('kendaraanDetail', args=(kendaraan_id,)))
 

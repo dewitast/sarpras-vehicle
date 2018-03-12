@@ -84,7 +84,7 @@ urlpatterns = [
     # ex: /kendaraan/5/change
     url(r'^kendaraan/(?P<kendaraan_id>[0-9]+)/change/$', views.kendaraanEdit, name='kendaraanEdit'),
     # ex: /kendaraan/5/delete
-    # url(r'^kendaraan/(?P<kendaraan_id>[0-9]+)/delete/$', views.kendaraanDelete, name='kendaraanDelete'),
+    url(r'^kendaraan/(?P<kendaraan_id>[0-9]+)/delete/$', views.kendaraanDelete, name='kendaraanDelete'),
     # ex: /kendaraan/check
     url(r'^kendaraan/check/$', views.kendaraanCekKetersediaan, name='kendaraanCekKetersediaan'),
     # ex: /kendaraan/5/uploadFoto
