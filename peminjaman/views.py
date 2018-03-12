@@ -668,7 +668,7 @@ def export_peminjaman_form(request, peminjaman_id):
     nomor = 'Nomor : '
     content_left = ['No. Booking', 'Pemohon', 'Unit Kerja', 'Hari', 'Tanggal', 'Tujuan', 'Acara']
     day = datetime.strptime(peminjaman.tanggal_pemakaian.strftime('%d %B %Y'), '%d %B %Y').strftime('%A')
-    peminjaman_left = [str(peminjaman.id), peminjaman.nama_peminjam, 'a',dayToHari(day), peminjaman.tanggal_pemakaian.strftime('%d/%m/%Y') +
+    peminjaman_left = [str(peminjaman.id), peminjaman.nama_peminjam, peminjaman.bagian_jurusan_peminjam,dayToHari(day), peminjaman.tanggal_pemakaian.strftime('%d/%m/%Y') +
                         ' s.d. ' + peminjaman.tanggal_pengembalian.strftime('%d/%m/%Y'), peminjaman.tujuan, peminjaman.acara]
     content_right = ['No. Surat Pemohon', 'Contact Person', 'Telp.', 'Pukul']
     peminjaman_right = [peminjaman.no_surat, peminjaman.nama_peminjam, peminjaman.no_telp_peminjam, str(peminjaman.waktu_berangkat)]
