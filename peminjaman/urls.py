@@ -1,4 +1,7 @@
 from django.conf.urls import url
+from django.conf import settings
+from django.conf.urls.static import static
+
 
 from . import views
 
@@ -10,6 +13,15 @@ urlpatterns = [
 	###################################################################################################################
 	# ex:/
 	url(r'^$', views.index, name='index'),
+
+	###################################################################################################################
+  #
+	# URL TATACARA
+	#
+	###################################################################################################################
+	# ex:/tatacara
+	url(r'^tatacara/$', views.tatacara, name='tatacara'),
+
 
 	###################################################################################################################
 	#
@@ -30,15 +42,10 @@ urlpatterns = [
     url(r'^peminjaman/(?P<peminjaman_id>[0-9]+)/change/$', views.peminjamanEdit, name='peminjamanEdit'),
     # ex: /peminjaman/5/delete
     url(r'^peminjaman/(?P<peminjaman_id>[0-9]+)/delete/$', views.peminjamanDelete, name='peminjamanDelete'),
-    # ex: /peminjaman/5/uploadFoto
-    url(r'^peminjaman/(?P<peminjaman_id>[0-9]+)/uploadFoto/$', views.uploadBuktiTransfer, name='uploadBuktiTransfer'),
-	# ex: /peminjaman/5/uploadFormAkhir
-    url(r'^peminjaman/(?P<peminjaman_id>[0-9]+)/uploadFormAkhir/$', views.uploadFormAkhir, name='uploadFormAkhir'),
-    # ex: /peminjaman/5/deleteFoto
-    url(r'^peminjaman/(?P<peminjaman_id>[0-9]+)/deleteFoto/$', views.deleteBuktiTransfer, name='deleteBuktiTransfer'),
-	# ex: /peminjaman/5/deleteFormAkhir
-    url(r'^peminjaman/(?P<peminjaman_id>[0-9]+)/deleteFormAkhir/$', views.deleteFormAkhir, name='deleteFormAkhir'),
-
+    # ex: /peminjaman/5/formfinal
+    url(r'^peminjaman/(?P<peminjaman_id>[0-9]+)/formfinal/$', views.peminjamanFormFinal, name='peminjamanFormFinal'),
+    # ex; /peminjaman/5/formFinalEdit
+    url(r'^peminjaman/(?P<peminjaman_id>[0-9]+)/formFinalEdit/$', views.formFinalEdit, name='formFinalEdit'),
     ###################################################################################################################
     #
     # URL SUPIR
@@ -92,7 +99,13 @@ urlpatterns = [
 	###################################################################################################################
 	url(r'^loginForm/$', views.loginForm, name='loginForm'),
 
+    ###################################################################################################################
+    #
+    # REPORT / FORM
+    #
+    ###################################################################################################################
+    url(r'^export/peminjaman/(?P<peminjaman_id>[0-9]+)/$', views.export_peminjaman_form, name='export_peminjaman_form'),
 	url(r'^download_report/(?P<month>[0-9]+)/(?P<year>[0-9]+)/$', views.download_peminjaman_report, name='download_report'),
 	url(r'^download_car_report/(?P<kendaraan_id>[0-9]+)/$', views.download_car_report, name='download_car_report'),
 	url(r'^cek/$', views.cek, name='cek'),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

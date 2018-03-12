@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}Tata Cara Peminjaman{% endblock %}
+
+{% block content %}
+<br />
+<div class="row">
+  <div class="col m12">
+    <h5>Tata Cara Peminjaman Kendaraan</h5>
+    <hr>
+    <br>
+    <h5>Prosedur Peminjaman </h5>
+    <p>
+      <ol>
+        <li>Menghubungi Pak Ade Sumarna selaku Petugas Pool Kendaraan Untuk Koordinasi Pemakaian Kendaraan sebaiknya antara H-30 sampai dengan H-3 pemakaian kendaraan. Dapat dilakukan dengan langsung mengunjungi pool kendaraan di Sabuga atau menghubungi via telepon pada hari kerja. 
+        </li>
+        <li>Memberikan informasi mengenai detail rundown peminjaman kendaraan. Petugas Pool Kendaraan akan melakukan perincian biaya.
+        </li>
+        <li>Membuat surat peminjaman ke Direktorat Sarana dan Prasarana ITB.
+        </li>
+        <li>Setelah disetujui oleh Direktur Sarana dan Prasarana ITB, membayar tarif yang telah ditentukan dan melakukan konfirmasi kepada Petugas Pool Kendaraan.
+        </li>
+        <li>Direktorat Sarana dan Prasarana mengeluarkan ijin pemakaian.
+        </li>
+      </ol>
+    </p>
+    <br>
+  </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+$(document).on('change','#year',function(){
+    alert("PROBANDO");
+});
+
+  $('#navbar-menu-tatacara').addClass('active')
+
+  window.onload = function() {
+  };
+
+</script>
+{% endblock %}

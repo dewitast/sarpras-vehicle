@@ -15,78 +15,22 @@
 
 		<div class="row">
 			<div class="col m12">
-				<h5>Data Peminjam</h5>
-			</div>
-			<div class="input-field col s6">
-	          <input id="nama_peminjam" name="nama_peminjam" type="text" class="validate">
-	          <label for="nama_peminjam">Nama Peminjam*</label>
-		    </div>
-
-		    <div class="input-field col s6">
-	          <input id="no_telepon_peminjam" name="no_telepon_peminjam" type="text" class="validate">
-	          <label for="no_telepon_peminjam">No Telp Peminjam*</label>
-		    </div>
-
-		    <div class="input-field col s6">
-	          <input id="bagian_jurusan" name="bagian_jurusan" type="text" class="validate">
-	          <label for="bagian_jurusan">Bagian Jurusan*</label>
-		    </div>
-	   </div>
-
-	   <div class="row">
-	   		<div class="col m12">
-	   			<h5>Data Kendaraan</h5>
-	   		</div>
-	   		<div class="input-field col s6">
-		    	{% if all_mobil %}
-		    		<select id="mobil_id" name="mobil_id">
-		    			<option value="" disabled selected>Pilih Kendaraan</option>
-						{% for mobil in all_mobil %}
-							<option value="{{mobil.id}}" supir_id="{{mobil.supir_id}}">{{mobil.nama}}</option>
-						{% endfor %}
-					</select>
-					<label>Kendaraan*</label>
-				{% else %}
-					<p>No Mobil are available. Please create new Mobil first in Admin panel.</p>
-				{% endif %}
-		    </div>
-		    <div class="input-field col s6">
-		    	{% if all_supir %}
-		    		<select id="supir_id" name="supir_id">
-		    			<option class="supir_option" value="" disabled selected>Pilih Supir</option>
-						{% for supir in all_supir %}
-							<option class="supir_option" value="{{supir.id}}">{{supir.nama}}</option>
-						{% endfor %}
-					</select>
-					<label>Supir*</label>
-				{% else %}
-					<p>No Supir are available. Please create new Supir first in Admin panel.</p>
-				{% endif %}
-		    </div>
-	   </div>
-
-		<div class="row">
-			<div class="col m12">
 				<h5>Data Peminjaman</h5>
 			</div>
+
 			<div class="input-field col s12">
-	          <input id="acara" name="acara" type="text" class="validate">
-	          <label for="acara">Acara*</label>
-		    </div>
-
-		    <div class="input-field col s12">
-	          <input id="tujuan" name="tujuan" type="text" class="validate">
-	          <label for="tujuan">Tujuan*</label>
-		    </div>
-
-			<div class="input-field col s6">
 	          <input id="tanggal_booking" name="tanggal_booking" type="date" class="datepicker">
 	          <label for="tanggal_booking">Tanggal Booking*</label>
 		    </div>
 
-	     	<div class="input-field col s6">
+		    <div class="input-field col s6">
 	          <input id="tanggal_pemakaian" name="tanggal_pemakaian" type="date" class="datepicker">
-	          <label for="tanggal_pemakaian">Tanggal Pemakaian*</label>
+	          <label for="tanggal_pemakaian">Rencana Tanggal Pemakaian*</label>
+		    </div>
+
+		    <div class="input-field col s6">
+	          <input id="tanggal_pengembalian" name="tanggal_pengembalian" type="date" class="datepicker">
+	          <label for="tanggal_pengembalian">Rencana Tanggal Pengembalian*</label>
 		    </div>
 
 		    <div class="input-field col s6">
@@ -101,73 +45,119 @@
 	          <!-- <label for="waktu_datang">Waktu Datang*</label> -->
 		    </div>
 
-		    <div class="input-field col s6">
-	          <input id="tanggal_pemakaian" name="tanggal_pengembalian" type="date" class="datepicker">
-	          <label for="tanggal_pengembalian">Tanggal Pengembalian*</label>
+		    <div class="input-field col s12">
+	          <input id="tempat_berkumpul" name="tempat_berkumpul" type="text" class="validate">
+	          <label for="tempat_berkumpul">Asal*</label>
 		    </div>
 
 		    <div class="input-field col s12">
-	          <input id="tempat_berkumpul" name="tempat_berkumpul" type="text" class="validate">
-	          <label for="tempat_berkumpul">Tempat Berkumpul*</label>
+	          <input id="tujuan" name="tujuan" type="text" class="validate">
+	          <label for="tujuan">Tujuan*</label>
+		    </div>
+
+		    <div class="input-field col s12">
+	          <input id="acara" name="acara" type="text" class="validate">
+	          <label for="acara">Acara*</label>
+		    </div>
+
+			<div class="input-field col s6">
+	          <input id="no_surat" name="no_surat" type="text" class="validate">
+	          <label for="no_surat">No Surat Pemohon*</label>
+		    </div>
+
+		    <div class="input-field col s6">
+	          <input id="tanggal_surat" name="tanggal_surat" type="date" class="datepicker">
+	          <label for="tanggal_surat">Tanggal Surat Pemohon*</label>
 		    </div>
 
 		    <div class="input-field col s12">
 	          <textarea id="keterangan" name="keterangan" class="materialize-textarea"></textarea>
 	          <label for="keterangan">Keterangan</label>
 		    </div>
+	    </div>
 
-		    <div class="input-field col s6">
-		    	<input name="odometer_sebelum" type="text" class="validate">
-	          <label for="odometer_sebelum">Odometer Sebelum</label>
+		<div class="row">
+			<div class="col m12">
+				<h5>Data Peminjam</h5>
+			</div>
+			<div class="input-field col s6">
+	          <input id="nama_peminjam" name="nama_peminjam" type="text" class="validate">
+	          <label for="nama_peminjam">Nama Peminjam*</label>
 		    </div>
 
 		    <div class="input-field col s6">
-		    	<input name="odometer_sesudah" type="text" class="validate">
-	          <label for="odometer_sesudah">Odometer Sesudah</label>
+	          <input id="no_telepon_peminjam" name="no_telepon_peminjam" type="text" class="validate">
+	          <label for="no_telepon_peminjam">No. Kontak Peminjam*</label>
 		    </div>
+
+		    <div class="input-field col s12">
+	          <input id="bagian_jurusan" name="bagian_jurusan" type="text" class="validate">
+	          <label for="bagian_jurusan">Bagian/Jurusan</label>
+		    </div>
+
 	    </div>
 
 	    <div class="row">
-	   		<div class="input-field col s6">
-	          <input id="no_surat" name="no_surat" type="text" class="validate">
-	          <label for="no_surat">No Surat*</label>
+	   		<div class="col m12">
+	   			<h5>Data Kendaraan</h5>
+	   		</div>
+	   		<div class="input-field col s12">
+	          <input id="jumlah_kendaraan" name="jumlah_kendaraan" type="number" class="validate" onkeyup="addInput()" max="{{MAX_KENDARAAN}}" value="1">
+	          <label for="jumlah_kendaraan">Jumlah Kendaraan*</label>
+		    </div>
+		    {% for i in LOOP_RANGE %}
+		    	<div class="input-field col s12" id="mobil{{i}}" hidden>
+			    	{% if all_mobil %}
+			    		<select id="mobil_id{{i}}" name="mobil_id{{i}}">
+			    			<option value="" disabled selected>Pilih Kendaraan</option>
+							{% for mobil in all_mobil %}
+								<option value="{{mobil.id}}">{{ mobil.nama }} {{ mobil.no_polisi }}</option>
+							{% endfor %}
+						</select>
+						<label>Kendaraan*</label>
+					{% else %}
+						<p>No Mobil are available. Please create new Mobil first in Admin panel.</p>
+					{% endif %}
+			    </div>
+			{% endfor %}
+	    </div>
+
+	    <div class="row">
+			<div class="col m12">
+				<h5>Rincian Biaya</h5>
+			</div>
+			<div class="input-field col s12">
+	          <input id="biaya_perawatan" name="biaya_perawatan" type="number" class="validate" min="0">
+	          <label for="biaya_perawatan">Biaya Perawatan (Rp.)*</label>
 		    </div>
 
-		    <div class="input-field col s6">
-	          <input id="tanggal_surat" name="tanggal_surat" type="date" class="datepicker">
-	          <label for="tanggal_surat">Tanggal Surat*</label>
+		    <div class="input-field col s12">
+	          <input id="biaya_bbm" name="biaya_bbm" type="number" class="validate" min="0">
+	          <label for="biaya_bbm">BBM (Rp.)*</label>
 		    </div>
 
-		    <div class="input-field col s6">
-				<select id="bukti_transfer" name="bukti_transfer">
-					<option value="" disabled selected>Pilih</option>
-					<option value="0">Tidak Ada</option>
-					<option value="1">Ada</option>
-				</select>
-				<label>Ada Bukti Transfer?*</label>
+		    <div class="input-field col s12">
+	          <input id="biaya_supir" name="biaya_supir" type="number" class="validate" min="0">
+	          <label for="biaya_supir">Uang Lelah Sopir (Rp.)*</label>
 		    </div>
 
-		    <div id="foto-bukti-transfer" class="file-field input-field col s12">
-		      <div class="btn" style="background-color: #1D73BE;">
-		        <span>Foto Bukti Transfer</span>
-		        <input type="file" name="foto_bukti_transfer" id="foto_bukti_transfer">
-		      </div>
-		      <div class="file-path-wrapper">
-		        <input class="file-path validate" type="text">
-		      </div>
+		    <div class="input-field col s12">
+	          <input id="biaya_tol" name="biaya_tol" type="number" class="validate" min="0">
+	          <label for="biaya_tol">Tol (Rp.)*</label>
 		    </div>
 
-		    <div id="foto-form-akhir" class="file-field input-field col s12">
-		      <div class="btn" style="background-color: #1D73BE;">
-		        <span>Foto Form Akhir</span>
-		        <input type="file" name="foto_form_akhir" id="foto_form_akhir">
-		      </div>
-		      <div class="file-path-wrapper">
-		        <input class="file-path validate" type="text">
-		      </div>
+		    <div class="input-field col s12">
+	          <input id="biaya_parkir" name="biaya_parkir" type="number" class="validate" min="0">
+	          <label for="biaya_parkir">Parkir (Rp.)*</label>
 		    </div>
 
-		</div>
+		    <div class="input-field col s12">
+	          <input id="biaya_penginapan" name="biaya_penginapan" type="number" class="validate" min="0">
+	          <label for="biaya_penginapan">Penginapan (Rp.)*</label>
+		    </div>
+
+	    </div>
+	    <br />
 
 	</form>
 	<div class="col m12">
@@ -182,6 +172,26 @@
 {% block script %}
 <script type="text/javascript">
     $('#navbar-menu-peminjaman').addClass('active')
+    function addInput() {
+    	var jumlah_kendaraan = document.getElementById('jumlah_kendaraan').value;
+    	if (jumlah_kendaraan != "") {
+	    	if (jumlah_kendaraan>{{MAX_KENDARAAN}}) {
+	    		document.getElementById('jumlah_kendaraan').value = {{MAX_KENDARAAN}};
+	    		jumlah_kendaraan = {{MAX_KENDARAAN}};
+	    	}
+	    	if (jumlah_kendaraan<=0) {
+	    		document.getElementById('jumlah_kendaraan').value = 1;
+	    		jumlah_kendaraan = 1;
+	    	}
+	    	for (i=0;i<{{MAX_KENDARAAN}};++i) {
+	    		$('#mobil' + i).hide();
+	    	}
+	    	for (i=0;i<jumlah_kendaraan;++i) {
+	    		$('#mobil' + i).show();
+	    	}
+	    }
+    }
+    addInput();
 </script>
 <script type="text/javascript">
 	// Initialize select
@@ -189,32 +199,12 @@
 		$('select').material_select();
 		$(document).ready(function(){
 		    $('input.timepicker').timepicker({});
-				$("#foto-bukti-transfer").hide();
 		});
 	});
 	// Initialize date picker
 	$('.datepicker').pickadate({
 		selectMonths: true, // Creates a dropdown to control month
 		selectYears: 15 // Creates a dropdown of 15 years to control year
-	});
-
-	$('#bukti_transfer').on('change', function () {
-		var optionSelected = $("option:selected", this);
-		var valueSelected = this.value;
-
-		if(valueSelected == 1){
-		   $("#foto-bukti-transfer").show();
-		} else {
-		   $("#foto-bukti-transfer").hide();
-		}
-	});
-
-	$('#mobil_id').on('change', function() {
-		var option = $('option:selected', this).attr('supir_id');
-		console.log(option)
-		$('#supir_id').val(option)
-	   	// re-initialize material-select
-	   	$('#supir_id').material_select();
 	});
 
 	function validateInput() {
@@ -235,33 +225,29 @@
 			return
 		}
 
-		var bagian_jurusan_peminjam = $('#bagian_jurusan').val()
-		if(bagian_jurusan_peminjam.trim() == "") {
-			console.log("Missing: bagian jurusan peminjam")
-			$('#bagian_jurusan').focus()
-			$('#error_message').text('Please input Bagian Jurusan Peminjam.')
+		var tanggal_pemakaian = $('#tanggal_pemakaian').val()
+		if(tanggal_pemakaian == "") {
+			console.log("Missing: tanggal_pemakaian")
+			$('#tanggal_pemakaian').focus()
+			$('#error_message').text('Please input Tanggal Pemakaian.')
 			return
 		}
 
-		// Check mobil_id
-	    var mobil_id = $('#mobil_id').find(":selected").val();
-	    console.log("mobil_id:"+mobil_id)
-	    if(mobil_id.trim() == "") {
-			$('#mobil_id').focus()
-			console.log("Missing: Mobil ID")
-			$('#error_message').text("Please select Kendaraan.")
+		var tanggal_pengembalian = $('#tanggal_pengembalian').val()
+		if(tanggal_pengembalian == "") {
+			console.log("Missing: tanggal_pengembalian")
+			$('#tanggal_pengembalian').focus()
+			$('#error_message').text('Please input Tanggal Pengembalian.')
 			return
-	    }
+		}
 
-		// Check supir_id
-	    var supir_id = $('#supir_id').find(":selected").val();
-	    console.log("Supir_id:"+supir_id)
-	    if(supir_id.trim() == "") {
-			$('#supir_id').focus()
-			console.log("Missing: Supir ID")
-			$('#error_message').text("Please select Nama Supir Kendaraan.")
+		var jumlah_kendaraan = $('#jumlah_kendaraan').val()
+		if(no_telepon_peminjam.trim() == "") {
+			console.log("Missing: no jumlah kendaraan")
+			$('#jumlah_kendaraan').focus()
+			$('#error_message').text('Please input Jumlah Kendaraan.')
 			return
-	    }
+		}
 
 	    var acara = $('#acara').val()
 		if(acara.trim() == "") {
@@ -280,29 +266,10 @@
 		}
 
 		var tanggal_booking = $('#tanggal_booking').val()
-		// console.log(tanggal_booking)
 		if(tanggal_booking == "") {
 			console.log("Missing: tanggal_booking")
 			$('#tanggal_booking').focus()
 			$('#error_message').text('Please input Tanggal Booking.')
-			return
-		}
-
-		var tanggal_pemakaian = $('#tanggal_pemakaian').val()
-		// console.log(tanggal_pemakaian)
-		if(tanggal_pemakaian == "") {
-			console.log("Missing: tanggal_pemakaian")
-			$('#tanggal_pemakaian').focus()
-			$('#error_message').text('Please input Tanggal Pemakaian.')
-			return
-		}
-
-		var tanggal_pengembalian = $('#tanggal_pengembalian').val()
-		// console.log(tanggal_pengembalian)
-		if(tanggal_pengembalian == "") {
-			console.log("Missing: tanggal_pengembalian")
-			$('#tanggal_pengembalian').focus()
-			$('#error_message').text('Please input Tanggal Pengembalian.')
 			return
 		}
 
@@ -314,7 +281,6 @@
 			return
 		}
 
-
 		var no_surat = $('#no_surat').val()
 		if(no_surat.trim() == "") {
 			console.log("Missing: no_surat")
@@ -324,7 +290,6 @@
 		}
 
 		var tanggal_surat = $('#tanggal_surat').val()
-		// console.log(tanggal_surat)
 		if(tanggal_surat == "") {
 			console.log("Missing: tanggal_surat")
 			$('#tanggal_surat').focus()
@@ -332,35 +297,102 @@
 			return
 		}
 
-		var bukti_transfer = $('#bukti_transfer').find(":selected").val();
-	    console.log("bukti_transfer:"+bukti_transfer)
-	    if(bukti_transfer.trim() == "") {
-			$('#bukti_transfer').focus()
-			console.log("Missing: bukti_transfer")
-			$('#error_message').text("Please select Ada Bukti Transfer?.")
+		var waktu_berangkat = $('#waktu_berangkat').val()
+		if(waktu_berangkat == "") {
+			console.log("Missing: waktu_berangkat")
+			$('#waktu_berangkat').focus()
+			$('#error_message').text('Please input Waktu Berangkat.')
 			return
-	    }
+		}
 
-	 	console.log(tanggal_pemakaian)
-		$.post("/cek/",
-	    {
-	    	csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
-	        date: tanggal_pemakaian,
-	        mobil_id: mobil_id
-	    },
-	    function(data, status){
-	        // alert("Data: " + data + "\nStatus: " + status);
-	        if(data == "True") {
-	        	$('#form').submit()
-	        }
-	        else {
-	        	console.log("Date not OK")
-				$('#error_message').text('Kendaraan is used on the selected date. Please select another Kendaraan or Tanggal Pemakaian.')
+		var waktu_datang = $('#waktu_datang').val()
+		if(waktu_datang == "") {
+			console.log("Missing: waktu_datang")
+			$('#waktu_datang').focus()
+			$('#error_message').text('Please input Waktu Datang.')
+			return
+		}
+
+		var biaya_perawatan = $('#biaya_perawatan').val()
+		if (biaya_perawatan == "") {
+			console.log("Missing: biaya_perawatan")
+			$('#biaya_perawatan').focus()
+			$('#error_message').text('Please input Biaya Perawatan')
+			return
+		}
+
+		var biaya_bbm = $('#biaya_bbm').val()
+		if (biaya_bbm == "") {
+			console.log("Missing: biaya_bbm")
+			$('#biaya_bbm').focus()
+			$('#error_message').text('Please input Biaya BBM')
+			return
+		}
+
+		var biaya_supir = $('#biaya_supir').val()
+		if (biaya_supir == "") {
+			console.log("Missing: biaya_supir")
+			$('#biaya_supir').focus()
+			$('#error_message').text('Please input Biaya Supir')
+			return
+		}
+
+		var biaya_tol = $('#biaya_tol').val()
+		if (biaya_tol == "") {
+			console.log("Missing: biaya_tol")
+			$('#biaya_tol').focus()
+			$('#error_message').text('Please input Biaya Tol')
+			return
+		}
+
+		var biaya_parkir = $('#biaya_parkir').val()
+		if (biaya_parkir == "") {
+			console.log("Missing: biaya_parkir")
+			$('#biaya_parkir').focus()
+			$('#error_message').text('Please input Biaya Parkir')
+			return
+		}
+
+		var biaya_penginapan = $('#biaya_penginapan').val()
+		if (biaya_penginapan == "") {
+			console.log("Missing: biaya_penginapan")
+			$('#biaya_penginapan').focus()
+			$('#error_message').text('Please input Biaya Penginapan')
+			return
+		}
+
+		for (i=0;i<jumlah_kendaraan;++i) {
+		    var mobil_id = $('#mobil_id' + i).find(":selected").val();
+		    if(mobil_id.trim() == "") {
+				$('#mobil_id' + i).focus()
+				console.log("Missing: Mobil ID" + i)
+				$('#error_message').text("Please select Kendaraan.")
 				return
-	        }
-	    });
+		    }
+		    for (j=i+1;j<jumlah_kendaraan;++j) {
+		    	var mobil_id2 = $('#mobil_id' + j).find(":selected").val();
+		    	if (mobil_id == mobil_id2) {
+		    		$('#mobil_id' + i).focus()
+					$('#error_message').text("Please select different Kendaraan.")
+					return
+		    	}
+		    }
+		    $.post("/cek/",
+		    {
+		    	csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+		        date: tanggal_pemakaian,
+		        mobil_id: mobil_id
+		    },
+		    function(data, status){
+		        if (data == "False") {
+		        	console.log("Date not OK")
+					$('#error_message').text('Kendaraan is used on the selected date. Please select another Kendaraan or Tanggal Pemakaian.')
+					return
+		        }
+		    });
+		}
 
-
+		$('#form').submit()
 	}
 </script>
 {% endblock %}
