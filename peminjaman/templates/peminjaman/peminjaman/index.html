@@ -74,6 +74,13 @@
                                 <td>{{forloop.counter}}</td>
                                 <td>{{kendaraan.nama}}</td>
                                 <td>{{kendaraan.no_polisi}}</td>
+                                <td>
+                                    {% for supir in all_supir %}
+                                        {% if supir.id == kendaraan.supir_id %}
+                                            {{supir.nama}}
+                                        {% endif %}
+                                    {% endfor %}
+                                </td>
                                  {% for day in days %}
                                     <td class='day-cell' day='{{day}}'></td>
                                 {% endfor %}
