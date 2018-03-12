@@ -92,6 +92,36 @@
             <strong>Biaya Penginapan:</strong> Rp. {{ peminjaman.biaya_penginapan|intcomma }}  <br />
             <strong>Biaya Total:</strong> Rp. {{ peminjaman.getTotalBiaya|intcomma }}  <br />
         </p>
+        <div class="row">
+            {% if peminjaman.foto_bukti_transfer %}
+                <h6><strong>Foto Bukti Transfer</strong></h6>
+                <div class="col m3">
+                    <img class="materialboxed" width="200" height="200" src="{{ peminjaman.foto_bukti_transfer.url }}">
+                    {% if user.is_authenticated %}
+                        <h7 class="center-align"><a href="{% url 'deleteBuktiTransfer' peminjaman.id %}">Delete this photo</a></h7>
+                    {% endif %}
+                </div>
+            {% else %}
+                <p>Belum ada bukti transfer.</p>
+            {% endif %}
+        </div>
+
+        {% if user.is_authenticated and not peminjaman.foto_bukti_transfer %}
+        <form action="{% url 'uploadBuktiTransfer' peminjaman.id %}" enctype="multipart/form-data" method="post" class="right">
+            {% csrf_token %}
+            <div class="file-field input-field col s12">
+              <div class="btn" style="background-color: #1D73BE;">
+                <span>Upload Bukti Transfer</span>
+                <input type="file" name="foto_bukti_transfer" id="foto_bukti_transfer">
+              </div>
+              <div id="foto_bukti_transfer_path" class="file-path-wrapper" style="display: none;">
+                <input class="file-path validate" type="text">
+              </div>
+            </div>
+              <button id="foto_bukti_transfer_submit" class="btn waves-effect waves-light right" style="background-color: #1D73BE; display: none;" type="submit" name="action">Save
+              </button>
+        </form>
+        {% endif %}
     </div>
     <button class="btn waves-effect waves-light" style="background-color: #1D73BE; margin-top: 40px;" onclick="location.href='{% url 'peminjamanFormFinal' peminjaman.id %}'" name="action">
             Isi Form Final
@@ -115,6 +145,11 @@
 
 {% block script %}
 <script type="text/javascript">
+    $('#foto_bukti_transfer').change(function() {
+        console.log($('#foto_bukti_transfer').val())
+        $('#foto_bukti_transfer_path').show()
+        $('#foto_bukti_transfer_submit').show()
+    })
     $('#navbar-menu-peminjaman').addClass('active')
     $(document).ready(function(){
         // the "href" attribute of .modal-trigger must specify the modal ID that wants to be triggered

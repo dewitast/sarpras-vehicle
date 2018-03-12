@@ -132,6 +132,7 @@ def peminjaman(request):
     days = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]
     years = [2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027]
     for peminjaman in all_peminjaman:
+        setattr(peminjaman, 'tanggal_booking_formatted', peminjaman.tanggal_booking.strftime('%d %B %Y'))
         setattr(peminjaman, 'tanggal_pemakaian_formatted', peminjaman.tanggal_pemakaian.strftime('%d %B %Y'))
         setattr(peminjaman, 'tanggal_pengembalian_formatted', peminjaman.tanggal_pengembalian.strftime('%d %B %Y'))
         setattr(peminjaman, 'tanggal_surat_formatted', peminjaman.tanggal_surat.strftime('%d %B %Y'))
@@ -368,6 +369,27 @@ def peminjamanDelete(request, peminjaman_id):
         peminjaman.delete()
         return HttpResponseRedirect(reverse('peminjaman'))
 
+def uploadBuktiTransfer(request, peminjaman_id):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse('login'))
+    else:
+        # Create new FotoMobil record
+        peminjaman = get_object_or_404(PeminjamanKendaraan, pk=peminjaman_id)
+        foto_bukti_transfer = request.FILES.get('foto_bukti_transfer', False)
+        if foto_bukti_transfer != False:
+            peminjaman.foto_bukti_transfer = foto_bukti_transfer
+            peminjaman.save()
+        return HttpResponseRedirect(reverse('peminjamanDetail', args=(peminjaman.id,)))
+
+def deleteBuktiTransfer(request, peminjaman_id):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse('login'))
+    else:
+        peminjaman = get_object_or_404(PeminjamanKendaraan, pk=peminjaman_id)
+        peminjaman.foto_bukti_transfer = None
+        peminjaman.bukti_transfer = 0 # Ada
+        peminjaman.save()
+        return HttpResponseRedirect(reverse('peminjamanDetail', args=(peminjaman_id,)))
 
 #Form Final
 def peminjamanFormFinal(request, peminjaman_id):
@@ -668,7 +690,7 @@ def export_peminjaman_form(request, peminjaman_id):
     nomor = 'Nomor : '
     content_left = ['No. Booking', 'Pemohon', 'Unit Kerja', 'Hari', 'Tanggal', 'Tujuan', 'Acara']
     day = datetime.strptime(peminjaman.tanggal_pemakaian.strftime('%d %B %Y'), '%d %B %Y').strftime('%A')
-    peminjaman_left = [str(peminjaman.id), peminjaman.nama_peminjam, peminjaman.bagian_jurusan_peminjam,dayToHari(day), peminjaman.tanggal_pemakaian.strftime('%d/%m/%Y') +
+    peminjaman_left = [str(peminjaman.id)+'/BK/TR/2018', peminjaman.nama_peminjam, peminjaman.bagian_jurusan_peminjam,dayToHari(day), peminjaman.tanggal_pemakaian.strftime('%d/%m/%Y') +
                         ' s.d. ' + peminjaman.tanggal_pengembalian.strftime('%d/%m/%Y'), peminjaman.tujuan, peminjaman.acara]
     content_right = ['No. Surat Pemohon', 'Contact Person', 'Telp.', 'Pukul']
     peminjaman_right = [peminjaman.no_surat, peminjaman.nama_peminjam, peminjaman.no_telp_peminjam, str(peminjaman.waktu_berangkat)]
@@ -680,7 +702,7 @@ def export_peminjaman_form(request, peminjaman_id):
     posisi_penanda_tangan = 'Direktorat Sarana dan Prasarana'
     nama_penanda_tangan = 'Wahyu Srigutomo.,S.Si.,M.Si.,Ph.D.'
     nip_penanda_tangan = 'NIP. ' + '197007131997021001'
-    jumlah = 'Jumlah*       = Rp. ...........................'
+    jumlah = 'Jumlah*       = Rp. '
     keterangan_jumlah1 = '* Nominal yang ditransfer ke rekening'
     keterangan_jumlah2 = 'penampungan kemitraan ITB'
     nama_transfer = 'Penampungan Kemitraan ITB'
@@ -781,6 +803,7 @@ def export_peminjaman_form(request, peminjaman_id):
     y -= 3*LINE_DIFF
     can.drawCentredString(x+xoffset, y, disetujui)
     can.drawString(x+2.2*xoffset, y, jumlah)
+    can.drawString(x+2.2*xoffset+stringWidth(jumlah, 'Helvetica-Bold', FONT_SIZE)+1, y, peminjaman.getTotalBiaya())
     y -= LINE_DIFF
     can.drawCentredString(x+xoffset, y, posisi_penanda_tangan)
     y -= LINE_DIFF
