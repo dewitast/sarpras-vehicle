@@ -387,7 +387,6 @@ def deleteBuktiTransfer(request, peminjaman_id):
     else:
         peminjaman = get_object_or_404(PeminjamanKendaraan, pk=peminjaman_id)
         peminjaman.foto_bukti_transfer = None
-        peminjaman.bukti_transfer = 0 # Ada
         peminjaman.save()
         return HttpResponseRedirect(reverse('peminjamanDetail', args=(peminjaman_id,)))
 
