@@ -43,7 +43,7 @@ class PeminjamanKendaraan(models.Model):
 	biaya_tol = models.IntegerField()
 	biaya_parkir = models.IntegerField()
 	biaya_penginapan = models.IntegerField()
-	foto_bukti_transfer = models.ImageField(null=True)
+	foto_bukti_transfer = models.ImageField(null=True,upload_to='bukti_transfer/')
 	status = models.IntegerField()
 
 	def getTotalBiaya(self):
