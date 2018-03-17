@@ -805,7 +805,7 @@ def export_pdf_peminjaman(request, peminjaman_id):
     y -= 3*LINE_DIFF
     can.drawCentredString(x+xoffset, y, disetujui)
     can.drawString(x+2.2*xoffset, y, jumlah)
-    can.drawString(x+2.2*xoffset+stringWidth(jumlah, 'Helvetica-Bold', FONT_SIZE)+1, y, peminjaman.getTotalBiaya())
+    can.drawString(x+2.2*xoffset+stringWidth(jumlah, 'Helvetica-Bold', FONT_SIZE)+1, y, '{:,}'.format(peminjaman.getTotalBiaya()))
     y -= LINE_DIFF
     can.drawCentredString(x+xoffset, y, posisi_penanda_tangan)
     y -= LINE_DIFF
