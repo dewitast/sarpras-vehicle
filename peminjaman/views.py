@@ -107,10 +107,10 @@ def index(request):
 #
 ###################################################################################################################
 def tatacara(request):
-    if not request.user.is_authenticated:
-        return HttpResponseRedirect(reverse('login'))
-    else:
-        return render(request, 'peminjaman/tatacara/index.html')
+    # if not request.user.is_authenticated:
+    #     return HttpResponseRedirect(reverse('login'))
+    # else:
+    return render(request, 'peminjaman/tatacara/index.html')
 
 ###################################################################################################################
 #
