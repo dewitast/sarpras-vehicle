@@ -1184,7 +1184,12 @@ def export_pdf_surat_tugas(request, peminjaman_id):
         elements.append(big_space)
         elements.append(big_space)
         elements.append(big_space)
-
+        elements.append(big_space)
+        elements.append(big_space)
+        elements.append(big_space)
+        elements.append(big_space)
+        elements.append(big_space)
+        
         count=count+1
 
     doc.build(elements)
