@@ -376,8 +376,10 @@ def uploadBuktiTransfer(request, peminjaman_id):
         # Create new FotoMobil record
         peminjaman = get_object_or_404(PeminjamanKendaraan, pk=peminjaman_id)
         foto_bukti_transfer = request.FILES.get('foto_bukti_transfer', False)
+        metode_transfer = request.POST['metode_transfer']
         if foto_bukti_transfer != False:
             peminjaman.foto_bukti_transfer = foto_bukti_transfer
+            peminjaman.metode_transfer = metode_transfer
             peminjaman.save()
         return HttpResponseRedirect(reverse('peminjamanDetail', args=(peminjaman.id,)))
 
@@ -387,6 +389,7 @@ def deleteBuktiTransfer(request, peminjaman_id):
     else:
         peminjaman = get_object_or_404(PeminjamanKendaraan, pk=peminjaman_id)
         peminjaman.foto_bukti_transfer = None
+        peminjaman.metode_transfer = None
         peminjaman.save()
         return HttpResponseRedirect(reverse('peminjamanDetail', args=(peminjaman_id,)))
 

@@ -12,6 +12,9 @@
         <a class="right waves-effect waves-light btn-flat" href="#modal1">
             <i class="large material-icons">delete</i>
         </a>
+        <a class="right waves-effect waves-light btn-flat" href="#modal_cancel">
+            <i class="large material-icons">cancel</i>
+        </a>
         <a class="right waves-effect waves-teal btn-flat" href="{% url 'peminjamanEditForm' peminjaman.id %}">
             <i class="large material-icons">mode_edit</i>
         </a>
@@ -105,11 +108,11 @@
                 <p>Belum ada bukti transfer.</p>
             {% endif %}
         </div>
-
         {% if user.is_authenticated and not peminjaman.foto_bukti_transfer %}
         <form action="{% url 'uploadBuktiTransfer' peminjaman.id %}" enctype="multipart/form-data" method="post" class="right">
             {% csrf_token %}
-            <div class="file-field input-field col s12">
+          <div class="row">
+            <div class="file-field input-field col">
               <div class="btn" style="background-color: #1D73BE;">
                 <span>Upload Bukti Transfer</span>
                 <input type="file" name="foto_bukti_transfer" id="foto_bukti_transfer">
@@ -118,8 +121,20 @@
                 <input class="file-path validate" type="text">
               </div>
             </div>
-              <button id="foto_bukti_transfer_submit" class="btn waves-effect waves-light right" style="background-color: #1D73BE; display: none;" type="submit" name="action">Save
-              </button>
+            <div id="foto_bukti_metode_transfer" class="input-field col" style="display: none;">
+              <select id="metode_transfer" name="metode_transfer">
+                <option value="0" disabled selected>Pilih Metode Transfer</option>
+                <option value="1">Teller</option>
+                <option value="2">ATM</option>
+                <option value="3">SMS Banking</option>
+                <option value="4">Mobile Banking</option>
+                <option value="5">Internet/E-Banking</option>
+              </select>
+              <label>Metode Transfer</label>
+            </div>
+          </div>  
+          <button id="foto_bukti_transfer_submit" class="btn waves-effect waves-light right" style="background-color: #1D73BE; display: none;" type="submit" name="action">Save
+          </button>
         </form>
         {% endif %}
     </div>
@@ -128,7 +143,7 @@
     </button>
 </div>
 <!-- Modal Structure -->
-<div id="modal1" class="modal">
+<div id="modal1" class="modal">  
 <div class="modal-content">
   <h4>Delete this peminjaman?</h4>
   <p>Are you sure you want to delete this peminjaman?</p>
@@ -139,21 +154,37 @@
         Delete
     </a>
 </div>
-
 </div>
-{% endblock %}
 
+<div id="modal_cancel" class="modal">  
+<div class="modal-content">
+  <h4>Cancel this peminjaman?</h4>
+  <p>Are you sure you want to cancel this peminjaman?</p>
+</div>
+<div class="modal-footer">
+    <a href="#" class="modal-action modal-close waves-effect waves-green btn-flat">No</a>
+    <a class="modal-action modal-close waves-effect waves-green btn-flat" href="{% url 'peminjamanDelete' peminjaman.id %}" title="Yes">
+        Yes
+    </a>
+</div>
+
+{% endblock %}
 {% block script %}
 <script type="text/javascript">
     $('#foto_bukti_transfer').change(function() {
         console.log($('#foto_bukti_transfer').val())
         $('#foto_bukti_transfer_path').show()
         $('#foto_bukti_transfer_submit').show()
+        $('#foto_bukti_metode_transfer').show()
+    })
+    $('#metode_transfer').change(function() {
+      console.log($('#metode_transfer').find(":selected").val())
     })
     $('#navbar-menu-peminjaman').addClass('active')
     $(document).ready(function(){
         // the "href" attribute of .modal-trigger must specify the modal ID that wants to be triggered
         $('.modal').modal();
+        $('select').material_select();
     });
 </script>
 {% endblock %}
