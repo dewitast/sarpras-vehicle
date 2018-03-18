@@ -919,7 +919,7 @@ def export_pdf_surat_tugas(request, peminjaman_id):
         catatan_title = 'Catatan:'
         catatan_data = ['Harap Surat Tugas ini dikembalikan ke Kasie bilamana tugas ini selesai']
         pengguna = 'Pengguna :'
-        waktu_tempat = 'Bandung, ' + getDate(datetime.today())
+        waktu_tempat = 'Bandung, ' + getTanggal(datetime.today())
         posisi_penanda_tangan = 'Kepala Seksi Transportasi'
         nama_penanda_tangan = 'Ade Sumarna'
         nip_penanda_tangan = 'NIP. 197810272014091004'
@@ -1087,7 +1087,7 @@ def export_pdf_surat_tugas(request, peminjaman_id):
         catatan_data = ['Harap surat perincian ini dikembalikan ke Kas ie bilamana tugas sudah selesai',
                     'Semua bukti akomodasi(Uang lelah Sopir, Tol, Parkir,dll agar disetorkan ke Kasie']
 
-        waktu_tempat = 'Bandung, ' + datetime.today().strftime('%d')+' '+ month +' '+datetime.today().strftime('%Y')
+        waktu_tempat = 'Bandung, ' + getTanggal(datetime.today())
         posisi_penanda_tangan = 'Kepala Seksi Transportasi'
         nama_penanda_tangan = 'Ade Sumarna'
         nip_penanda_tangan = 'NIP. 197810272014091004'
@@ -1181,10 +1181,10 @@ def export_pdf_konfirmasi_booking(request, peminjaman_id):
     # Content
     title_booking = 'BOOKING KENDARAAN'
     booking = [['No. Booking', peminjaman_id + '/BK/TR/2018'],
-               ['Tanggal Booking', getDate(peminjaman.tanggal_booking)],
+               ['Tanggal Booking', getTanggal(peminjaman.tanggal_booking)],
                ['Jenis Kendaraan', mobil.jenis],
                ['Sebanyak', len(all_mobil)],
-               ['Rencana Tanggal Pemakaian', getDate(peminjaman.tanggal_pemakaian) + ' s.d. ' + getDate(peminjaman.tanggal_pengembalian)],
+               ['Rencana Tanggal Pemakaian', getTanggal(peminjaman.tanggal_pemakaian) + ' s.d. ' + getTanggal(peminjaman.tanggal_pengembalian)],
                ['Asal', peminjaman.tempat_berkumpul],
                ['Tujuan', peminjaman.tujuan],
                ['Acara', peminjaman.acara],
@@ -1208,7 +1208,7 @@ def export_pdf_konfirmasi_booking(request, peminjaman_id):
                 'Mengambil Formulir Persetujuan Peminjaman, yang telah ditandatangani/disetujui oleh Direktur Sarana dan Prasarana ITB.',
                 'Mekanisme pembayaran (Nilai Nominal dan No. Rekening Pembayaran) akan tertera pada Formulir Persetujuan Peminjaman.']
 
-    waktu_tempat = 'Bandung, ' + getDate(datetime.today())
+    waktu_tempat = 'Bandung, ' + getTanggal(datetime.today())
     posisi_penanda_tangan = 'Kepala Seksi Transportasi'
     nama_penanda_tangan = 'Ade Sumarna'
     nip_penanda_tangan = 'NIP. 197810272014091004'
@@ -1645,7 +1645,7 @@ def dayToHari(day):
 
 def getTanggal(date):
     tanggal = ''
-    tanggal += date.strftime('%d') + ' '
-    tanggal += intToMonth(date.strftime('%m')) + ' '
-    tanggal += date.strftime('%Y')
+    tanggal += str(date.strftime('%d') + ' ')
+    tanggal += str(intToMonth(int(date.strftime('%m'))) + ' ')
+    tanggal += str(date.strftime('%Y'))
     return tanggal
