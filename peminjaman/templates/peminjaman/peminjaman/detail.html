@@ -18,9 +18,6 @@
         <a class="right waves-effect waves-teal btn-flat modal-trigger" href="#modal-print">
             <i class="large material-icons">print</i>
         </a>
-        <a class="right waves-effect waves-teal btn-flat" href="{% url 'export_pdf_surat_tugas' peminjaman.id %}">
-            <i class="large material-icons">print</i>
-        </a>
 
         <p>
             {% if peminjaman.status == 0 %}
@@ -143,6 +140,8 @@
         <a class="modal-action modal-close waves-effect waves-green btn-flat" href="{% url 'export_pdf_peminjaman' peminjaman.id %}" title="Perizinan">
             Formulir Persetujuan
         </a>
+        <a class="modal-action modal-close waves-effect waves-green btn-flat" href="{% url 'export_pdf_surat_tugas' peminjaman.id %}" title="Konfirmasi">Surat Tugas</a>
+        
     </div>
 </div>
 <!-- Modal Structure -->

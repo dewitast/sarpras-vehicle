@@ -874,13 +874,30 @@ def export_pdf_surat_tugas(request, peminjaman_id):
         logo = ImageReader(base_url)
         width, height = logo.getSize()
         aspect = height / float(width)
-        logo_img = Image(base_url, width=width/8, height = width*aspect/8)
+        logo_img = Image(base_url, width=width/7, height = width*aspect/7)
         
         # Content
         institut = 'INSTITUT TEKNOLOGI BANDUNG'
         alamat = 'Jalan Tamansari No. 73 Telp. (022) 2509179, 2501645, Pos. 6708 BANDUNG 4011 '
         title_surat = 'SURAT TUGAS'
+        
+        #day to hari
         day = datetime.strptime(peminjaman.tanggal_pemakaian.strftime('%d %B %Y'), '%d %B %Y').strftime('%A')
+        if (day is 'Sunday') :
+            day = 'Minggu'
+        elif (day is 'Monday'):
+            day = 'Senin'
+        elif (day is 'Tuesday'):
+            day = 'Selasa'
+        elif (day is 'Wednesday'):
+            day = 'Rabu'
+        elif (day is 'Thursday'):
+            day = 'Kamis'
+        elif (day is 'Friday'):
+            day = 'Jumat'
+        else :
+            day = 'Sabtu'
+
         form_surat = [['Nama Pengemudi',namasupir],
                 ['Jenis Kendaraan', mobil.jenis+' No Polisi : '+mobil.no_polisi],
                 ['', ''],
@@ -1047,8 +1064,12 @@ def export_pdf_surat_tugas(request, peminjaman_id):
                 ['Parkir (Rp.)', peminjaman.biaya_parkir],
                 ['Penginapan (Rp.)', peminjaman.biaya_penginapan],
                 ['Jumlah Total (Rp.)', peminjaman.getTotalBiaya()]]
-        # for entry in biaya:
-        #     entry[1] = '{:,}'.format(entry[1]) # Thousands comma delimiter
+        harga = 0
+        for entry in biaya:
+            if (harga > 7) :
+                entry[1] = '{:,}'.format(entry[1]) # Thousands comma delimiter
+            
+            harga= harga+1
 
         catatan_title = 'Catatan:'
         catatan_data = ['Harap surat perincian ini dikembalikan ke Kas ie bilamana tugas sudah selesai',
