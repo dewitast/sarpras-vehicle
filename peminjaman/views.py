@@ -375,6 +375,15 @@ def peminjamanDelete(request, peminjaman_id):
         peminjaman.delete()
         return HttpResponseRedirect(reverse('peminjaman'))
 
+def peminjamanCancel(request, peminjaman_id):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse('login'))
+    else:
+        peminjaman = get_object_or_404(PeminjamanKendaraan, pk=peminjaman_id)
+        peminjaman.status = 4;
+        peminjaman.save()
+        return HttpResponseRedirect(reverse('peminjamanDetail', args=(peminjaman.id,)))
+
 def uploadBuktiTransfer(request, peminjaman_id):
     if not request.user.is_authenticated:
         return HttpResponseRedirect(reverse('login'))
@@ -384,7 +393,8 @@ def uploadBuktiTransfer(request, peminjaman_id):
         foto_bukti_transfer = request.FILES.get('foto_bukti_transfer', False)
         metode_transfer = request.POST['metode_transfer']
         if foto_bukti_transfer != False:
-            peminjaman.status = 1
+            if peminjaman.status == 0:
+                peminjaman.status = 1
             peminjaman.foto_bukti_transfer = foto_bukti_transfer
             peminjaman.metode_transfer = metode_transfer
             peminjaman.save()
@@ -395,7 +405,8 @@ def deleteBuktiTransfer(request, peminjaman_id):
         return HttpResponseRedirect(reverse('login'))
     else:
         peminjaman = get_object_or_404(PeminjamanKendaraan, pk=peminjaman_id)
-        peminjaman.status = 0
+        if peminjaman.status == 1:
+            peminjaman.status = 0
         peminjaman.foto_bukti_transfer = None
         peminjaman.metode_transfer = None
         peminjaman.save()

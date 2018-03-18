@@ -42,6 +42,8 @@ urlpatterns = [
     url(r'^peminjaman/(?P<peminjaman_id>[0-9]+)/change/$', views.peminjamanEdit, name='peminjamanEdit'),
     # ex: /peminjaman/5/delete
     url(r'^peminjaman/(?P<peminjaman_id>[0-9]+)/delete/$', views.peminjamanDelete, name='peminjamanDelete'),
+    # ex: /peminjaman/5/cancel
+    url(r'^peminjaman/(?P<peminjaman_id>[0-9]+)/cancel/$', views.peminjamanCancel, name='peminjamanCancel'),
     # ex: /peminjaman/5/uploadBukti
     url(r'^peminjaman/(?P<peminjaman_id>[0-9]+)/uploadBukti/$', views.uploadBuktiTransfer, name='uploadBuktiTransfer'),
     # ex: /peminjaman/5/deleteBukti

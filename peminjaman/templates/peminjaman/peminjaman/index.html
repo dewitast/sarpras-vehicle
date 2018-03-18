@@ -115,7 +115,11 @@
                             {% if peminjaman.metode_transfer == 4 %}
                                 <span class="new badge green" data-badge-caption="Metode Transfer: Mobile Banking"></span>
                             {% else %}
-                                <span class="new badge green" data-badge-caption="Metode Transfer: Internet/E-Banking"></span>
+                                {% if peminjaman.metode_transfer == 5 %}
+                                  <span class="new badge green" data-badge-caption="Metode Transfer: Internet/E-Banking"></span>
+                                {% else %}
+                                  <span class="new badge" data-badge-caption="Belum transfer"></span>
+                                {% endif %}
                             {% endif %}
                         {% endif %}
                     {% endif %}
