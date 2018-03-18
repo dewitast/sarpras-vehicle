@@ -14,7 +14,7 @@
 		{% csrf_token %}
 		<div class="row">
 			<div class="input-field col m12">
-	          	<select id="status" name="status">
+          <select id="status" name="status">
 					{% if peminjaman.status == 0 %}
 						<option selected value="0">Belum Transfer</option>
 						<option value="1">Sudah Transfer</option>
@@ -42,6 +42,49 @@
 					{% endif %}
 				</select>
 				<label>Status Peminjaman</label>
+			</div>
+      
+      <div id="foto_bukti_metode_transfer" class="input-field col m12">
+        <select id="metode_transfer" name="metode_transfer">
+				{% if peminjaman.metode_transfer == 1 %}
+          <option selected value="1">Teller</option>
+          <option value="2">ATM</option>
+          <option value="3">SMS Banking</option>
+          <option value="4">Mobile Banking</option>
+          <option value="5">Internet/E-Banking</option>
+        {% else %}
+          {% if peminjaman.metode_transfer == 2 %}
+          <option value="1">Teller</option>
+          <option selected value="2">ATM</option>
+          <option value="3">SMS Banking</option>
+          <option value="4">Mobile Banking</option>
+          <option value="5">Internet/E-Banking</option>
+          {% else %}
+            {% if peminjaman.metode_transfer == 3 %}
+              <option value="1">Teller</option>
+              <option value="2">ATM</option>
+              <option selected value="3">SMS Banking</option>
+              <option value="4">Mobile Banking</option>
+              <option value="5">Internet/E-Banking</option>
+            {% else %}
+              {% if peminjaman.metode_transfer == 4 %}
+                <option value="1">Teller</option>
+                <option value="2">ATM</option>
+                <option value="3">SMS Banking</option>
+                <option selected value="4">Mobile Banking</option>
+                <option value="5">Internet/E-Banking</option>
+              {% else %}
+                <option value="1">Teller</option>
+                <option value="2">ATM</option>
+                <option value="3">SMS Banking</option>
+                <option value="4">Mobile Banking</option>
+                <option selected value="5">Internet/E-Banking</option>
+              {% endif %}
+            {% endif %}
+          {% endif %}
+        {% endif %}
+        </select>
+				<label>Metode Transfer</label>
 			</div>
 		</div>
 
@@ -209,7 +252,6 @@
 	          <input id="biaya_penginapan" name="biaya_penginapan" type="number" class="validate" min="0" value="{{ peminjaman.biaya_penginapan }}">
 	          <label for="biaya_penginapan">Penginapan (Rp.)*</label>
 		    </div>
-
 	    </div>
 	    <br />	
 	</form>
@@ -252,6 +294,11 @@
 		$('select').material_select();
 		$(document).ready(function(){
 		    $('input.timepicker').timepicker({});
+        if ($('#status').val() == 0) {
+          $('#foto_bukti_metode_transfer').hide()
+        } else {
+          $('#foto_bukti_metode_transfer').show()
+        }
 		});
 	});
 	// Initialize date picker
@@ -259,6 +306,13 @@
 		selectMonths: true, // Creates a dropdown to control month
 		selectYears: 15 // Creates a dropdown of 15 years to control year
 	});
+  $('#status').change(function() {
+    if ($('#status').val() == 0) {
+      $('#foto_bukti_metode_transfer').hide()
+    } else {
+      $('#foto_bukti_metode_transfer').show()
+    }
+  })
 
 	function validateInput() {
 		$('#error_message').text('')
