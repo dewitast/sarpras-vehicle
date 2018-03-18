@@ -117,7 +117,11 @@
                           {% if peminjaman.metode_transfer == 4 %}
                               <strong>Metode Transfer:</strong> Mobile Banking
                           {% else %}
-                              <strong>Metode Transfer:</strong> Internet/E-Banking
+                              {% if peminjaman.metode_transfer == 5 %}
+                                  <strong>Metode Transfer:</strong> Internet/E-Banking
+                              {% else %}
+                                  <strong>Metode Transfer:</strong> Belum transfer
+                              {% endif %}
                           {% endif %}
                       {% endif %}
                   {% endif %}
