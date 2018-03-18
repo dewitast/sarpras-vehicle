@@ -129,7 +129,7 @@ def tatacaraEditForm(request):
         }
         return render(request, 'peminjaman/tatacara/edit.html', context)
 
-def tatacaraEdit(request,):
+def tatacaraEdit(request):
     if not request.user.is_authenticated:
         return HttpResponseRedirect(reverse('login'))
     else:
