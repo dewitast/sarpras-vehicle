@@ -1,5 +1,6 @@
 import csv
 import datetime
+import os
 from calendar import monthrange
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect, HttpResponse
@@ -110,10 +111,37 @@ def index(request):
 #
 ###################################################################################################################
 def tatacara(request):
-    # if not request.user.is_authenticated:
-    #     return HttpResponseRedirect(reverse('login'))
-    # else:
-    return render(request, 'peminjaman/tatacara/index.html')
+    handle = open(settings.STATIC_ROOT + "\\tatacara.txt",'r+')
+    var = handle.read()
+    handle.close()
+    context = {
+        'tata_cara' : var,
+    }
+    return render(request, 'peminjaman/tatacara/index.html', context)
+
+
+def tatacaraEditForm(request):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse('login'))
+    else:
+        handle = open(settings.STATIC_ROOT + "\\tatacara.txt",'r+')
+        var = handle.read()
+        handle.close()
+        context = {
+            'tata_cara' : var,
+        }
+        return render(request, 'peminjaman/tatacara/edit.html', context)
+
+def tatacaraEdit(request):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse('login'))
+    else:
+        handle1=open(settings.STATIC_ROOT + "\\tatacara.txt",'r+')
+        tata_cara_new = request.POST['textedit']
+        handle1.truncate()
+        handle1.write(tata_cara_new)
+        handle1.close()
+        return HttpResponseRedirect(reverse('tatacara'))
 
 ###################################################################################################################
 #
