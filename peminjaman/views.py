@@ -1103,7 +1103,7 @@ def export_pdf_surat_tugas(request, peminjaman_id):
                 ['Tol (Rp.)', peminjaman.biaya_tol],
                 ['Parkir (Rp.)', peminjaman.biaya_parkir],
                 ['Penginapan (Rp.)', peminjaman.biaya_penginapan],
-                ['Jumlah Akomodasi (Rp.)', peminjaman.getTotalBiaya()]]
+                [Paragraph('Jumlah Akomodasi(Rp.)',ParagraphStyle(name='Normal',fontName='Helvetica-Bold',)), peminjaman.getTotalBiaya()-peminjaman.biaya_perawatan]]
         harga = 0
         for entry in biaya:
             if (harga > 8) :
@@ -1189,7 +1189,7 @@ def export_pdf_surat_tugas(request, peminjaman_id):
         elements.append(big_space)
         elements.append(big_space)
         elements.append(big_space)
-        
+
         count=count+1
 
     doc.build(elements)
