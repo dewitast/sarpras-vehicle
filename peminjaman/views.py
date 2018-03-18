@@ -856,12 +856,19 @@ def export_pdf_surat_tugas(request, peminjaman_id):
     elements = []
     doc = SimpleDocTemplate(response, pagesize=letter)
     big_space = Spacer(1, 0.2*inch)
-    small_space = Spacer(1, 0.05*inch)
 
     count = 0
     for i in all_mobil : 
         mobil = get_object_or_404(Mobil, pk=all_mobil[count].mobil_id)
-        
+        namasupir =''
+        odometersebelum = ''
+        odometersesudah =''
+
+        if all_mobil[count].supir is not None:
+            namasupir = all_mobil[count].supir.nama
+            odometersebelum = all_mobil[count].odometer_sebelum
+            odometersesudah = all_mobil[count].odometer_sesudah
+
         #logo
         base_url = '{0}://{1}{2}logo.png'.format(request.scheme, request.get_host(), settings.MEDIA_URL)
         logo = ImageReader(base_url)
@@ -874,7 +881,7 @@ def export_pdf_surat_tugas(request, peminjaman_id):
         alamat = 'Jalan Tamansari No. 73 Telp. (022) 2509179, 2501645, Pos. 6708 BANDUNG 4011 '
         title_surat = 'SURAT TUGAS'
         day = datetime.strptime(peminjaman.tanggal_pemakaian.strftime('%d %B %Y'), '%d %B %Y').strftime('%A')
-        form_surat = [['Nama Pengemudi',all_mobil[count].supir.nama],
+        form_surat = [['Nama Pengemudi',namasupir],
                 ['Jenis Kendaraan', mobil.jenis+' No Polisi : '+mobil.no_polisi],
                 ['', ''],
                 ['Untuk Melaksanakan tugas', 'Dinas / Sosial / Rekreasi dengan'],
@@ -884,8 +891,8 @@ def export_pdf_surat_tugas(request, peminjaman_id):
                 ['Hari / Tanggal', day+' / '+peminjaman.tanggal_pemakaian.strftime('%d/%m/%Y')],
                 ['Berangkat pukul/ Dari',str(peminjaman.waktu_berangkat)+' / '+peminjaman.tempat_berkumpul],
                 ['Pulang Pukul',str(peminjaman.waktu_datang)],
-                ['Odometer Awal', all_mobil[count].odometer_sebelum],
-                ['Odometer Akhir', all_mobil[count].odometer_sesudah]]
+                ['Odometer Awal', odometersebelum],
+                ['Odometer Akhir', odometersesudah]]
         
         # for entry in biaya:
         #     entry[1] = '{:,}'.format(entry[1]) # Thousands comma delimiter
@@ -899,7 +906,7 @@ def export_pdf_surat_tugas(request, peminjaman_id):
         posisi_penanda_tangan = 'Kepala Seksi Transportasi'
         nama_penanda_tangan = 'Ade Sumarna'
         nip_penanda_tangan = 'NIP. 197810272014091004'
-        nama_pengendara = all_mobil[count].supir.nama
+        nama_pengendara = namasupir
 
         # Size
         TAB_WIDTH = 2.6
@@ -1029,7 +1036,7 @@ def export_pdf_surat_tugas(request, peminjaman_id):
                 ['Tujuan',peminjaman.tujuan],
                 ['Acara',peminjaman.acara],
                 ['Pengguna / No.Kontak',peminjaman.nama_peminjam+' / '+peminjaman.no_telp_peminjam],
-                ['Pengemudi',all_mobil[count].supir.nama],
+                ['Pengemudi',namasupir],
                 ['Tol (Rp.)', peminjaman.biaya_tol],
                 ['Parkir (Rp.)', peminjaman.biaya_parkir],
                 ['Penginapan (Rp.)', peminjaman.biaya_penginapan],
