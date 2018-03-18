@@ -1072,7 +1072,7 @@ def export_pdf_surat_tugas(request, peminjaman_id):
         elements.append(big_space)
 
 
-        day = str(datetime.strptime(peminjaman.tanggal_pemakaian.strftime('%d %B %Y'), '%d %B %Y').strftime('%A'))
+        day = str(datetime.strptime(peminjaman.tanggal_pemakaian.strftime('%d %B %Y'), '%d %B %Y').strftime('%w'))
         if (day is '0') :
             day = 'Minggu'
         elif (day is '1'):
@@ -1085,13 +1085,13 @@ def export_pdf_surat_tugas(request, peminjaman_id):
             day = 'Kamis'
         elif (day is '5'):
             day = 'Jumat'
-        else :
+        else:
             day = 'Sabtu'
 
         title_biaya = 'Perincian Biaya Perjalanan'
         biaya = [['Jenis Kendaraan', ': '+mobil.jenis],
                 ['Sebanyak', ': '+ str(len(all_mobil))],
-                ['Hari / Tanggal Pemakaian',': '+ day+' / '+peminjaman.tanggal_pemakaian.strftime('%d/%m/%Y')],
+                ['Hari / Tanggal Pemakaian',': '+ day +' / '+peminjaman.tanggal_pemakaian.strftime('%d/%m/%Y')],
                 ['Asal',': '+peminjaman.tempat_berkumpul],
                 ['Tujuan',': '+peminjaman.tujuan],
                 ['Acara',': '+peminjaman.acara],
