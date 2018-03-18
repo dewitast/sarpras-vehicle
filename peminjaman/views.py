@@ -926,18 +926,18 @@ def export_pdf_surat_tugas(request, peminjaman_id):
             month = 'Desember'
 
 
-        form_surat = [['Nama Pengemudi',namasupir],
-                ['Jenis Kendaraan', mobil.jenis+' No Polisi : '+mobil.no_polisi],
+        form_surat = [['Nama Pengemudi',': '+namasupir],
+                ['Jenis Kendaraan', ': '+mobil.jenis+' No Polisi : '+mobil.no_polisi],
                 ['', ''],
-                ['Untuk Melaksanakan tugas', 'Dinas / Sosial / Rekreasi dengan'],
-                ['Nama',peminjaman.nama_peminjam],
-                ['Bagian/Jurusan',peminjaman.bagian_jurusan_peminjam],
-                ['Tujuan',peminjaman.tujuan],
-                ['Hari / Tanggal', day+' / '+peminjaman.tanggal_pemakaian.strftime('%d/%m/%Y')],
-                ['Berangkat pukul/ Dari',str(peminjaman.waktu_berangkat)+' / '+peminjaman.tempat_berkumpul],
-                ['Pulang Pukul',str(peminjaman.waktu_datang)],
-                ['Odometer Awal', odometersebelum],
-                ['Odometer Akhir', odometersesudah]]
+                ['Untuk Melaksanakan tugas', ': Dinas / Sosial / Rekreasi dengan'],
+                ['Nama',': '+peminjaman.nama_peminjam],
+                ['Bagian/Jurusan',': '+peminjaman.bagian_jurusan_peminjam],
+                ['Tujuan',': '+peminjaman.tujuan],
+                ['Hari / Tanggal', ': '+day+' / '+peminjaman.tanggal_pemakaian.strftime('%d/%m/%Y')],
+                ['Berangkat pukul/ Dari',': '+str(peminjaman.waktu_berangkat)+' / '+peminjaman.tempat_berkumpul],
+                ['Pulang Pukul',': '+str(peminjaman.waktu_datang)],
+                ['Odometer Awal',': '+ str(odometersebelum)],
+                ['Odometer Akhir',': '+ str(odometersesudah)]]
         
         # for entry in biaya:
         #     entry[1] = '{:,}'.format(entry[1]) # Thousands comma delimiter
@@ -1089,27 +1089,24 @@ def export_pdf_surat_tugas(request, peminjaman_id):
             day = 'Sabtu'
 
         title_biaya = 'Perincian Biaya Perjalanan'
-        biaya = [['Jenis Kendaraan', mobil.jenis],
-                ['Sebanyak', len(all_mobil)],
-                ['Hari / Tanggal Pemakaian', day+' / '+peminjaman.tanggal_pemakaian.strftime('%d/%m/%Y')],
-                ['Asal',peminjaman.tempat_berkumpul],
-                ['Tujuan',peminjaman.tujuan],
-                ['Acara',peminjaman.acara],
-                ['Pengguna / No.Kontak',peminjaman.nama_peminjam+' / '+peminjaman.no_telp_peminjam],
-                ['Pengemudi',namasupir],
-                ['Tol (Rp.)', peminjaman.biaya_tol],
-                ['Parkir (Rp.)', peminjaman.biaya_parkir],
-                ['Penginapan (Rp.)', peminjaman.biaya_penginapan],
-                ['Jumlah Total (Rp.)', peminjaman.getTotalBiaya()],
+        biaya = [['Jenis Kendaraan', ': '+mobil.jenis],
+                ['Sebanyak', ': '+ str(len(all_mobil))],
+                ['Hari / Tanggal Pemakaian',': '+ day+' / '+peminjaman.tanggal_pemakaian.strftime('%d/%m/%Y')],
+                ['Asal',': '+peminjaman.tempat_berkumpul],
+                ['Tujuan',': '+peminjaman.tujuan],
+                ['Acara',': '+peminjaman.acara],
+                ['Pengguna / No.Kontak',': '+peminjaman.nama_peminjam+' / '+peminjaman.no_telp_peminjam],
+                ['Pengemudi',': '+namasupir],
+                [''],
                 ['BBM (Rp.)', peminjaman.biaya_bbm],
                 ['Uang Lelah Sopir (Rp.)', peminjaman.biaya_supir],
                 ['Tol (Rp.)', peminjaman.biaya_tol],
                 ['Parkir (Rp.)', peminjaman.biaya_parkir],
                 ['Penginapan (Rp.)', peminjaman.biaya_penginapan],
-                ['Jumlah Total (Rp.)', peminjaman.getTotalBiaya()]]
+                ['Jumlah Akomodasi (Rp.)', peminjaman.getTotalBiaya()]]
         harga = 0
         for entry in biaya:
-            if (harga > 7) :
+            if (harga > 8) :
                 entry[1] = '{:,}'.format(entry[1]) # Thousands comma delimiter
             
             harga= harga+1
