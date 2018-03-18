@@ -898,34 +898,6 @@ def export_pdf_surat_tugas(request, peminjaman_id):
         else:
             day = 'Sabtu'
 
-        #month to bulan
-        month = int(datetime.today().strftime('%m'))
-        if (month is 1 ) :
-            month = 'januari'
-        elif (month is 2):
-            month = 'Februari'
-        elif (month is 3):
-            month = 'Maret'
-        elif (month is 4):
-            month = 'April'
-        elif (month is 5):
-            month = 'Mei'
-        elif (month is 6):
-            month = 'Juni'
-        elif (month is 7):
-            month = 'July'
-        elif (month is 8):
-            month = 'Agustus'
-        elif (month is 9):
-            month = 'September'
-        elif (month is 10):
-            month = 'Oktober'
-        elif (month is 11):
-            month = 'November'
-        else :
-            month = 'Desember'
-
-
         form_surat = [['Nama Pengemudi',': '+namasupir],
                 ['Jenis Kendaraan', ': '+mobil.jenis+' No Polisi : '+mobil.no_polisi],
                 ['', ''],
@@ -947,7 +919,7 @@ def export_pdf_surat_tugas(request, peminjaman_id):
         catatan_title = 'Catatan:'
         catatan_data = ['Harap Surat Tugas ini dikembalikan ke Kasie bilamana tugas ini selesai']
         pengguna = 'Pengguna :'
-        waktu_tempat = 'Bandung, ' + datetime.today().strftime('%d')+' '+ month +' '+datetime.today().strftime('%Y')
+        waktu_tempat = 'Bandung, ' + getDate(datetime.today())
         posisi_penanda_tangan = 'Kepala Seksi Transportasi'
         nama_penanda_tangan = 'Ade Sumarna'
         nip_penanda_tangan = 'NIP. 197810272014091004'
@@ -1209,10 +1181,10 @@ def export_pdf_konfirmasi_booking(request, peminjaman_id):
     # Content
     title_booking = 'BOOKING KENDARAAN'
     booking = [['No. Booking', peminjaman_id + '/BK/TR/2018'],
-               ['Tanggal Booking', peminjaman.tanggal_booking.strftime('%d %B %Y')],
+               ['Tanggal Booking', getDate(peminjaman.tanggal_booking)],
                ['Jenis Kendaraan', mobil.jenis],
                ['Sebanyak', len(all_mobil)],
-               ['Rencana Tanggal Pemakaian', peminjaman.tanggal_pemakaian.strftime('%d %B %Y') + ' s.d. ' + peminjaman.tanggal_pengembalian.strftime('%d %B %Y')],
+               ['Rencana Tanggal Pemakaian', getDate(peminjaman.tanggal_pemakaian) + ' s.d. ' + getDate(peminjaman.tanggal_pengembalian)],
                ['Asal', peminjaman.tempat_berkumpul],
                ['Tujuan', peminjaman.tujuan],
                ['Acara', peminjaman.acara],
@@ -1236,7 +1208,7 @@ def export_pdf_konfirmasi_booking(request, peminjaman_id):
                 'Mengambil Formulir Persetujuan Peminjaman, yang telah ditandatangani/disetujui oleh Direktur Sarana dan Prasarana ITB.',
                 'Mekanisme pembayaran (Nilai Nominal dan No. Rekening Pembayaran) akan tertera pada Formulir Persetujuan Peminjaman.']
 
-    waktu_tempat = 'Bandung, ' + datetime.today().strftime('%d %B %Y')
+    waktu_tempat = 'Bandung, ' + getDate(datetime.today())
     posisi_penanda_tangan = 'Kepala Seksi Transportasi'
     nama_penanda_tangan = 'Ade Sumarna'
     nip_penanda_tangan = 'NIP. 197810272014091004'
@@ -1604,56 +1576,56 @@ def cek(request):
     return HttpResponse("True")
 
 def mapMonth(name):
-	if name == "January":
+	if name == "Januari":
 		return '01'
-	elif name == "February":
+	elif name == "Februari":
 		return '02'
-	elif name == "March":
+	elif name == "Maret":
 		return '03'
 	elif name == "April":
 		return '04'
-	elif name == "May":
+	elif name == "Mei":
 		return '05'
-	elif name == "June":
+	elif name == "Juni":
 		return '06'
-	elif name == "July":
+	elif name == "Juli":
 		return '07'
-	elif name == "August":
+	elif name == "Agustus":
 		return '08'
 	elif name == "September":
 		return '09'
-	elif name == "October":
+	elif name == "Oktober":
 		return '10'
 	elif name == "November":
 		return '11'
-	elif name == "December":
+	elif name == "Desember":
 		return '12'
 
 def intToMonth(bulan):
 	if bulan == 1:
-		return "January"
+		return "Januari"
 	elif bulan == 2:
-		return "February"
+		return "Februari"
 	elif bulan == 3:
-		return "March"
+		return "Maret"
 	elif bulan == 4:
 		return "April"
 	elif bulan == 5:
-		return "May"
+		return "Mei"
 	elif bulan == 6:
-		return "June"
+		return "Juni"
 	elif bulan == 7:
-		return "July"
+		return "Juli"
 	elif bulan == 8:
-		return "August"
+		return "Agustus"
 	elif bulan == 9:
 		return "September"
 	elif bulan == 10:
-		return "October"
+		return "Oktober"
 	elif bulan == 11:
 		return "November"
 	elif bulan == 12:
-		return "December"
+		return "Desember"
 
 def dayToHari(day):
 	if day == "Sunday":
@@ -1670,3 +1642,10 @@ def dayToHari(day):
 		return "Jum'at"
 	elif day == "Saturday":
 		return "Sabtu"
+
+def getTanggal(date):
+    tanggal = ''
+    tanggal += date.strftime('%d') + ' '
+    tanggal += intToMonth(date.strftime('%m')) + ' '
+    tanggal += date.strftime('%Y')
+    return tanggal
