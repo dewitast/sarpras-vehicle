@@ -6,22 +6,32 @@ from django.conf.urls.static import static
 from . import views
 
 urlpatterns = [
+    ###################################################################################################################
+    #
+    # URL Home
+    #
+    ###################################################################################################################
+    # ex:/
+    url(r'^$',views.tatacara,name='index'),
 	###################################################################################################################
 	#
 	# URL DASHBOARD
 	#
 	###################################################################################################################
-	# ex:/
-	url(r'^$', views.index, name='index'),
+	# ex:/dashboard
+	url(r'^dashboard/$', views.index, name='dashboard'),
 
 	###################################################################################################################
-  #
+    #
 	# URL TATACARA
 	#
 	###################################################################################################################
 	# ex:/tatacara
-	url(r'^tatacara/$', views.tatacara, name='tatacara'),
-
+    url(r'^tatacara/$', views.tatacara, name='tatacara'),
+    # ex:/tatacara/edit
+    url(r'^tatacara/edit$', views.tatacaraEditForm, name='tatacaraEditForm'),
+    # ex:/tatacara/change
+    url(r'^tatacara/change$', views.tatacaraEdit, name='tatacaraEdit'),
 
 	###################################################################################################################
 	#
@@ -42,6 +52,10 @@ urlpatterns = [
     url(r'^peminjaman/(?P<peminjaman_id>[0-9]+)/change/$', views.peminjamanEdit, name='peminjamanEdit'),
     # ex: /peminjaman/5/delete
     url(r'^peminjaman/(?P<peminjaman_id>[0-9]+)/delete/$', views.peminjamanDelete, name='peminjamanDelete'),
+    # ex: /peminjaman/5/uploadBukti
+    url(r'^peminjaman/(?P<peminjaman_id>[0-9]+)/uploadBukti/$', views.uploadBuktiTransfer, name='uploadBuktiTransfer'),
+    # ex: /peminjaman/5/deleteBukti
+    url(r'^peminjaman/(?P<peminjaman_id>[0-9]+)/deleteBukti/$', views.deleteBuktiTransfer, name='deleteBuktiTransfer'),
     # ex: /peminjaman/5/formfinal
     url(r'^peminjaman/(?P<peminjaman_id>[0-9]+)/formfinal/$', views.peminjamanFormFinal, name='peminjamanFormFinal'),
     # ex; /peminjaman/5/formFinalEdit
@@ -84,7 +98,7 @@ urlpatterns = [
     # ex: /kendaraan/5/change
     url(r'^kendaraan/(?P<kendaraan_id>[0-9]+)/change/$', views.kendaraanEdit, name='kendaraanEdit'),
     # ex: /kendaraan/5/delete
-    # url(r'^kendaraan/(?P<kendaraan_id>[0-9]+)/delete/$', views.kendaraanDelete, name='kendaraanDelete'),
+    url(r'^kendaraan/(?P<kendaraan_id>[0-9]+)/delete/$', views.kendaraanDelete, name='kendaraanDelete'),
     # ex: /kendaraan/check
     url(r'^kendaraan/check/$', views.kendaraanCekKetersediaan, name='kendaraanCekKetersediaan'),
     # ex: /kendaraan/5/uploadFoto
@@ -104,7 +118,9 @@ urlpatterns = [
     # REPORT / FORM
     #
     ###################################################################################################################
-    url(r'^export/peminjaman/(?P<peminjaman_id>[0-9]+)/$', views.export_peminjaman_form, name='export_peminjaman_form'),
+    url(r'^export/peminjaman/(?P<peminjaman_id>[0-9]+)/$', views.export_pdf_peminjaman, name='export_pdf_peminjaman'),
+    url(r'^export/konfirmasi/(?P<peminjaman_id>[0-9]+)/$', views.export_pdf_konfirmasi_booking, name='export_pdf_konfirmasi_booking'),
+    url(r'^export/surattugas/(?P<peminjaman_id>[0-9]+)/$', views.export_pdf_surat_tugas, name='export_pdf_surat_tugas'),
 	url(r'^download_report/(?P<month>[0-9]+)/(?P<year>[0-9]+)/$', views.download_peminjaman_report, name='download_report'),
 	url(r'^download_car_report/(?P<kendaraan_id>[0-9]+)/$', views.download_car_report, name='download_car_report'),
 	url(r'^cek/$', views.cek, name='cek'),
