@@ -144,7 +144,8 @@
                 <a href="#" class="modal-action modal-close waves-effect waves-green btn-flat ">Close</a>
                 {% if user.is_authenticated %}
                     <a href="{% url 'peminjamanDetail' peminjaman.id %}" class="modal-action modal-close waves-effect waves-green btn-flat ">Detail</a>
-                    <a href="{% url 'export_pdf_peminjaman' peminjaman.id %}" class="modal-action modal-close waves-effect waves-blue btn-flat ">Print</a>
+                    <a href="{% url 'export_pdf_peminjaman' peminjaman.id %}" class="modal-action modal-close waves-effect waves-blue btn-flat ">Print Surat Perizinan</a>
+                    <a href="{% url 'export_pdf_surat_tugas' peminjaman.id %}" class="modal-action modal-close waves-effect waves-blue btn-flat ">Print Surat Tugas</a>
                 {% endif %}
             </div>
         </div>

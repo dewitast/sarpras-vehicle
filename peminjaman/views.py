@@ -842,141 +842,15 @@ def export_pdf_peminjaman(request, peminjaman_id):
     can.save()
     return response
 
-def export_pdf_konfirmasi_booking(request, peminjaman_id):
-    # Set Response
-    FILENAME = 'Konfirmasi_Booking_' + peminjaman_id;
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="' + FILENAME + '.pdf"'
-
-    # Database
-    peminjaman = get_object_or_404(PeminjamanKendaraan, pk=peminjaman_id)
-    all_mobil = MobilPeminjaman.objects.filter(peminjaman_id=peminjaman_id)
-    mobil = get_object_or_404(Mobil, pk=all_mobil[0].mobil_id)
-
-    # Content
-    title_booking = 'BOOKING KENDARAAN'
-    booking = [['No. Booking', peminjaman_id + '/BK/TR/2018'],
-               ['Tanggal Booking', peminjaman.tanggal_booking.strftime('%d %B %Y')],
-               ['Jenis Kendaraan', mobil.jenis],
-               ['Sebanyak', len(all_mobil)],
-               ['Rencana Tanggal Pemakaian', peminjaman.tanggal_pemakaian.strftime('%d %B %Y') + ' s.d. ' + peminjaman.tanggal_pengembalian.strftime('%d %B %Y')],
-               ['Asal', peminjaman.tempat_berkumpul],
-               ['Tujuan', peminjaman.tujuan],
-               ['Acara', peminjaman.acara],
-               ['Nama Pengguna/No. Kontak', peminjaman.nama_peminjam + '/' + peminjaman.no_telp_peminjam]]
-
-    title_biaya = 'RINCIAN PERKIRAAN BIAYA PERJALANAN'
-    biaya = [['Biaya Perawatan (Rp.)', peminjaman.biaya_perawatan],
-             ['BBM (Rp.)', peminjaman.biaya_bbm],
-             ['Uang Lelah Sopir (Rp.)', peminjaman.biaya_supir],
-             ['Tol (Rp.)', peminjaman.biaya_tol],
-             ['Parkir (Rp.)', peminjaman.biaya_parkir],
-             ['Penginapan (Rp.)', peminjaman.biaya_penginapan],
-             ['Jumlah Total (Rp.)', peminjaman.getTotalBiaya()]]
-    for entry in biaya:
-        entry[1] = '{:,}'.format(entry[1]) # Thousands comma delimiter
-
-    catatan_title = 'Catatan:'
-    catatan_data = ['Perincian biaya ini sifatnya tidak baku, bisa berubah sesuai rundown terakhir.',
-                'Perincian biaya ini bukan merupakan alat bukti pembayaran.',
-                'Bilamana sudah fix dan sepakat silahkan buatkan Surat Permohonan Peminjaman Kendaraan ditujukan kepada Direktur Sarana dan Prasarana ITB.',
-                'Mengambil Formulir Persetujuan Peminjaman, yang telah ditandatangani/disetujui oleh Direktur Sarana dan Prasarana ITB.',
-                'Mekanisme pembayaran (Nilai Nominal dan No. Rekening Pembayaran) akan tertera pada Formulir Persetujuan Peminjaman.']
-
-    waktu_tempat = 'Bandung, ' + datetime.today().strftime('%d %B %Y')
-    posisi_penanda_tangan = 'Kepala Seksi Transportasi'
-    nama_penanda_tangan = 'Ade Sumarna'
-    nip_penanda_tangan = 'NIP. 197810272014091004'
-
-    # Setup
-    elements = []
-    doc = SimpleDocTemplate(response, pagesize=letter)
-    big_space = Spacer(1, 0.2*inch)
-    small_space = Spacer(1, 0.05*inch)
-
-    # Size
-    TAB_WIDTH = 3.2
-    TAB_HEIGHT = 0.3
-    COL_NUM = 2
-    BOOKING_ROW = len(booking)
-    BIAYA_ROW = len(biaya)
-
-    # Style
-    tab_style = TableStyle([('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black),
-        ('BOX', (0, 0), (-1, -1), 0.25, colors.black)
-        ])
-    title_style = ParagraphStyle(
-                name='Normal',
-                fontName='Helvetica-Bold',
-                fontSize=12,
-            )
-    par_style = ParagraphStyle(
-                name='Normal',
-                fontName='Helvetica',
-                fontSize=9,
-            )
-    par_right_style = ParagraphStyle(
-                name='Normal',
-                fontName='Helvetica',
-                fontSize=10,
-                alignment=TA_RIGHT,
-            )
-    par_right_bold_style = ParagraphStyle(
-                name='Normal',
-                fontName='Helvetica-Bold',
-                fontSize=10,
-                alignment=TA_RIGHT,
-            )
-
-    # Elements
-    title_booking_par = Paragraph(title_booking, title_style)
-    tab_booking = Table(booking, COL_NUM*[TAB_WIDTH*inch], BOOKING_ROW*[TAB_HEIGHT*inch])
-    tab_booking.setStyle(tab_style)
-    title_biaya_par = Paragraph(title_biaya, title_style)
-    tab_biaya = Table(biaya, COL_NUM*[TAB_WIDTH*inch], BIAYA_ROW*[TAB_HEIGHT*inch])
-    tab_biaya.setStyle(tab_style)
-    catatan_title_par = Paragraph(catatan_title, par_style)
-    waktu_tempat_par = Paragraph(waktu_tempat, par_right_style)
-    posisi_penanda_tangan_par = Paragraph(posisi_penanda_tangan, par_right_style)
-    nama_penanda_tangan_par = Paragraph(nama_penanda_tangan, par_right_bold_style)
-    nip_penanda_tangan_par = Paragraph(nip_penanda_tangan, par_right_style)
-
-    # Append
-    elements.append(title_booking_par)
-    elements.append(small_space)
-    elements.append(tab_booking)
-    elements.append(big_space)
-    elements.append(title_biaya_par)
-    elements.append(small_space)
-    elements.append(tab_biaya)
-    elements.append(big_space)
-    elements.append(catatan_title_par)
-    for catatan in catatan_data:
-        elements.append(Paragraph('* ' + catatan, par_style))
-    elements.append(big_space)
-    elements.append(waktu_tempat_par)
-    elements.append(posisi_penanda_tangan_par)
-    elements.append(big_space)
-    elements.append(big_space)
-    elements.append(big_space)
-    elements.append(big_space)
-    elements.append(nama_penanda_tangan_par)
-    elements.append(nip_penanda_tangan_par)
-
-
-    doc.build(elements)
-    return response
-
 def export_pdf_surat_tugas(request, peminjaman_id):
     # Set Response
-    FILENAME = 'Konfirmasi_Booking_' + peminjaman_id;
+    FILENAME = 'Surat_Tugas_' + peminjaman_id;
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename="' + FILENAME + '.pdf"'
 
     # Database
     peminjaman = get_object_or_404(PeminjamanKendaraan, pk=peminjaman_id)
     all_mobil = MobilPeminjaman.objects.filter(peminjaman_id=peminjaman_id)
-    mobil = get_object_or_404(Mobil, pk=all_mobil[0].mobil_id)
 
     # Setup
     elements = []
@@ -1248,7 +1122,130 @@ def export_pdf_surat_tugas(request, peminjaman_id):
     doc.build(elements)
     return response
 
+def export_pdf_konfirmasi_booking(request, peminjaman_id):
+    # Set Response
+    FILENAME = 'Konfirmasi_Booking_' + peminjaman_id;
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="' + FILENAME + '.pdf"'
 
+    # Database
+    peminjaman = get_object_or_404(PeminjamanKendaraan, pk=peminjaman_id)
+    all_mobil = MobilPeminjaman.objects.filter(peminjaman_id=peminjaman_id)
+    mobil = get_object_or_404(Mobil, pk=all_mobil[0].mobil_id)
+
+    # Content
+    title_booking = 'BOOKING KENDARAAN'
+    booking = [['No. Booking', peminjaman_id + '/BK/TR/2018'],
+               ['Tanggal Booking', peminjaman.tanggal_booking.strftime('%d %B %Y')],
+               ['Jenis Kendaraan', mobil.jenis],
+               ['Sebanyak', len(all_mobil)],
+               ['Rencana Tanggal Pemakaian', peminjaman.tanggal_pemakaian.strftime('%d %B %Y') + ' s.d. ' + peminjaman.tanggal_pengembalian.strftime('%d %B %Y')],
+               ['Asal', peminjaman.tempat_berkumpul],
+               ['Tujuan', peminjaman.tujuan],
+               ['Acara', peminjaman.acara],
+               ['Nama Pengguna/No. Kontak', peminjaman.nama_peminjam + '/' + peminjaman.no_telp_peminjam]]
+
+    title_biaya = 'RINCIAN PERKIRAAN BIAYA PERJALANAN'
+    biaya = [['Biaya Perawatan (Rp.)', peminjaman.biaya_perawatan],
+             ['BBM (Rp.)', peminjaman.biaya_bbm],
+             ['Uang Lelah Sopir (Rp.)', peminjaman.biaya_supir],
+             ['Tol (Rp.)', peminjaman.biaya_tol],
+             ['Parkir (Rp.)', peminjaman.biaya_parkir],
+             ['Penginapan (Rp.)', peminjaman.biaya_penginapan],
+             ['Jumlah Total (Rp.)', peminjaman.getTotalBiaya()]]
+    for entry in biaya:
+        entry[1] = '{:,}'.format(entry[1]) # Thousands comma delimiter
+
+    catatan_title = 'Catatan:'
+    catatan_data = ['Perincian biaya ini sifatnya tidak baku, bisa berubah sesuai rundown terakhir.',
+                'Perincian biaya ini bukan merupakan alat bukti pembayaran.',
+                'Bilamana sudah fix dan sepakat silahkan buatkan Surat Permohonan Peminjaman Kendaraan ditujukan kepada Direktur Sarana dan Prasarana ITB.',
+                'Mengambil Formulir Persetujuan Peminjaman, yang telah ditandatangani/disetujui oleh Direktur Sarana dan Prasarana ITB.',
+                'Mekanisme pembayaran (Nilai Nominal dan No. Rekening Pembayaran) akan tertera pada Formulir Persetujuan Peminjaman.']
+
+    waktu_tempat = 'Bandung, ' + datetime.today().strftime('%d %B %Y')
+    posisi_penanda_tangan = 'Kepala Seksi Transportasi'
+    nama_penanda_tangan = 'Ade Sumarna'
+    nip_penanda_tangan = 'NIP. 197810272014091004'
+
+    # Setup
+    elements = []
+    doc = SimpleDocTemplate(response, pagesize=letter)
+    big_space = Spacer(1, 0.2*inch)
+    small_space = Spacer(1, 0.05*inch)
+
+    # Size
+    TAB_WIDTH = 3.2
+    TAB_HEIGHT = 0.3
+    COL_NUM = 2
+    BOOKING_ROW = len(booking)
+    BIAYA_ROW = len(biaya)
+
+    # Style
+    tab_style = TableStyle([('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black),
+        ('BOX', (0, 0), (-1, -1), 0.25, colors.black)
+        ])
+    title_style = ParagraphStyle(
+                name='Normal',
+                fontName='Helvetica-Bold',
+                fontSize=12,
+            )
+    par_style = ParagraphStyle(
+                name='Normal',
+                fontName='Helvetica',
+                fontSize=9,
+            )
+    par_right_style = ParagraphStyle(
+                name='Normal',
+                fontName='Helvetica',
+                fontSize=10,
+                alignment=TA_RIGHT,
+            )
+    par_right_bold_style = ParagraphStyle(
+                name='Normal',
+                fontName='Helvetica-Bold',
+                fontSize=10,
+                alignment=TA_RIGHT,
+            )
+
+    # Elements
+    title_booking_par = Paragraph(title_booking, title_style)
+    tab_booking = Table(booking, COL_NUM*[TAB_WIDTH*inch], BOOKING_ROW*[TAB_HEIGHT*inch])
+    tab_booking.setStyle(tab_style)
+    title_biaya_par = Paragraph(title_biaya, title_style)
+    tab_biaya = Table(biaya, COL_NUM*[TAB_WIDTH*inch], BIAYA_ROW*[TAB_HEIGHT*inch])
+    tab_biaya.setStyle(tab_style)
+    catatan_title_par = Paragraph(catatan_title, par_style)
+    waktu_tempat_par = Paragraph(waktu_tempat, par_right_style)
+    posisi_penanda_tangan_par = Paragraph(posisi_penanda_tangan, par_right_style)
+    nama_penanda_tangan_par = Paragraph(nama_penanda_tangan, par_right_bold_style)
+    nip_penanda_tangan_par = Paragraph(nip_penanda_tangan, par_right_style)
+
+    # Append
+    elements.append(title_booking_par)
+    elements.append(small_space)
+    elements.append(tab_booking)
+    elements.append(big_space)
+    elements.append(title_biaya_par)
+    elements.append(small_space)
+    elements.append(tab_biaya)
+    elements.append(big_space)
+    elements.append(catatan_title_par)
+    for catatan in catatan_data:
+        elements.append(Paragraph('* ' + catatan, par_style))
+    elements.append(big_space)
+    elements.append(waktu_tempat_par)
+    elements.append(posisi_penanda_tangan_par)
+    elements.append(big_space)
+    elements.append(big_space)
+    elements.append(big_space)
+    elements.append(big_space)
+    elements.append(nama_penanda_tangan_par)
+    elements.append(nip_penanda_tangan_par)
+
+
+    doc.build(elements)
+    return response
 
 def download_report(request, month, year):
     all_kendaraan = Mobil.objects.all()
