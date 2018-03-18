@@ -20,7 +20,11 @@ urlpatterns = [
 	#
 	###################################################################################################################
 	# ex:/tatacara
-	url(r'^tatacara/$', views.tatacara, name='tatacara'),
+    url(r'^tatacara/$', views.tatacara, name='tatacara'),
+    # ex:/tatacara/edit
+    url(r'^tatacara/edit$', views.tatacaraEditForm, name='tatacaraEditForm'),
+    # ex:/tatacara/change
+    url(r'^tatacara/change$', views.tatacaraEdit, name='tatacaraEdit'),
 
 
 	###################################################################################################################
