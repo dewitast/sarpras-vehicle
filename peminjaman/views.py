@@ -882,21 +882,49 @@ def export_pdf_surat_tugas(request, peminjaman_id):
         title_surat = 'SURAT TUGAS'
         
         #day to hari
-        day = datetime.strptime(peminjaman.tanggal_pemakaian.strftime('%d %B %Y'), '%d %B %Y').strftime('%A')
-        if (day is 'Sunday') :
+        day = str(datetime.strptime(peminjaman.tanggal_pemakaian.strftime('%d %B %Y'), '%d %B %Y').strftime('%w'))
+        if (day is '0') :
             day = 'Minggu'
-        elif (day is 'Monday'):
+        elif (day is '1'):
             day = 'Senin'
-        elif (day is 'Tuesday'):
+        elif (day is '2'):
             day = 'Selasa'
-        elif (day is 'Wednesday'):
+        elif (day is '3'):
             day = 'Rabu'
-        elif (day is 'Thursday'):
+        elif (day is '4'):
             day = 'Kamis'
-        elif (day is 'Friday'):
+        elif (day is '5'):
             day = 'Jumat'
-        else :
+        else:
             day = 'Sabtu'
+
+        #month to bulan
+        month = int(datetime.today().strftime('%m'))
+        if (month is 1 ) :
+            month = 'januari'
+        elif (month is 2):
+            month = 'Februari'
+        elif (month is 3):
+            month = 'Maret'
+        elif (month is 4):
+            month = 'April'
+        elif (month is 5):
+            month = 'Mei'
+        elif (month is 6):
+            month = 'Juni'
+        elif (month is 7):
+            month = 'July'
+        elif (month is 8):
+            month = 'Agustus'
+        elif (month is 9):
+            month = 'September'
+        elif (month is 10):
+            month = 'Oktober'
+        elif (month is 11):
+            month = 'November'
+        else :
+            month = 'Desember'
+
 
         form_surat = [['Nama Pengemudi',namasupir],
                 ['Jenis Kendaraan', mobil.jenis+' No Polisi : '+mobil.no_polisi],
@@ -919,7 +947,7 @@ def export_pdf_surat_tugas(request, peminjaman_id):
         catatan_title = 'Catatan:'
         catatan_data = ['Harap Surat Tugas ini dikembalikan ke Kasie bilamana tugas ini selesai']
         pengguna = 'Pengguna :'
-        waktu_tempat = 'Bandung, ' + datetime.today().strftime('%d %B %Y')
+        waktu_tempat = 'Bandung, ' + datetime.today().strftime('%d')+' '+ month +' '+datetime.today().strftime('%Y')
         posisi_penanda_tangan = 'Kepala Seksi Transportasi'
         nama_penanda_tangan = 'Ade Sumarna'
         nip_penanda_tangan = 'NIP. 197810272014091004'
@@ -1044,22 +1072,22 @@ def export_pdf_surat_tugas(request, peminjaman_id):
         elements.append(big_space)
 
 
-        day = datetime.strptime(peminjaman.tanggal_pemakaian.strftime('%d %B %Y'), '%d %B %Y').strftime('%A')
-        if (day is 'Sunday') :
+        day = str(datetime.strptime(peminjaman.tanggal_pemakaian.strftime('%d %B %Y'), '%d %B %Y').strftime('%A'))
+        if (day is '0') :
             day = 'Minggu'
-        elif (day is 'Monday'):
+        elif (day is '1'):
             day = 'Senin'
-        elif (day is 'Tuesday'):
+        elif (day is '2'):
             day = 'Selasa'
-        elif (day is 'Wednesday'):
+        elif (day is '3'):
             day = 'Rabu'
-        elif (day is 'Thursday'):
+        elif (day is '4'):
             day = 'Kamis'
-        elif (day is 'Friday'):
+        elif (day is '5'):
             day = 'Jumat'
         else :
             day = 'Sabtu'
-            
+
         title_biaya = 'Perincian Biaya Perjalanan'
         biaya = [['Jenis Kendaraan', mobil.jenis],
                 ['Sebanyak', len(all_mobil)],
@@ -1090,7 +1118,7 @@ def export_pdf_surat_tugas(request, peminjaman_id):
         catatan_data = ['Harap surat perincian ini dikembalikan ke Kas ie bilamana tugas sudah selesai',
                     'Semua bukti akomodasi(Uang lelah Sopir, Tol, Parkir,dll agar disetorkan ke Kasie']
 
-        waktu_tempat = 'Bandung, ' + datetime.today().strftime('%d %B %Y')
+        waktu_tempat = 'Bandung, ' + datetime.today().strftime('%d')+' '+ month +' '+datetime.today().strftime('%Y')
         posisi_penanda_tangan = 'Kepala Seksi Transportasi'
         nama_penanda_tangan = 'Ade Sumarna'
         nip_penanda_tangan = 'NIP. 197810272014091004'
