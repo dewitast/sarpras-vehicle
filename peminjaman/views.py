@@ -882,22 +882,7 @@ def export_pdf_surat_tugas(request, peminjaman_id):
         title_surat = 'SURAT TUGAS'
         
         #day to hari
-        day = str(datetime.strptime(peminjaman.tanggal_pemakaian.strftime('%d %B %Y'), '%d %B %Y').strftime('%w'))
-        if (day is '0') :
-            day = 'Minggu'
-        elif (day is '1'):
-            day = 'Senin'
-        elif (day is '2'):
-            day = 'Selasa'
-        elif (day is '3'):
-            day = 'Rabu'
-        elif (day is '4'):
-            day = 'Kamis'
-        elif (day is '5'):
-            day = 'Jumat'
-        else:
-            day = 'Sabtu'
-
+        day = str(datetime.strptime(peminjaman.tanggal_pemakaian.strftime('%d %B %Y'), '%d %B %Y').strftime('%A'))
         form_surat = [['Nama Pengemudi',': '+namasupir],
                 ['Jenis Kendaraan', ': '+mobil.jenis+' No Polisi : '+mobil.no_polisi],
                 ['', ''],
@@ -905,7 +890,7 @@ def export_pdf_surat_tugas(request, peminjaman_id):
                 ['Nama',': '+peminjaman.nama_peminjam],
                 ['Bagian/Jurusan',': '+peminjaman.bagian_jurusan_peminjam],
                 ['Tujuan',': '+peminjaman.tujuan],
-                ['Hari / Tanggal', ': '+day+' / '+peminjaman.tanggal_pemakaian.strftime('%d/%m/%Y')],
+                ['Hari / Tanggal', ': '+dayToHari(day)+' / '+peminjaman.tanggal_pemakaian.strftime('%d/%m/%Y')],
                 ['Berangkat pukul/ Dari',': '+str(peminjaman.waktu_berangkat)+' / '+peminjaman.tempat_berkumpul],
                 ['Pulang Pukul',': '+str(peminjaman.waktu_datang)],
                 ['Odometer Awal',': '+ str(odometersebelum)],
@@ -1044,26 +1029,11 @@ def export_pdf_surat_tugas(request, peminjaman_id):
         elements.append(big_space)
 
 
-        day = str(datetime.strptime(peminjaman.tanggal_pemakaian.strftime('%d %B %Y'), '%d %B %Y').strftime('%w'))
-        if (day is '0') :
-            day = 'Minggu'
-        elif (day is '1'):
-            day = 'Senin'
-        elif (day is '2'):
-            day = 'Selasa'
-        elif (day is '3'):
-            day = 'Rabu'
-        elif (day is '4'):
-            day = 'Kamis'
-        elif (day is '5'):
-            day = 'Jumat'
-        else:
-            day = 'Sabtu'
-
+        day = str(datetime.strptime(peminjaman.tanggal_pemakaian.strftime('%d %B %Y'), '%d %B %Y').strftime('%A'))
         title_biaya = 'Perincian Biaya Perjalanan'
         biaya = [['Jenis Kendaraan', ': '+mobil.jenis],
                 ['Sebanyak', ': '+ str(len(all_mobil))],
-                ['Hari / Tanggal Pemakaian',': '+ day +' / '+peminjaman.tanggal_pemakaian.strftime('%d/%m/%Y')],
+                ['Hari / Tanggal Pemakaian',': '+ dayToHari(day) +' / '+peminjaman.tanggal_pemakaian.strftime('%d/%m/%Y')],
                 ['Asal',': '+peminjaman.tempat_berkumpul],
                 ['Tujuan',': '+peminjaman.tujuan],
                 ['Acara',': '+peminjaman.acara],
