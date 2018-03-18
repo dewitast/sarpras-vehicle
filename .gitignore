@@ -101,3 +101,6 @@ media/*
 
 # Conda
 condaenv*
+
+# Tata cara
+peminjaman/static/tatacara.txt
