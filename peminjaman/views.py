@@ -10,7 +10,7 @@ from django.contrib.auth import authenticate, logout
 from django.utils.timezone import datetime #important if using timezones
 import django_excel as excel
 from reportlab.lib import colors
-from reportlab.lib.enums import TA_RIGHT
+from reportlab.lib.enums import TA_RIGHT,TA_CENTER
 from reportlab.lib.pagesizes import letter, inch
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib.utils import ImageReader
@@ -842,6 +842,293 @@ def export_pdf_peminjaman(request, peminjaman_id):
     can.save()
     return response
 
+def export_pdf_surat_tugas(request, peminjaman_id):
+    # Set Response
+    FILENAME = 'Surat_Tugas_' + peminjaman_id;
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="' + FILENAME + '.pdf"'
+
+    # Database
+    peminjaman = get_object_or_404(PeminjamanKendaraan, pk=peminjaman_id)
+    all_mobil = MobilPeminjaman.objects.filter(peminjaman_id=peminjaman_id)
+
+    # Setup
+    elements = []
+    doc = SimpleDocTemplate(response, pagesize=letter)
+    big_space = Spacer(1, 0.2*inch)
+
+    count = 0
+    for i in all_mobil : 
+        mobil = get_object_or_404(Mobil, pk=all_mobil[count].mobil_id)
+        namasupir =''
+        odometersebelum = ''
+        odometersesudah =''
+
+        if all_mobil[count].supir is not None:
+            namasupir = all_mobil[count].supir.nama
+            odometersebelum = all_mobil[count].odometer_sebelum
+            odometersesudah = all_mobil[count].odometer_sesudah
+
+        #logo
+        base_url = '{0}://{1}{2}logo.png'.format(request.scheme, request.get_host(), settings.MEDIA_URL)
+        logo = ImageReader(base_url)
+        width, height = logo.getSize()
+        aspect = height / float(width)
+        logo_img = Image(base_url, width=width/8, height = width*aspect/8)
+        
+        # Content
+        institut = 'INSTITUT TEKNOLOGI BANDUNG'
+        alamat = 'Jalan Tamansari No. 73 Telp. (022) 2509179, 2501645, Pos. 6708 BANDUNG 4011 '
+        title_surat = 'SURAT TUGAS'
+        day = datetime.strptime(peminjaman.tanggal_pemakaian.strftime('%d %B %Y'), '%d %B %Y').strftime('%A')
+        form_surat = [['Nama Pengemudi',namasupir],
+                ['Jenis Kendaraan', mobil.jenis+' No Polisi : '+mobil.no_polisi],
+                ['', ''],
+                ['Untuk Melaksanakan tugas', 'Dinas / Sosial / Rekreasi dengan'],
+                ['Nama',peminjaman.nama_peminjam],
+                ['Bagian/Jurusan',peminjaman.bagian_jurusan_peminjam],
+                ['Tujuan',peminjaman.tujuan],
+                ['Hari / Tanggal', day+' / '+peminjaman.tanggal_pemakaian.strftime('%d/%m/%Y')],
+                ['Berangkat pukul/ Dari',str(peminjaman.waktu_berangkat)+' / '+peminjaman.tempat_berkumpul],
+                ['Pulang Pukul',str(peminjaman.waktu_datang)],
+                ['Odometer Awal', odometersebelum],
+                ['Odometer Akhir', odometersesudah]]
+        
+        # for entry in biaya:
+        #     entry[1] = '{:,}'.format(entry[1]) # Thousands comma delimiter
+        
+        isi_surat = 'Demikian surat tugas ini kami buat, dengan harapan yang bersangkutan dapat melaksanakan tugasnya dengan rasa penuh tanggung jawab, dan kepada yang berwajib kami mohon bantuan seperlunya bila terjadi hal hal yang tidak kami inginnkan. Terima kasih.'
+        pengantar_surat = 'Yang bertanda tangan dibawah ini, Kasi Transportasi memberikan tugas kepada:'
+        catatan_title = 'Catatan:'
+        catatan_data = ['Harap Surat Tugas ini dikembalikan ke Kasie bilamana tugas ini selesai']
+        pengguna = 'Pengguna :'
+        waktu_tempat = 'Bandung, ' + datetime.today().strftime('%d %B %Y')
+        posisi_penanda_tangan = 'Kepala Seksi Transportasi'
+        nama_penanda_tangan = 'Ade Sumarna'
+        nip_penanda_tangan = 'NIP. 197810272014091004'
+        nama_pengendara = namasupir
+
+        # Size
+        TAB_WIDTH = 2.6
+        TAB_HEIGHT = 0.2
+        COL_NUM = 2
+        BIAYA_ROW = len(form_surat)
+
+        # Style
+        tab_style = TableStyle([('INNERGRID', (0, 0), (-1, -1), 0.25, colors.white),
+            ('BOX', (0, 0), (-1, -1), 0.25, colors.white)],)
+        par_title_style = ParagraphStyle(
+                    name='Normal',
+                    fontName='Helvetica-Bold',
+                    fontSize=14,
+                    alignment=TA_CENTER,
+                )
+        par_subtitle_style = ParagraphStyle(
+                    name='Normal',
+                    fontName='Helvetica-Bold',
+                    fontSize=12,
+                    alignment=TA_CENTER,
+                )
+        par_style = ParagraphStyle(
+                    name='Normal',
+                    fontName='Helvetica',
+                    fontSize=9,
+                )
+        par_address_style = ParagraphStyle(
+                    name='Normal',
+                    fontName='Helvetica',
+                    fontSize=6,
+                    alignment=TA_CENTER,
+                )        
+        par_right_style = ParagraphStyle(
+                    name='Normal',
+                    fontName='Helvetica',
+                    fontSize=10,
+                    alignment=TA_RIGHT,
+                )
+        par_left_style = ParagraphStyle(
+                    name='Normal',
+                    fontName='Helvetica',
+                    fontSize=10,
+                )
+        par_center_style = ParagraphStyle(
+                    name='Normal',
+                    fontName='Helvetica',
+                    fontSize=9,
+                    alignment=TA_CENTER,
+                )
+        par_right_bold_style = ParagraphStyle(
+                    name='Normal',
+                    fontName='Helvetica-Bold',
+                    fontSize=10,
+                    alignment=TA_RIGHT,
+                )
+        
+        # Elements
+        institut_par = Paragraph(institut,par_title_style)
+        alamat_par = Paragraph(alamat,par_address_style)
+        title_surat_par = Paragraph(title_surat,par_subtitle_style)
+        pengantar_surat_par = Paragraph(pengantar_surat,par_left_style) 
+        isi_surat_par = Paragraph(isi_surat,par_left_style)
+        tab_form_surat = Table(form_surat, COL_NUM*[TAB_WIDTH*inch], BIAYA_ROW*[TAB_HEIGHT*inch])
+        tab_form_surat.setStyle(tab_style)
+        catatan_title_par = Paragraph(catatan_title, par_style)
+        waktu_tempat_par = Paragraph(waktu_tempat, par_right_style)
+        kosong_par = Paragraph('',par_left_style)
+        posisi_penanda_tangan_par = Paragraph(posisi_penanda_tangan, par_right_style)
+        nama_penanda_tangan_par = Paragraph(nama_penanda_tangan, par_right_bold_style)
+        nama_pengendara_par = Paragraph(nama_pengendara, par_left_style)
+        nip_penanda_tangan_par = Paragraph(nip_penanda_tangan, par_right_style)
+        pengguna_par = Paragraph(pengguna,par_left_style)
+
+        tbl_data = [[logo_img,institut_par],
+                    [kosong_par,alamat_par]]
+
+        tbl = Table(tbl_data, colWidths=[0,400])
+        
+        tbl1_data = [[kosong_par, waktu_tempat_par],
+                    [pengguna_par, posisi_penanda_tangan_par]]
+
+        tbl1 = Table(tbl1_data)
+        
+        tbl2_data = [[nama_pengendara_par,nama_penanda_tangan_par],
+                    [kosong_par,nip_penanda_tangan_par]]
+        tbl2= Table(tbl2_data)
+
+        # Append
+        elements.append(tbl)
+        elements.append(big_space)
+        elements.append(title_surat_par)
+        elements.append(big_space)
+        elements.append(pengantar_surat_par)
+        elements.append(big_space)
+        elements.append(tab_form_surat)
+        elements.append(big_space)
+        elements.append(isi_surat_par)
+        elements.append(big_space)
+        elements.append(tbl1)
+        elements.append(big_space)
+        elements.append(big_space)
+        elements.append(big_space)
+        elements.append(big_space)
+        elements.append(tbl2)
+        elements.append(catatan_title_par)
+        for catatan in catatan_data:
+            elements.append(Paragraph('* ' + catatan, par_style))
+        
+
+        elements.append(big_space)
+        elements.append(big_space)
+        elements.append(big_space)
+        elements.append(big_space)
+        elements.append(big_space)
+        elements.append(big_space)
+        elements.append(big_space)
+        elements.append(big_space)
+
+
+        day = datetime.strptime(peminjaman.tanggal_pemakaian.strftime('%d %B %Y'), '%d %B %Y').strftime('%A')
+        title_biaya = 'Perincian Biaya Perjalanan'
+        biaya = [['Jenis Kendaraan', mobil.jenis],
+                ['Sebanyak', len(all_mobil)],
+                ['Hari / Tanggal Pemakaian', day+' / '+peminjaman.tanggal_pemakaian.strftime('%d/%m/%Y')],
+                ['Asal',peminjaman.tempat_berkumpul],
+                ['Tujuan',peminjaman.tujuan],
+                ['Acara',peminjaman.acara],
+                ['Pengguna / No.Kontak',peminjaman.nama_peminjam+' / '+peminjaman.no_telp_peminjam],
+                ['Pengemudi',namasupir],
+                ['Tol (Rp.)', peminjaman.biaya_tol],
+                ['Parkir (Rp.)', peminjaman.biaya_parkir],
+                ['Penginapan (Rp.)', peminjaman.biaya_penginapan],
+                ['Jumlah Total (Rp.)', peminjaman.getTotalBiaya()],
+                ['BBM (Rp.)', peminjaman.biaya_bbm],
+                ['Uang Lelah Sopir (Rp.)', peminjaman.biaya_supir],
+                ['Tol (Rp.)', peminjaman.biaya_tol],
+                ['Parkir (Rp.)', peminjaman.biaya_parkir],
+                ['Penginapan (Rp.)', peminjaman.biaya_penginapan],
+                ['Jumlah Total (Rp.)', peminjaman.getTotalBiaya()]]
+        # for entry in biaya:
+        #     entry[1] = '{:,}'.format(entry[1]) # Thousands comma delimiter
+
+        catatan_title = 'Catatan:'
+        catatan_data = ['Harap surat perincian ini dikembalikan ke Kas ie bilamana tugas sudah selesai',
+                    'Semua bukti akomodasi(Uang lelah Sopir, Tol, Parkir,dll agar disetorkan ke Kasie']
+
+        waktu_tempat = 'Bandung, ' + datetime.today().strftime('%d %B %Y')
+        posisi_penanda_tangan = 'Kepala Seksi Transportasi'
+        nama_penanda_tangan = 'Ade Sumarna'
+        nip_penanda_tangan = 'NIP. 197810272014091004'
+
+
+        # Size
+        TAB_WIDTH = 3.2
+        TAB_HEIGHT = 0.3
+        COL_NUM = 2
+        BIAYA_ROW = len(biaya)
+
+        # Style
+        tab_style = TableStyle([('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black),
+            ('BOX', (0, 0), (-1, -1), 0.25, colors.black)
+            ])
+        title_style = ParagraphStyle(
+                    name='Normal',
+                    fontName='Helvetica-Bold',
+                    fontSize=12,
+                )
+        par_style = ParagraphStyle(
+                    name='Normal',
+                    fontName='Helvetica',
+                    fontSize=9,
+                )
+        par_right_style = ParagraphStyle(
+                    name='Normal',
+                    fontName='Helvetica',
+                    fontSize=10,
+                    alignment=TA_RIGHT,
+                )
+        par_right_bold_style = ParagraphStyle(
+                    name='Normal',
+                    fontName='Helvetica-Bold',
+                    fontSize=10,
+                    alignment=TA_RIGHT,
+                )
+
+        # Elements
+        title_biaya_par = Paragraph(title_biaya, title_style)
+        tab_biaya = Table(biaya, COL_NUM*[TAB_WIDTH*inch], BIAYA_ROW*[TAB_HEIGHT*inch])
+        tab_biaya.setStyle(tab_style)
+        catatan_title_par = Paragraph(catatan_title, par_style)
+        waktu_tempat_par = Paragraph(waktu_tempat, par_right_style)
+        posisi_penanda_tangan_par = Paragraph(posisi_penanda_tangan, par_right_style)
+        nama_penanda_tangan_par = Paragraph(nama_penanda_tangan, par_right_bold_style)
+        nip_penanda_tangan_par = Paragraph(nip_penanda_tangan, par_right_style)
+
+        # Append
+        elements.append(title_biaya_par)
+        elements.append(big_space)
+        elements.append(tab_biaya)
+        elements.append(big_space)
+        elements.append(catatan_title_par)
+        for catatan in catatan_data:
+            elements.append(Paragraph('* ' + catatan, par_style))
+        elements.append(big_space)
+        elements.append(waktu_tempat_par)
+        elements.append(posisi_penanda_tangan_par)
+        elements.append(big_space)
+        elements.append(big_space)
+        elements.append(big_space)
+        elements.append(big_space)
+        elements.append(nama_penanda_tangan_par)
+        elements.append(nip_penanda_tangan_par)
+        elements.append(big_space)
+        elements.append(big_space)
+        elements.append(big_space)
+
+        count=count+1
+
+    doc.build(elements)
+    return response
+
 def export_pdf_konfirmasi_booking(request, peminjaman_id):
     # Set Response
     FILENAME = 'Konfirmasi_Booking_' + peminjaman_id;
@@ -966,7 +1253,6 @@ def export_pdf_konfirmasi_booking(request, peminjaman_id):
 
     doc.build(elements)
     return response
-
 
 def download_report(request, month, year):
     all_kendaraan = Mobil.objects.all()
