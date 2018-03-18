@@ -1045,6 +1045,21 @@ def export_pdf_surat_tugas(request, peminjaman_id):
 
 
         day = datetime.strptime(peminjaman.tanggal_pemakaian.strftime('%d %B %Y'), '%d %B %Y').strftime('%A')
+        if (day is 'Sunday') :
+            day = 'Minggu'
+        elif (day is 'Monday'):
+            day = 'Senin'
+        elif (day is 'Tuesday'):
+            day = 'Selasa'
+        elif (day is 'Wednesday'):
+            day = 'Rabu'
+        elif (day is 'Thursday'):
+            day = 'Kamis'
+        elif (day is 'Friday'):
+            day = 'Jumat'
+        else :
+            day = 'Sabtu'
+            
         title_biaya = 'Perincian Biaya Perjalanan'
         biaya = [['Jenis Kendaraan', mobil.jenis],
                 ['Sebanyak', len(all_mobil)],
