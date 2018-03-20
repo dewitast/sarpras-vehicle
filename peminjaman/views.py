@@ -36,7 +36,7 @@ MAX_KENDARAAN = 5
 ###################################################################################################################
 def index(request):
     if not request.user.is_authenticated:
-        return HttpResponseRedirect(reverse('login'))
+        return HttpResponseRedirect(reverse('tatacara'))
     else:
         all_peminjaman = PeminjamanKendaraan.objects.all()
         count_booking = {
@@ -377,7 +377,12 @@ def peminjamanEdit(request, peminjaman_id):
               peminjaman.metode_transfer = None
               peminjaman.foto_bukti_transfer = None
             else :
-              peminjaman.metode_transfer = request.POST['metode_transfer']         
+              peminjaman.metode_transfer = request.POST['metode_transfer'] 
+              
+            metode_transfer = request.POST['metode_transfer'] 
+            if (metode_transfer == '6'):
+              peminjaman.foto_bukti_transfer = None
+              
             tanggal_booking = request.POST['tanggal_booking']
             if '-' not in tanggal_booking:
                 peminjaman.tanggal_booking = process_date(tanggal_booking)
