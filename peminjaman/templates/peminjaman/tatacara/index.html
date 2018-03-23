@@ -25,9 +25,31 @@
     </table>
     {{tata_cara|linebreaks}}
     <br>
+    <div class="row">
 	<a class="btn waves-effect waves-light" style="background-color: #1D73BE; margin-top: 40px;" href="/static/form_booking_kendaraan.pdf" name="action">
             Booking
     </a>
+    <a class="btn waves-effect waves-light" style="background-color: #1D73BE; margin-top: 40px;" href= "{{ file_perkiraan_biaya.pdf.url }}" name="action">
+      Unduh Perkiraan Biaya
+    </a>
+    </div>
+    
+    {% if user.is_authenticated %}
+    <form action="{% url 'uploadPerkiraanBiaya' %}" enctype="multipart/form-data" method="post">
+      {% csrf_token %}
+        <div class="file-field input-field row">
+          <div class="btn" style="background-color: #1D73BE;">
+            <span>Upload File Perkiraan Biaya</span>
+            <input type="file" name="file_perkiraan_biaya" id="file_perkiraan_biaya">
+          </div>
+          <div id="file_perkiraan_biaya_path" class="file-path-wrapper" style="display: none;">
+            <input class="file-path validate" type="text">
+          </div>
+        </div>
+       <button id="file_perkiraan_biaya_submit" class="btn waves-effect waves-light right" style="background-color: #1D73BE; display: none;" type="submit" name="action">Save
+       </button>
+      </form> 
+    {% endif %}
   </div>
 </div>
 {% endblock %}
@@ -35,15 +57,17 @@
 {% block script %}
 <script>
 
-  $('#navbar-menu-tatacara').addClass('active')
 
-SV08
   window.onload = function() {
   };
+  $(document).ready(function() {
+    $('#navbar-menu-tatacara').addClass('active')
+    $('#file_perkiraan_biaya').change(function() {
+        console.log($('#file_perkiraan_biaya').val())
+        $('#file_perkiraan_biaya_path').show()
+        $('#file_perkiraan_biaya_submit').show()
+    })
+  });
   
-
-  }
-
-master
 </script>
 {% endblock %}
