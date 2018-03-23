@@ -266,6 +266,12 @@
 	          <input id="biaya_penginapan" name="biaya_penginapan" type="number" class="validate" min="0" value="{{ peminjaman.biaya_penginapan }}">
 	          <label for="biaya_penginapan">Penginapan (Rp.)*</label>
 		    </div>
+        
+        <div class="input-field col s12">
+	          <input id="total_biaya" name="total_biaya" type="number" value="0" readonly>
+	          <label for="total_biaya">Jumlah Total (Rp.)*</label>
+		    </div>        
+        
 	    </div>
 	    <br />	
 	</form>
@@ -314,6 +320,7 @@
           $('#foto_bukti_metode_transfer').show()
         }
 		});
+    updateTotalBiaya();
 	});
 	// Initialize date picker
 	$('.datepicker').pickadate({
@@ -327,6 +334,46 @@
       $('#foto_bukti_metode_transfer').show()
     }
   })
+  $("#biaya_perawatan").keyup(function(){
+    updateTotalBiaya();
+  });
+  
+  $("#biaya_bbm").keyup(function(){
+    updateTotalBiaya();
+  });
+  
+  $("#biaya_supir").keyup(function(){
+    updateTotalBiaya();
+  });
+  
+  $("#biaya_tol").keyup(function(){
+    updateTotalBiaya();
+  });
+  
+  $("#biaya_parkir").keyup(function(){
+    updateTotalBiaya();
+  });
+  
+  $("#biaya_penginapan").keyup(function(){
+    updateTotalBiaya();
+  });
+  
+  function updateTotalBiaya(){
+    var biaya_perawatan = $("#biaya_perawatan").val();
+    biaya_perawatan = (biaya_perawatan == "") ? 0 : parseInt(biaya_perawatan);
+    var biaya_bbm = $("#biaya_bbm").val();
+    biaya_bbm = (biaya_bbm == "") ? 0 : parseInt(biaya_bbm);
+    var biaya_supir = $("#biaya_supir").val();
+    biaya_supir = (biaya_supir == "") ? 0 : parseInt(biaya_supir);
+    var biaya_tol = $("#biaya_tol").val();
+    biaya_tol = (biaya_tol == "") ? 0 : parseInt(biaya_tol);
+    var biaya_parkir = $("#biaya_parkir").val();
+    biaya_parkir = (biaya_parkir == "") ? 0 : parseInt(biaya_parkir);
+    var biaya_penginapan = $("#biaya_penginapan").val();
+    biaya_penginapan = (biaya_penginapan == "") ? 0 : parseInt(biaya_penginapan);
+    var total_biaya = $("#total_biaya").val(biaya_perawatan + biaya_bbm + biaya_supir + biaya_tol + biaya_parkir + biaya_penginapan);
+    return
+  }
 
 	function validateInput() {
 		$('#error_message').text('')
