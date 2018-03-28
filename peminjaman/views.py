@@ -111,7 +111,8 @@ def index(request):
 #
 ###################################################################################################################
 def tatacara(request):
-    handle = open(settings.STATIC_ROOT + "\\tatacara.txt",'r+')
+    path = os.path.join(settings.STATIC_ROOT, 'tatacara.txt')
+    handle = open(path,'r+')
     var = handle.read()
     handle.close()
     context = {
@@ -124,7 +125,8 @@ def tatacaraEditForm(request):
     if not request.user.is_authenticated:
         return HttpResponseRedirect(reverse('login'))
     else:
-        handle = open(settings.STATIC_ROOT + "\\tatacara.txt",'r+')
+        path = os.path.join(settings.STATIC_ROOT, 'tatacara.txt')
+        handle = open(path,'r+')
         var = handle.read()
         handle.close()
         context = {
@@ -136,7 +138,8 @@ def tatacaraEdit(request):
     if not request.user.is_authenticated:
         return HttpResponseRedirect(reverse('login'))
     else:
-        handle1=open(settings.STATIC_ROOT + "\\tatacara.txt",'r+')
+        path = os.path.join(settings.STATIC_ROOT, 'tatacara.txt')
+        handle1=open(path,'r+')
         tata_cara_new = request.POST['textedit']
         handle1.truncate()
         handle1.write(tata_cara_new)
