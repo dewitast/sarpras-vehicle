@@ -104,3 +104,6 @@ condaenv*
 
 # Tata cara
 peminjaman/static/tatacara.txt
+
+# Settings
+*settings.py
