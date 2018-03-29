@@ -202,28 +202,18 @@ def peminjamanDetail(request, peminjaman_id):
         return render(request, 'peminjaman/peminjaman/detail.html', context)
 
 def peminjamanForm(request):
-    if not request.user.is_authenticated:
-        return HttpResponseRedirect(reverse('login'))
-    else:
+    # if not request.user.is_authenticated:
+    #     return HttpResponseRedirect(reverse('login'))
+    # else:
         all_mobil = Mobil.objects.all()
+        is_authenticated = request.user.is_authenticated;
         context = {
             'all_mobil': all_mobil,
             'MAX_KENDARAAN' : MAX_KENDARAAN,
             'LOOP_RANGE' : range(MAX_KENDARAAN),
+            'is_authenticated' : is_authenticated,
         }
         return render(request, 'peminjaman/peminjaman/create.html', context)
-
-def peminjamanFormPublik(request):
-    all_mobil = Mobil.objects.all()
-    is_authenticated = request.user.is_authenticated;
-    context = {
-        'all_mobil': all_mobil,
-        'MAX_KENDARAAN' : MAX_KENDARAAN,
-        'LOOP_RANGE' : range(MAX_KENDARAAN),
-        'is_authenticated' : is_authenticated,
-    }
-    return render(request, 'peminjaman/peminjaman/create.html', context)
-
 def process_date(date):
     date = date.replace(',', '')
     tokens = date.split(' ')
@@ -288,6 +278,7 @@ def peminjamanCreate(request):
                 biaya_parkir = request.POST['biaya_parkir']
                 biaya_penginapan = request.POST['biaya_penginapan']
                 status_booking = 1
+                email_peminjam = "silahkan@lengkapi.com"
             else :
                 no_surat = "silahkan dilengkapi"
                 tanggal_surat = '2006-01-01 00:00Z'
@@ -298,6 +289,7 @@ def peminjamanCreate(request):
                 biaya_parkir = 0
                 biaya_penginapan = 0
                 status_booking = -1
+                email_peminjam = request.POST['email_peminjam']
 
             tanggal_booking = process_date(request.POST['tanggal_booking'])
             acara = request.POST['acara']
@@ -310,7 +302,7 @@ def peminjamanCreate(request):
             keterangan = request.POST.get('keterangan', '')
             
             STATUS = 0     # status peminjaman
-            email_peminjam = request.POST['email_peminjam']
+
             peminjaman = PeminjamanKendaraan(
                 nama_peminjam=nama_peminjam,
                 no_telp_peminjam=no_telp_peminjam,
@@ -349,10 +341,7 @@ def peminjamanCreate(request):
                 mobilpeminjaman.save()
         except (KeyError):
             # Redisplay the form
-            if request.user.is_authenticated :
-                return HttpResponseRedirect(reverse('peminjamanForm',))
-            else :
-                return HttpResponseRedirect(reverse('peminjamanFormPublik'))
+            return HttpResponseRedirect(reverse('peminjamanForm'))
             
         else:
             # Display detail peminjaman

@@ -62,8 +62,6 @@ urlpatterns = [
     url(r'^peminjaman/(?P<peminjaman_id>[0-9]+)/formfinal/$', views.peminjamanFormFinal, name='peminjamanFormFinal'),
     # ex; /peminjaman/5/formFinalEdit
     url(r'^peminjaman/(?P<peminjaman_id>[0-9]+)/formFinalEdit/$', views.formFinalEdit, name='formFinalEdit'),
-    # ex; /peminjaman/formPeminjamanPublik
-    url(r'^peminjaman/formPeminjamanPublik/$', views.peminjamanFormPublik, name='peminjamanFormPublik'),
 
     ###################################################################################################################
     #

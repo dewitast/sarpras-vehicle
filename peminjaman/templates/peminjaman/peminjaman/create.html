@@ -93,12 +93,14 @@
 	          <input id="bagian_jurusan" name="bagian_jurusan" type="text" class="validate">
 	          <label for="bagian_jurusan">Bagian/Jurusan</label>
 		    </div>
-		    {% if not is_authenticated %}
 			<div class="input-field col s12">
 	          <input id="email_peminjam" name="email_peminjam" type="text" class="validate">
-	          <label for="email_peminjam">Email*</label>
+		    	{% if not is_authenticated %}
+	          		<label for="email_peminjam">Email*</label>
+	          	{% else %}
+	          		<label for="email_peminjam">Email</label>
+	          	{% endif %}
 		    </div>
-		    {% endif %}
 	    </div>
 
 	    <div class="row">
