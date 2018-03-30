@@ -1563,7 +1563,7 @@ def download_car_report(request, kendaraan_id):
             else:
                 ada = 'v'
                 tidak_ada = ''
-            if int(mapMonth(bulan_pinjam)) == month and pinjammobil.supir_id is not None and pinjammobil.odometer_sebelum is not None and pinjammobil.odometer_sesudah is not None :
+            if int(monthToStringNumber(bulan_pinjam)) == month and pinjammobil.supir_id is not None and pinjammobil.odometer_sebelum is not None and pinjammobil.odometer_sesudah is not None :
 
                 supir = get_object_or_404(Supir, pk=pinjammobil.supir_id)
 
@@ -1631,6 +1631,32 @@ def cek(request):
     return HttpResponse("True")
 
 def mapMonth(name):
+    if name == "Januari":
+        return '01'
+    elif name == "Februari":
+        return '02'
+    elif name == "Maret":
+        return '03'
+    elif name == "April":
+        return '04'
+    elif name == "Mei":
+        return '05'
+    elif name == "Juni":
+        return '06'
+    elif name == "Juli":
+        return '07'
+    elif name == "Agustus":
+        return '08'
+    elif name == "September":
+        return '09'
+    elif name == "Oktober":
+        return '10'
+    elif name == "November":
+        return '11'
+    elif name == "Desember":
+        return '12'
+
+def monthToStringNumber(name):
     if name == "January":
         return '01'
     elif name == "February":
@@ -1655,6 +1681,7 @@ def mapMonth(name):
         return '11'
     elif name == "December":
         return '12'
+
 
 def intToMonth(bulan):
 	if bulan == 1:
