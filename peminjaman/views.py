@@ -2,6 +2,7 @@ import csv
 import datetime
 import os
 from calendar import monthrange
+from django.core.mail import send_mail
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect, HttpResponse
 from django.template import loader
@@ -290,6 +291,12 @@ def peminjamanCreate(request):
                 biaya_penginapan = 0
                 status_booking = -1
                 email_peminjam = request.POST['email_peminjam']
+                send_mail(
+                    'Peminjaman Baru', # Subject
+                    'Terdapat peminjaman baru', # Message content
+                    settings.EMAIL_HOST_USER, # Sender
+                    [settings.EMAIL_HOST_USER], # Receiver
+                    )
 
             tanggal_booking = process_date(request.POST['tanggal_booking'])
             acara = request.POST['acara']
@@ -330,6 +337,7 @@ def peminjamanCreate(request):
                 email_peminjam = email_peminjam,
                 status_booking = status_booking
                 )
+
             peminjaman.save()
             jumlah_kendaraan = int(request.POST['jumlah_kendaraan'])
             for i in range(jumlah_kendaraan):
