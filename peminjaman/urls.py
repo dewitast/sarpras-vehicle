@@ -125,5 +125,6 @@ urlpatterns = [
     url(r'^export/surattugas/(?P<peminjaman_id>[0-9]+)/$', views.export_pdf_surat_tugas, name='export_pdf_surat_tugas'),
 	url(r'^download_report/(?P<month>[0-9]+)/(?P<year>[0-9]+)/$', views.download_peminjaman_report, name='download_report'),
 	url(r'^download_car_report/(?P<kendaraan_id>[0-9]+)/$', views.download_car_report, name='download_car_report'),
+    url(r'^download_driver_report/(?P<supir_id>[0-9]+)/$', views.download_driver_report, name='download_driver_report'),
 	url(r'^cek/$', views.cek, name='cek'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
