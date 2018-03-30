@@ -2,7 +2,7 @@ import csv
 import datetime
 import os
 from calendar import monthrange
-from django.core.mail import send_mail
+from django.core.mail import send_mail, EmailMessage
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect, HttpResponse
 from django.template import loader
@@ -405,6 +405,9 @@ def peminjamanEdit(request, peminjaman_id):
             peminjaman.biaya_tol = request.POST['biaya_tol']
             peminjaman.biaya_parkir = request.POST['biaya_parkir']
             peminjaman.biaya_penginapan = request.POST['biaya_penginapan']
+
+            send = peminjaman.status_booking == -1
+            peminjaman.status_booking = 1
             
             status = request.POST['status']                
             if (status == '0'):
@@ -430,6 +433,20 @@ def peminjamanEdit(request, peminjaman_id):
             if '-' not in tanggal_surat:
                 peminjaman.tanggal_surat = process_date(tanggal_surat)
             peminjaman.save()
+
+            # Send email to user
+            if send:
+                response = export_pdf_konfirmasi_booking(request, peminjaman_id)
+                mail = EmailMessage(
+                        'Biaya Peminjaman',
+                        'Berikut terlampir data peminjaman yang Anda telah lakukan.\n \
+                        Segera konfirmai ke sarpras jika Anda menyetujui rancangan biaya tersebut',
+                        settings.EMAIL_HOST_USER,
+                        [peminjaman.email_peminjam]
+                    )
+                mail.attach('Biaya peminjaman', response.content, 'application/pdf')
+                mail.send()
+                return HttpResponseRedirect(reverse('daftarPeminjam'))
         except (KeyError):
             # Redisplay the form
             return HttpResponseRedirect(reverse('peminjamanEdit'))
@@ -1252,7 +1269,7 @@ def export_pdf_konfirmasi_booking(request, peminjaman_id):
     title_booking = 'BOOKING KENDARAAN'
     booking = [['No. Booking', peminjaman_id + '/BK/TR/2018'],
                ['Tanggal Booking', getTanggal(peminjaman.tanggal_booking)],
-               ['Jenis Kendaraan', mobil.jenis],
+               ['Jenis Kendaraan', mobil.nama],
                ['Sebanyak', len(all_mobil)],
                ['Rencana Tanggal Pemakaian', getTanggal(peminjaman.tanggal_pemakaian) + ' s.d. ' + getTanggal(peminjaman.tanggal_pengembalian)],
                ['Asal', peminjaman.tempat_berkumpul],

@@ -16,7 +16,7 @@
 
             <tbody>
 				{% for peminjaman in all_peminjaman %}
-					<tr>
+					<tr class="clickable" data-href="/peminjaman/{{ peminjaman.id }}/edit" style="cursor: pointer;">
 						{% if peminjaman.status_booking == -1 %}
 						<td>{{peminjaman.nama_peminjam}}</td>
 						<td>{{peminjaman.email_peminjam}}</td>
@@ -28,4 +28,14 @@
 		</table>
 	{% endif %}
 
+{% endblock %}
+
+{% block script %}
+<script>
+	$(document).ready(function() {
+		$(".clickable").click(function() {
+			window.location = $(this).data("href");
+		});
+	});
+</script>
 {% endblock %}
