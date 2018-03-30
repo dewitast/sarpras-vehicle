@@ -20,6 +20,9 @@ class FotoMobil(models.Model):
 	mobil = models.ForeignKey(Mobil, on_delete=models.CASCADE)
 	foto = models.ImageField(upload_to='kendaraan/')
 
+class PerkiraanBiaya(models.Model):
+	pdf = models.FileField(upload_to='perkiraan_biaya/')
+
 class PeminjamanKendaraan(models.Model):
 	nama_peminjam = models.CharField(max_length=100)
 	no_telp_peminjam = models.CharField(max_length=100)

@@ -418,5 +418,13 @@
   {"model": "peminjaman.fotomobil", "pk": 16, "fields": {"id": 16, "foto": "kendaraan/D8526CR_Dalam.jpg","mobil_id": 9}},
   {"model": "peminjaman.fotomobil", "pk": 17, "fields": {"id": 17, "foto": "kendaraan/D7161C_Depan.jpg","mobil_id": 13}},
   {"model": "peminjaman.fotomobil", "pk": 18, "fields": {"id": 18, "foto": "kendaraan/D7161C_Samping.jpg","mobil_id": 13}},
-  {"model": "peminjaman.fotomobil", "pk": 19, "fields": {"id": 19, "foto": "kendaraan/D7161C_Dalam.jpg","mobil_id": 13}}
+  {"model": "peminjaman.fotomobil", "pk": 19, "fields": {"id": 19, "foto": "kendaraan/D7161C_Dalam.jpg","mobil_id": 13}},
+  {
+    "model": "peminjaman.perkiraanbiaya",
+    "pk": 1,
+    "fields": {
+      "id": 1,
+      "pdf": "perkiraan_biaya/Perhitungan_Perjalanan_2018.pdf"
+    }
+  }
 ]

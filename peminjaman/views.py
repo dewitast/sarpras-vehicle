@@ -20,7 +20,7 @@ from reportlab.pdfbase.pdfmetrics import stringWidth
 from reportlab.platypus import Image, SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
 import xlwt
 
-from .models import PeminjamanKendaraan, Mobil, Supir, FotoMobil, TeleponSupir, MobilPeminjaman
+from .models import PeminjamanKendaraan, Mobil, Supir, FotoMobil, TeleponSupir, MobilPeminjaman, PerkiraanBiaya
 
 ###################################################################################################################
 #
@@ -115,11 +115,12 @@ def tatacara(request):
     handle = open(path,'r+')
     var = handle.read()
     handle.close()
+    file_perkiraan_biaya = get_object_or_404(PerkiraanBiaya, pk=1)
     context = {
         'tata_cara' : var,
+        'file_perkiraan_biaya': file_perkiraan_biaya
     }
     return render(request, 'peminjaman/tatacara/index.html', context)
-
 
 def tatacaraEditForm(request):
     if not request.user.is_authenticated:
@@ -144,6 +145,17 @@ def tatacaraEdit(request):
         handle1.truncate()
         handle1.write(tata_cara_new)
         handle1.close()
+        return HttpResponseRedirect(reverse('tatacara'))
+
+def uploadPerkiraanBiaya(request):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse('login'))
+    else:
+       # Replace record
+        file_perkiraan_biaya = request.FILES.get('file_perkiraan_biaya', False)
+        if file_perkiraan_biaya != False:
+            file_perkiraan_biaya = PerkiraanBiaya(pdf=file_perkiraan_biaya,pk=1)
+            file_perkiraan_biaya.save()
         return HttpResponseRedirect(reverse('tatacara'))
 
 ###################################################################################################################
