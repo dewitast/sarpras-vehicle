@@ -111,7 +111,6 @@ def index(request):
 #
 ###################################################################################################################
 def tatacara(request):
-    handle = open(settings.STATIC_ROOT + "\\tatacara.txt",'r+')
     path = os.path.join(settings.STATIC_ROOT, 'tatacara.txt')
     handle = open(path,'r+')
     var = handle.read()
@@ -152,10 +151,10 @@ def uploadPerkiraanBiaya(request):
     if not request.user.is_authenticated:
         return HttpResponseRedirect(reverse('login'))
     else:
-       # Create new FotoMobil record
+       # Replace record
         file_perkiraan_biaya = request.FILES.get('file_perkiraan_biaya', False)
         if file_perkiraan_biaya != False:
-            file_perkiraan_biaya = PerkiraanBiaya(pdf=request.FILES['file_perkiraan_biaya'],pk=1)
+            file_perkiraan_biaya = PerkiraanBiaya(pdf=file_perkiraan_biaya,pk=1)
             file_perkiraan_biaya.save()
         return HttpResponseRedirect(reverse('tatacara'))
 
