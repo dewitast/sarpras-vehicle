@@ -1723,10 +1723,21 @@ def download_driver_report(request, supir_id):
                 no += 1
                 row_num += 1
 
+
+        ws.write_merge(row_num+1, row_num+1, 1, 2, "Mengetahui,")
+        ws.write_merge(row_num+2, row_num+2, 1, 3, "Kasubdit Operasional dan Kebersihan")
+        ws.write_merge(row_num+6, row_num+6, 1, 2, "Doddy Iskandar, ST.")
+        ws.write_merge(row_num+7, row_num+7, 1, 2, "Nopeg. 108 000 050")
+
+        ws.write_merge(row_num+1, row_num+1, 6, 7, "Disetujui")
+        ws.write_merge(row_num+2, row_num+2, 6, 7, "Kasi Transportasi")
+        ws.write_merge(row_num+6, row_num+6, 6, 7, "Ade Sumarna")
+        ws.write_merge(row_num+7, row_num+7, 6, 7, "NIP.197810272014091004")
         ##################
         # END OF CONTENT #
         ##################
-             
+
+
     wb.save(response)
     return response
 
