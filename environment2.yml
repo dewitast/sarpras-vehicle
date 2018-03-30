@@ -1,0 +1,46 @@
+name: django
+channels:
+- !!python/unicode
+  'defaults'
+dependencies:
+- !!python/unicode
+  'bzip2'
+- !!python/unicode
+  'freetype'
+- !!python/unicode
+  'jpeg'
+- !!python/unicode
+  'libpng'
+- !!python/unicode
+  'libtiff'
+- !!python/unicode
+  'mysql-python'
+- !!python/unicode
+  'olefile'
+- !!python/unicode
+  'pillow'
+- !!python/unicode
+  'pip'
+- !!python/unicode
+  'python'
+- !!python/unicode
+  'setuptools'
+- !!python/unicode
+  'wheel'
+- !!python/unicode
+  'xlwt'
+- !!python/unicode
+  'zlib'
+- pip:
+  - django
+  - django-excel
+  - et-xmlfile
+  - jdcal 
+  - openpyxl
+  - pyexcel
+  - pyexcel-io
+  - pyexcel-webio
+  - pyexcel-xlsx
+  - texttable
+  - reportlab
+prefix: !!python/unicode 'C:\Users\user\Anaconda2\envs\django'
