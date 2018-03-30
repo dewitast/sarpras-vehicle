@@ -35,7 +35,7 @@
     </div>
     
     {% if user.is_authenticated %}
-    <form action="{% url 'uploadPerkiraanBiaya' %}" enctype="multipart/form-data" method="post">
+    <form id="form_file_perkiraan_biaya" action="{% url 'uploadPerkiraanBiaya' %}" enctype="multipart/form-data" method="post" class="right">
       {% csrf_token %}
         <div class="file-field input-field row">
           <div class="btn" style="background-color: #1D73BE;">
@@ -66,6 +66,7 @@
         console.log($('#file_perkiraan_biaya').val())
         $('#file_perkiraan_biaya_path').show()
         $('#file_perkiraan_biaya_submit').show()
+        $('#form_file_perkiraan_biaya').removeClass("right")
     })
   });
   
