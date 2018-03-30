@@ -60,9 +60,10 @@ urlpatterns = [
     url(r'^peminjaman/(?P<peminjaman_id>[0-9]+)/deleteBukti/$', views.deleteBuktiTransfer, name='deleteBuktiTransfer'),
     # ex: /peminjaman/5/formfinal
     url(r'^peminjaman/(?P<peminjaman_id>[0-9]+)/formfinal/$', views.peminjamanFormFinal, name='peminjamanFormFinal'),
-    # ex; /peminjaman/5/formFinalEdit
+    # ex: /peminjaman/5/formFinalEdit
     url(r'^peminjaman/(?P<peminjaman_id>[0-9]+)/formFinalEdit/$', views.formFinalEdit, name='formFinalEdit'),
-
+    # ex: /peminjaman/daftarPeminjam
+    url(r'^peminjaman/daftarPeminjam/$', views.daftarPeminjam, name='daftarPeminjam'),
     ###################################################################################################################
     #
     # URL SUPIR

@@ -507,6 +507,17 @@ def formFinalEdit(request, peminjaman_id):
             return HttpResponseRedirect(reverse('peminjaman'))
         except:
             return HttpResponseRedirect(reverse('peminjamanFormFinal', args=(peminjaman_id,)))
+
+def daftarPeminjam(request):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse('login'))
+    else :
+        all_peminjaman = list(PeminjamanKendaraan.objects.all())
+        context = {
+            'all_peminjaman' : all_peminjaman,
+        }
+        return render(request, 'peminjaman/daftarpeminjam/index.html', context)
+
 ###################################################################################################################
 #
 # Supir
