@@ -21,7 +21,7 @@ class FotoMobil(models.Model):
 	foto = models.ImageField(upload_to='kendaraan/')
 
 class PerkiraanBiaya(models.Model):
-	pdf = models.ImageField(upload_to='perkiraan_biaya/')
+	pdf = models.FileField(upload_to='perkiraan_biaya/')
 
 class PeminjamanKendaraan(models.Model):
 	nama_peminjam = models.CharField(max_length=100)
