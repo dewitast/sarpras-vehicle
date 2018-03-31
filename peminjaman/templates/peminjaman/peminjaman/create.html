@@ -94,7 +94,7 @@
 	          <label for="bagian_jurusan">Bagian/Jurusan</label>
 		    </div>
 			<div class="input-field col s12">
-	          <input id="email_peminjam" name="email_peminjam" type="text" class="validate">
+	          <input id="email_peminjam" type="email" required name="email_peminjam" type="text" class="validate">
 		    	{% if not is_authenticated %}
 	          		<label for="email_peminjam">Email*</label>
 	          	{% else %}
@@ -260,7 +260,10 @@
     var total_biaya = $("#total_biaya").val(biaya_perawatan + biaya_bbm + biaya_supir + biaya_tol + biaya_parkir + biaya_penginapan);
     return
   }
-  
+  	function validateEmail(email) {
+ 		var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  		return re.test(email);
+	}
 	function validateInput() {
 		$('#error_message').text('')
 		var nama_peminjam = $('#nama_peminjam').val()
@@ -422,6 +425,11 @@
 				console.log("Missing: email peminjam")
 				$('#email_peminjam').focus()
 				$('#error_message').text('Please input your email')
+				return
+			} else if (!validateEmail(email_peminjam)) {
+				console.log("Missing: email peminjam")
+				$('#email_peminjam').focus()
+				$('#error_message').text('Please Input Validate Email')
 				return
 			}
 		{% endif %}
