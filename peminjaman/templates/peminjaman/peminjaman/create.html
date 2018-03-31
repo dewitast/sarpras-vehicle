@@ -6,10 +6,15 @@
 
 {% block content %}
 <br />
+
 <div class="row">
 	<div class="col s12">
     	<h4>Form Peminjaman Baru</h4>
+    	<p>Jika anda ingin melakukan pemesanan online, silahkan isi formulir di bawah ini.</p>
   	</div>
+	<a class="btn waves-effect waves-light" style="background-color: #1D73BE; margin-top: 40px;" href="/static/form_booking_kendaraan.pdf" name="action">
+            Unduh Formulir
+   	</a>
 	<form action="{% url 'peminjamanCreate' %}" method="post" id="form" enctype="multipart/form-data">
 		{% csrf_token %}
 		<div class="row">
