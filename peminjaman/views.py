@@ -1688,6 +1688,133 @@ def download_car_report(request, kendaraan_id):
     wb.save(response)
     return response
 
+
+
+def download_driver_report(request, supir_id):
+
+    supir = get_object_or_404(Supir, pk=supir_id)
+    mobilPeminjaman = MobilPeminjaman.objects.filter(supir_id= supir_id)
+
+
+    response = HttpResponse(content_type='application/ms-excel')
+    response['Content-Disposition'] = 'attachment; filename=laporan_'+ supir.nama +'.xls'
+    wb = xlwt.Workbook(encoding='utf-8')
+
+    for month in range(1, 13):
+        ws = wb.add_sheet(intToMonth(month))
+
+        row_num = 0
+
+        
+        ###################
+        ### HEADER FILE ###
+        ###################
+        ws.write_merge(0, 0, 0, 15, "FORMULIR TUGAS DAN KEGIATAN PENGEMUDI ")
+        ws.write_merge(1, 1, 0, 15, "DI SEKSI TRANSPORTASI")
+        ws.write_merge(3, 3, 0, 1, "Bulan")
+        ws.write(3, 2, ": " + intToMonth(month))
+        ws.write_merge(4, 4, 0, 1, "Jenis Kendaraan")
+        ws.write(4, 2, ": " + supir.nama)
+        ws.write_merge(5, 5, 0, 1, "NIP/NOPEG.")     
+        ws.write(5, 2, ": PKWT") 
+        row_num += 6
+
+        
+        ### end of header file ###
+
+        ################
+        # HEADER TABEL #
+        ################
+        header_font = xlwt.XFStyle()
+        header_font.alignment.horz = header_font.alignment.HORZ_CENTER
+
+        borders = xlwt.Borders()
+        borders.left = xlwt.Borders.THIN
+        borders.right = xlwt.Borders.THIN
+        borders.top = xlwt.Borders.THIN
+        borders.bottom = xlwt.Borders.THIN
+
+        header_font.borders = borders
+
+        ws.write_merge(8, 8, 0, 0, "NO.", header_font)
+        ws.col(0).width = (len("NO.")*367)
+
+        ws.write_merge(8, 8, 1, 1, "HARI", header_font)
+        ws.col(1).width = (len("Minggu--")*367)
+
+        ws.write_merge(8, 8, 2, 2, "TANGGAL", header_font)
+        ws.col(2).width = (len("33 Desember 20")*367)
+
+        ws.write_merge(8, 8, 3, 3, "KEGIATAN", header_font)
+        ws.col(3).width = (len("Minggu--")*367*4)
+
+        ws.write_merge(8, 8, 4, 4, "NOPOL KENDARAAN YANG DIPAKAI", header_font)
+        ws.col(4).width = (len("NOPOL KENDARAAN YANG DIPAKAI")*367)
+
+        ws.write_merge(8, 8, 5, 5, "KM AWAL", header_font)
+        ws.col(5).width = (len("KM AWAL")*367)
+
+        ws.write_merge(8, 8, 6, 6, "KM AKHIR", header_font)
+        ws.col(6).width = (len("KM AKHIR")*367)
+
+        ws.write_merge(8, 8, 7, 7, "JARAK KM YANG DITEMPUH", header_font)
+        ws.col(7).width = (len("JARAK KM YANG DITEMPUH")*367)
+
+        ws.write_merge(8, 8, 8, 8, "KETERANGAN", header_font)
+        ws.col(8).width = (len("KETERANGAN-----")*367)
+        ##### end header table #######
+        
+
+        ###########
+        # CONTENT #
+        ###########
+        content_font = xlwt.XFStyle()
+        content_font.borders = borders
+        row_num = 9
+        no = 1
+
+        for peminjaman in mobilPeminjaman :
+            mobiltugas = get_object_or_404(PeminjamanKendaraan, pk = peminjaman.peminjaman_id)
+            bulan_pinjam = mobiltugas.tanggal_pemakaian.strftime('%B')
+            mobil = get_object_or_404(Mobil, pk = peminjaman.mobil_id)
+            
+            if int(mapMonth(bulan_pinjam)) == month :
+                day_pelaksanaan = datetime.strptime(mobiltugas.tanggal_pemakaian.strftime('%d %B %Y'), '%d %B %Y').strftime('%A')
+
+                ws.write(row_num, 0, no, content_font)  # No
+                ws.write(row_num, 1, dayToHari(day_pelaksanaan), content_font)  # Hari
+                ws.write(row_num, 2, mobiltugas.tanggal_pemakaian.strftime('%d %B %Y'), content_font)  # Tanggal
+                ws.write(row_num, 3, mobiltugas.acara, content_font) #kegiatan
+                ws.write(row_num, 4, mobil.no_polisi, content_font) #nopol kendaraan 
+                ws.write(row_num, 5, peminjaman.odometer_sebelum, content_font) # km awal
+                ws.write(row_num, 6, peminjaman.odometer_sesudah, content_font) #km akhir
+                ws.write(row_num, 7, (peminjaman.odometer_sesudah - peminjaman.odometer_sebelum) , content_font) # jarak
+                if mobiltugas.keterangan :                
+                    ws.write(row_num, 8, mobiltugas.keterangan, content_font)  #keterangan
+                else :
+                    ws.write(row_num, 8, "Tidak ada keterangan", content_font)  #keterangan
+
+                no += 1
+                row_num += 1
+
+
+        ws.write_merge(row_num+1, row_num+1, 1, 2, "Mengetahui,")
+        ws.write_merge(row_num+2, row_num+2, 1, 3, "Kasubdit Operasional dan Kebersihan")
+        ws.write_merge(row_num+6, row_num+6, 1, 2, "Doddy Iskandar, ST.")
+        ws.write_merge(row_num+7, row_num+7, 1, 2, "Nopeg. 108 000 050")
+
+        ws.write_merge(row_num+1, row_num+1, 6, 7, "Disetujui")
+        ws.write_merge(row_num+2, row_num+2, 6, 7, "Kasi Transportasi")
+        ws.write_merge(row_num+6, row_num+6, 6, 7, "Ade Sumarna")
+        ws.write_merge(row_num+7, row_num+7, 6, 7, "NIP.197810272014091004")
+        ##################
+        # END OF CONTENT #
+        ##################
+
+
+    wb.save(response)
+    return response
+
 def cek(request):
     tanggal_pemakaian = request.POST['date']
     year = tanggal_pemakaian.replace(',', '').split(' ')[2]
