@@ -32,6 +32,9 @@ urlpatterns = [
     url(r'^tatacara/edit$', views.tatacaraEditForm, name='tatacaraEditForm'),
     # ex:/tatacara/change
     url(r'^tatacara/change$', views.tatacaraEdit, name='tatacaraEdit'),
+    # ex:/tatacara/upload
+    url(r'^tatacara/uploadPerkiraanBiaya$', views.uploadPerkiraanBiaya, name='uploadPerkiraanBiaya'),
+    
 
 	###################################################################################################################
 	#

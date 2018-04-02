@@ -21,7 +21,7 @@ from reportlab.pdfbase.pdfmetrics import stringWidth
 from reportlab.platypus import Image, SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
 import xlwt
 
-from .models import PeminjamanKendaraan, Mobil, Supir, FotoMobil, TeleponSupir, MobilPeminjaman
+from .models import PeminjamanKendaraan, Mobil, Supir, FotoMobil, TeleponSupir, MobilPeminjaman, PerkiraanBiaya
 
 ###################################################################################################################
 #
@@ -116,11 +116,12 @@ def tatacara(request):
     handle = open(path,'r+')
     var = handle.read()
     handle.close()
+    file_perkiraan_biaya = get_object_or_404(PerkiraanBiaya, pk=1)
     context = {
         'tata_cara' : var,
+        'file_perkiraan_biaya': file_perkiraan_biaya
     }
     return render(request, 'peminjaman/tatacara/index.html', context)
-
 
 def tatacaraEditForm(request):
     if not request.user.is_authenticated:
@@ -145,6 +146,17 @@ def tatacaraEdit(request):
         handle1.truncate()
         handle1.write(tata_cara_new)
         handle1.close()
+        return HttpResponseRedirect(reverse('tatacara'))
+
+def uploadPerkiraanBiaya(request):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse('login'))
+    else:
+       # Replace record
+        file_perkiraan_biaya = request.FILES.get('file_perkiraan_biaya', False)
+        if file_perkiraan_biaya != False:
+            file_perkiraan_biaya = PerkiraanBiaya(pdf=file_perkiraan_biaya,pk=1)
+            file_perkiraan_biaya.save()
         return HttpResponseRedirect(reverse('tatacara'))
 
 ###################################################################################################################
@@ -1502,7 +1514,7 @@ def download_car_report(request, kendaraan_id):
 
     mobil = get_object_or_404(Mobil, pk=kendaraan_id)
 
-    peminjaman = PeminjamanKendaraan.objects.filter(mobil_id=mobil.id).exclude(status=3)
+    mobilpeminjaman = MobilPeminjaman.objects.filter(mobil_id=mobil.id)
 
     response = HttpResponse(content_type='application/ms-excel')
     response['Content-Disposition'] = 'attachment; filename=report_'+ mobil.nama +'.xls'
@@ -1588,6 +1600,22 @@ def download_car_report(request, kendaraan_id):
 
         ws.write_merge(6, 8, 17, 17, "Keterangan", header_font)
         ws.col(17).width = (len("Keterangan")*367)
+
+        ws.write_merge(6, 6, 18, 24, "Biaya", header_font)
+        ws.write_merge(7, 8, 18, 18, "Biaya BBM", header_font)
+        ws.col(18).width = (len("Biaya BBM BBM")*367)
+        ws.write_merge(7, 8, 19, 19, "Biaya Parkir", header_font)
+        ws.col(19).width = (len("Biaya Parkir")*367)
+        ws.write_merge(7, 8, 20, 20, "Biaya Penginapan", header_font)
+        ws.col(20).width = (len("Biaya Penginapan")*367)
+        ws.write_merge(7, 8, 21, 21, "Biaya Perawatan", header_font)
+        ws.col(21).width = (len("Biaya Perawatan")*367)
+        ws.write_merge(7, 8, 22, 22, "Biaya Supir", header_font)
+        ws.col(22).width = (len("Biaya Supir")*367)
+        ws.write_merge(7, 8, 23, 23, "Biaya Tol", header_font)
+        ws.col(23).width = (len("Biaya Tol Tol")*367)
+        ws.write_merge(7, 8, 24, 24, "Biaya Total", header_font)
+        ws.col(24).width = (len("Biaya Total")*367)
         ##### end header table #######
 
         #############################
@@ -1597,21 +1625,23 @@ def download_car_report(request, kendaraan_id):
         content_font.borders = borders
         row_num = 9
         no = 1
+        subtotal = 0
 
-        for pinjam in peminjaman:
+        for pinjammobil in mobilpeminjaman:
 
+            pinjam = get_object_or_404(PeminjamanKendaraan, pk=pinjammobil.peminjaman_id)
             bulan_pinjam = pinjam.tanggal_pemakaian.strftime('%B')
-            if pinjam.bukti_transfer == 0:
+            if pinjam.foto_bukti_transfer == 0 or pinjam.foto_bukti_transfer == "":
                 ada = ''
                 tidak_ada = 'v'
             else:
                 ada = 'v'
                 tidak_ada = ''
+            if int(monthToStringNumber(bulan_pinjam)) == month and pinjammobil.supir_id is not None and pinjammobil.odometer_sebelum is not None and pinjammobil.odometer_sesudah is not None :
 
-            if int(mapMonth(bulan_pinjam)) == month :
+                supir = get_object_or_404(Supir, pk=pinjammobil.supir_id)
 
-                supir = get_object_or_404(Supir, pk=pinjam.supir_id)
-                peminjam = get_object_or_404(Peminjam, pk=pinjam.peminjam_id)
+                totalbiaya = pinjam.biaya_bbm + pinjam.biaya_parkir + pinjam.biaya_penginapan + pinjam.biaya_perawatan + pinjam.biaya_supir + pinjam.biaya_tol
 
                 day_pemesanan = datetime.strptime(pinjam.tanggal_booking.strftime('%d %B %Y'), '%d %B %Y').strftime('%A')
                 day_pelaksanaan = datetime.strptime(pinjam.tanggal_pemakaian.strftime('%d %B %Y'), '%d %B %Y').strftime('%A')
@@ -1623,15 +1653,15 @@ def download_car_report(request, kendaraan_id):
 
                 ws.write(row_num, 3, dayToHari(day_pelaksanaan), content_font)  # Hari
                 ws.write(row_num, 4, pinjam.tanggal_pemakaian.strftime('%d %B %Y'), content_font)  # Tanggal
-                ws.write(row_num, 5, peminjam.nama, content_font)  # Nama Pemohon
-                ws.write(row_num, 6, peminjam.bagian_jurusan, content_font)  # Unit / Alamat
+                ws.write(row_num, 5, pinjam.nama_peminjam, content_font)  # Nama Pemohon
+                ws.write(row_num, 6, pinjam.bagian_jurusan_peminjam, content_font)  # Unit / Alamat
                 ws.write(row_num, 7, pinjam.tujuan, content_font)  # Tujuan
                 ws.write(row_num, 8, supir.nama, content_font)  # Nama Pengemudi
 
                 ws.write(row_num, 9, format(pinjam.waktu_berangkat), content_font)  # Waktu : Berangkat
                 ws.write(row_num, 10, format(pinjam.waktu_datang), content_font)  # Waktu : Datang
-                ws.write(row_num, 11, pinjam.odometer_sebelum, content_font)  # Odometer : Awal
-                ws.write(row_num, 12, pinjam.odometer_sesudah, content_font)  # Odometer : Akhir
+                ws.write(row_num, 11, pinjammobil.odometer_sebelum, content_font)  # Odometer : Awal
+                ws.write(row_num, 12, pinjammobil.odometer_sesudah, content_font)  # Odometer : Akhir
 
                 ws.write(row_num, 13, ada, content_font)  # Perawatan : Ada
                 ws.write(row_num, 14, tidak_ada, content_font)  # Perawatan : Tidak
@@ -1640,8 +1670,20 @@ def download_car_report(request, kendaraan_id):
                 ws.write(row_num, 16, pinjam.tanggal_surat.strftime('%d %B %Y'), content_font)  # Tanggal Surat
                 ws.write(row_num, 17, pinjam.keterangan, content_font)  # Keterangan
 
+                ws.write(row_num, 18, pinjam.biaya_bbm, content_font)  # Biaya BBM
+                ws.write(row_num, 19, pinjam.biaya_parkir, content_font)  # Biaya Parkir
+                ws.write(row_num, 20, pinjam.biaya_penginapan, content_font)  # Biaya Penginapan
+                ws.write(row_num, 21, pinjam.biaya_perawatan, content_font)  # Biaya Perawatan
+                ws.write(row_num, 22, pinjam.biaya_supir, content_font)  # Biaya Supir
+                ws.write(row_num, 23, pinjam.biaya_tol, content_font)  # Biaya Tol
+                ws.write(row_num, 24, totalbiaya, content_font)  # Biaya Total
+
                 no += 1
                 row_num += 1
+                subtotal += totalbiaya
+
+        ws.write_merge(row_num, row_num, 18, 23, "Total", header_font) 
+        ws.write(row_num, 24, subtotal, content_font) # Biaya Subtotal
 
     wb.save(response)
     return response
@@ -1663,30 +1705,57 @@ def cek(request):
     return HttpResponse("True")
 
 def mapMonth(name):
-	if name == "Januari":
-		return '01'
-	elif name == "Februari":
-		return '02'
-	elif name == "Maret":
-		return '03'
-	elif name == "April":
-		return '04'
-	elif name == "Mei":
-		return '05'
-	elif name == "Juni":
-		return '06'
-	elif name == "Juli":
-		return '07'
-	elif name == "Agustus":
-		return '08'
-	elif name == "September":
-		return '09'
-	elif name == "Oktober":
-		return '10'
-	elif name == "November":
-		return '11'
-	elif name == "Desember":
-		return '12'
+    if name == "Januari":
+        return '01'
+    elif name == "Februari":
+        return '02'
+    elif name == "Maret":
+        return '03'
+    elif name == "April":
+        return '04'
+    elif name == "Mei":
+        return '05'
+    elif name == "Juni":
+        return '06'
+    elif name == "Juli":
+        return '07'
+    elif name == "Agustus":
+        return '08'
+    elif name == "September":
+        return '09'
+    elif name == "Oktober":
+        return '10'
+    elif name == "November":
+        return '11'
+    elif name == "Desember":
+        return '12'
+
+def monthToStringNumber(name):
+    if name == "January":
+        return '01'
+    elif name == "February":
+        return '02'
+    elif name == "March":
+        return '03'
+    elif name == "April":
+        return '04'
+    elif name == "May":
+        return '05'
+    elif name == "June":
+        return '06'
+    elif name == "July":
+        return '07'
+    elif name == "August":
+        return '08'
+    elif name == "September":
+        return '09'
+    elif name == "October":
+        return '10'
+    elif name == "November":
+        return '11'
+    elif name == "December":
+        return '12'
+
 
 def intToMonth(bulan):
 	if bulan == 1:
