@@ -2,6 +2,7 @@ import csv
 import datetime
 import os
 from calendar import monthrange
+from django.core.mail import send_mail, EmailMessage
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect, HttpResponse
 from django.template import loader
@@ -214,17 +215,18 @@ def peminjamanDetail(request, peminjaman_id):
         return render(request, 'peminjaman/peminjaman/detail.html', context)
 
 def peminjamanForm(request):
-    if not request.user.is_authenticated:
-        return HttpResponseRedirect(reverse('login'))
-    else:
+    # if not request.user.is_authenticated:
+    #     return HttpResponseRedirect(reverse('login'))
+    # else:
         all_mobil = Mobil.objects.all()
+        is_authenticated = request.user.is_authenticated;
         context = {
             'all_mobil': all_mobil,
             'MAX_KENDARAAN' : MAX_KENDARAAN,
             'LOOP_RANGE' : range(MAX_KENDARAAN),
+            'is_authenticated' : is_authenticated,
         }
         return render(request, 'peminjaman/peminjaman/create.html', context)
-
 def process_date(date):
     date = date.replace(',', '')
     tokens = date.split(' ')
@@ -269,9 +271,9 @@ def process_time(time):
     return a
 
 def peminjamanCreate(request):
-    if not request.user.is_authenticated:
-        return HttpResponseRedirect(reverse('login'))
-    else:
+    # if not request.user.is_authenticated:
+    #     return HttpResponseRedirect(reverse('login'))
+    # else:
         try:
             # Create new Peminjam record
             nama_peminjam = request.POST['nama_peminjam']
@@ -279,24 +281,47 @@ def peminjamanCreate(request):
             bagian_jurusan_peminjam = request.POST.get('bagian_jurusan', None)
 
             # Create new Peminjaman Kendaraaan record
-            no_surat = request.POST['no_surat']
-            tanggal_surat = process_date(request.POST['tanggal_surat'])
+            if request.user.is_authenticated :
+                no_surat = request.POST['no_surat']
+                tanggal_surat = process_date(request.POST['tanggal_surat'])
+                biaya_perawatan = request.POST['biaya_perawatan']
+                biaya_bbm = request.POST['biaya_bbm']
+                biaya_supir = request.POST['biaya_supir']
+                biaya_tol = request.POST['biaya_tol']
+                biaya_parkir = request.POST['biaya_parkir']
+                biaya_penginapan = request.POST['biaya_penginapan']
+                status_booking = 1
+                email_peminjam = "silahkan@lengkapi.com"
+            else :
+                no_surat = "silahkan dilengkapi"
+                tanggal_surat = '2006-01-01 00:00Z'
+                biaya_perawatan = 0
+                biaya_bbm = 0
+                biaya_supir = 0
+                biaya_tol = 0
+                biaya_parkir = 0
+                biaya_penginapan = 0
+                status_booking = -1
+                email_peminjam = request.POST['email_peminjam']
+                send_mail(
+                    'Peminjaman Baru', # Subject
+                    'Terdapat peminjaman baru', # Message content
+                    settings.EMAIL_HOST_USER, # Sender
+                    [settings.EMAIL_HOST_USER], # Receiver
+                    )
+
             tanggal_booking = process_date(request.POST['tanggal_booking'])
             acara = request.POST['acara']
-            tujuan = request.POST['tujuan']
+            tujuan = request.POST['tujuan'] 
             tanggal_pemakaian = process_date(request.POST['tanggal_pemakaian'])
             waktu_berangkat = process_time(request.POST['waktu_berangkat'])
             waktu_datang = process_time(request.POST['waktu_datang'])
             tanggal_pengembalian = process_date(request.POST['tanggal_pengembalian'])
             tempat_berkumpul = request.POST['tempat_berkumpul']
             keterangan = request.POST.get('keterangan', '')
-            biaya_perawatan = request.POST['biaya_perawatan']
-            biaya_bbm = request.POST['biaya_bbm']
-            biaya_supir = request.POST['biaya_supir']
-            biaya_tol = request.POST['biaya_tol']
-            biaya_parkir = request.POST['biaya_parkir']
-            biaya_penginapan = request.POST['biaya_penginapan']
+            
             STATUS = 0     # status peminjaman
+
             peminjaman = PeminjamanKendaraan(
                 nama_peminjam=nama_peminjam,
                 no_telp_peminjam=no_telp_peminjam,
@@ -320,8 +345,11 @@ def peminjamanCreate(request):
                 biaya_penginapan=biaya_penginapan,
                 odometer_sebelum=0,
                 odometer_sesudah=0,
-                status=STATUS
+                status=STATUS,
+                email_peminjam = email_peminjam,
+                status_booking = status_booking
                 )
+
             peminjaman.save()
             jumlah_kendaraan = int(request.POST['jumlah_kendaraan'])
             for i in range(jumlah_kendaraan):
@@ -334,10 +362,13 @@ def peminjamanCreate(request):
         except (KeyError):
             # Redisplay the form
             return HttpResponseRedirect(reverse('peminjamanForm'))
+            
         else:
             # Display detail peminjaman
-            return HttpResponseRedirect(reverse('peminjamanDetail', args=(peminjaman.id,)))
-
+            if request.user.is_authenticated:
+                return HttpResponseRedirect(reverse('peminjamanDetail', args=(peminjaman.id,)))
+            else :
+                return HttpResponseRedirect(reverse('peminjaman'))
 def peminjamanEditForm(request, peminjaman_id):
     if not request.user.is_authenticated:
         return HttpResponseRedirect(reverse('login'))
@@ -386,6 +417,9 @@ def peminjamanEdit(request, peminjaman_id):
             peminjaman.biaya_tol = request.POST['biaya_tol']
             peminjaman.biaya_parkir = request.POST['biaya_parkir']
             peminjaman.biaya_penginapan = request.POST['biaya_penginapan']
+
+            send = peminjaman.status_booking == -1
+            peminjaman.status_booking = 1
             
             status = request.POST['status']                
             if (status == '0'):
@@ -411,6 +445,20 @@ def peminjamanEdit(request, peminjaman_id):
             if '-' not in tanggal_surat:
                 peminjaman.tanggal_surat = process_date(tanggal_surat)
             peminjaman.save()
+
+            # Send email to user
+            if send:
+                response = export_pdf_konfirmasi_booking(request, peminjaman_id)
+                mail = EmailMessage(
+                        'Biaya Peminjaman',
+                        'Berikut terlampir data peminjaman yang Anda telah lakukan.\n \
+                        Segera konfirmai ke sarpras jika Anda menyetujui rancangan biaya tersebut',
+                        settings.EMAIL_HOST_USER,
+                        [peminjaman.email_peminjam]
+                    )
+                mail.attach('Biaya peminjaman', response.content, 'application/pdf')
+                mail.send()
+                return HttpResponseRedirect(reverse('daftarPeminjam'))
         except (KeyError):
             # Redisplay the form
             return HttpResponseRedirect(reverse('peminjamanEdit'))
@@ -496,6 +544,17 @@ def formFinalEdit(request, peminjaman_id):
             return HttpResponseRedirect(reverse('peminjaman'))
         except:
             return HttpResponseRedirect(reverse('peminjamanFormFinal', args=(peminjaman_id,)))
+
+def daftarPeminjam(request):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse('login'))
+    else :
+        all_peminjaman = list(PeminjamanKendaraan.objects.all())
+        context = {
+            'all_peminjaman' : all_peminjaman,
+        }
+        return render(request, 'peminjaman/daftarpeminjam/index.html', context)
+
 ###################################################################################################################
 #
 # Supir
@@ -1222,7 +1281,7 @@ def export_pdf_konfirmasi_booking(request, peminjaman_id):
     title_booking = 'BOOKING KENDARAAN'
     booking = [['No. Booking', peminjaman_id + '/BK/TR/2018'],
                ['Tanggal Booking', getTanggal(peminjaman.tanggal_booking)],
-               ['Jenis Kendaraan', mobil.jenis],
+               ['Jenis Kendaraan', mobil.nama],
                ['Sebanyak', len(all_mobil)],
                ['Rencana Tanggal Pemakaian', getTanggal(peminjaman.tanggal_pemakaian) + ' s.d. ' + getTanggal(peminjaman.tanggal_pengembalian)],
                ['Asal', peminjaman.tempat_berkumpul],
@@ -1625,6 +1684,133 @@ def download_car_report(request, kendaraan_id):
 
         ws.write_merge(row_num, row_num, 18, 23, "Total", header_font) 
         ws.write(row_num, 24, subtotal, content_font) # Biaya Subtotal
+
+    wb.save(response)
+    return response
+
+
+
+def download_driver_report(request, supir_id):
+
+    supir = get_object_or_404(Supir, pk=supir_id)
+    mobilPeminjaman = MobilPeminjaman.objects.filter(supir_id= supir_id)
+
+
+    response = HttpResponse(content_type='application/ms-excel')
+    response['Content-Disposition'] = 'attachment; filename=laporan_'+ supir.nama +'.xls'
+    wb = xlwt.Workbook(encoding='utf-8')
+
+    for month in range(1, 13):
+        ws = wb.add_sheet(intToMonth(month))
+
+        row_num = 0
+
+        
+        ###################
+        ### HEADER FILE ###
+        ###################
+        ws.write_merge(0, 0, 0, 15, "FORMULIR TUGAS DAN KEGIATAN PENGEMUDI ")
+        ws.write_merge(1, 1, 0, 15, "DI SEKSI TRANSPORTASI")
+        ws.write_merge(3, 3, 0, 1, "Bulan")
+        ws.write(3, 2, ": " + intToMonth(month))
+        ws.write_merge(4, 4, 0, 1, "Jenis Kendaraan")
+        ws.write(4, 2, ": " + supir.nama)
+        ws.write_merge(5, 5, 0, 1, "NIP/NOPEG.")     
+        ws.write(5, 2, ": PKWT") 
+        row_num += 6
+
+        
+        ### end of header file ###
+
+        ################
+        # HEADER TABEL #
+        ################
+        header_font = xlwt.XFStyle()
+        header_font.alignment.horz = header_font.alignment.HORZ_CENTER
+
+        borders = xlwt.Borders()
+        borders.left = xlwt.Borders.THIN
+        borders.right = xlwt.Borders.THIN
+        borders.top = xlwt.Borders.THIN
+        borders.bottom = xlwt.Borders.THIN
+
+        header_font.borders = borders
+
+        ws.write_merge(8, 8, 0, 0, "NO.", header_font)
+        ws.col(0).width = (len("NO.")*367)
+
+        ws.write_merge(8, 8, 1, 1, "HARI", header_font)
+        ws.col(1).width = (len("Minggu--")*367)
+
+        ws.write_merge(8, 8, 2, 2, "TANGGAL", header_font)
+        ws.col(2).width = (len("33 Desember 20")*367)
+
+        ws.write_merge(8, 8, 3, 3, "KEGIATAN", header_font)
+        ws.col(3).width = (len("Minggu--")*367*4)
+
+        ws.write_merge(8, 8, 4, 4, "NOPOL KENDARAAN YANG DIPAKAI", header_font)
+        ws.col(4).width = (len("NOPOL KENDARAAN YANG DIPAKAI")*367)
+
+        ws.write_merge(8, 8, 5, 5, "KM AWAL", header_font)
+        ws.col(5).width = (len("KM AWAL")*367)
+
+        ws.write_merge(8, 8, 6, 6, "KM AKHIR", header_font)
+        ws.col(6).width = (len("KM AKHIR")*367)
+
+        ws.write_merge(8, 8, 7, 7, "JARAK KM YANG DITEMPUH", header_font)
+        ws.col(7).width = (len("JARAK KM YANG DITEMPUH")*367)
+
+        ws.write_merge(8, 8, 8, 8, "KETERANGAN", header_font)
+        ws.col(8).width = (len("KETERANGAN-----")*367)
+        ##### end header table #######
+        
+
+        ###########
+        # CONTENT #
+        ###########
+        content_font = xlwt.XFStyle()
+        content_font.borders = borders
+        row_num = 9
+        no = 1
+
+        for peminjaman in mobilPeminjaman :
+            mobiltugas = get_object_or_404(PeminjamanKendaraan, pk = peminjaman.peminjaman_id)
+            bulan_pinjam = mobiltugas.tanggal_pemakaian.strftime('%B')
+            mobil = get_object_or_404(Mobil, pk = peminjaman.mobil_id)
+            
+            if int(mapMonth(bulan_pinjam)) == month :
+                day_pelaksanaan = datetime.strptime(mobiltugas.tanggal_pemakaian.strftime('%d %B %Y'), '%d %B %Y').strftime('%A')
+
+                ws.write(row_num, 0, no, content_font)  # No
+                ws.write(row_num, 1, dayToHari(day_pelaksanaan), content_font)  # Hari
+                ws.write(row_num, 2, mobiltugas.tanggal_pemakaian.strftime('%d %B %Y'), content_font)  # Tanggal
+                ws.write(row_num, 3, mobiltugas.acara, content_font) #kegiatan
+                ws.write(row_num, 4, mobil.no_polisi, content_font) #nopol kendaraan 
+                ws.write(row_num, 5, peminjaman.odometer_sebelum, content_font) # km awal
+                ws.write(row_num, 6, peminjaman.odometer_sesudah, content_font) #km akhir
+                ws.write(row_num, 7, (peminjaman.odometer_sesudah - peminjaman.odometer_sebelum) , content_font) # jarak
+                if mobiltugas.keterangan :                
+                    ws.write(row_num, 8, mobiltugas.keterangan, content_font)  #keterangan
+                else :
+                    ws.write(row_num, 8, "Tidak ada keterangan", content_font)  #keterangan
+
+                no += 1
+                row_num += 1
+
+
+        ws.write_merge(row_num+1, row_num+1, 1, 2, "Mengetahui,")
+        ws.write_merge(row_num+2, row_num+2, 1, 3, "Kasubdit Operasional dan Kebersihan")
+        ws.write_merge(row_num+6, row_num+6, 1, 2, "Doddy Iskandar, ST.")
+        ws.write_merge(row_num+7, row_num+7, 1, 2, "Nopeg. 108 000 050")
+
+        ws.write_merge(row_num+1, row_num+1, 6, 7, "Disetujui")
+        ws.write_merge(row_num+2, row_num+2, 6, 7, "Kasi Transportasi")
+        ws.write_merge(row_num+6, row_num+6, 6, 7, "Ade Sumarna")
+        ws.write_merge(row_num+7, row_num+7, 6, 7, "NIP.197810272014091004")
+        ##################
+        # END OF CONTENT #
+        ##################
+
 
     wb.save(response)
     return response

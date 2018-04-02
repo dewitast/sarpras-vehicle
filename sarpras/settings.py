@@ -98,3 +98,11 @@ FILE_UPLOAD_HANDLERS = ("django_excel.ExcelMemoryFileUploadHandler",
                         "django_excel.TemporaryExcelFileUploadHandler")
 path = os.path.join('peminjaman', 'static')
 STATIC_ROOT = os.path.join(BASE_DIR, path)
+
+# Email settings
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_PASSWORD = 'sarpras.123'
+EMAIL_HOST_USER = 'sarpras.vehicle@gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER

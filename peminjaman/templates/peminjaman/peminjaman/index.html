@@ -254,6 +254,7 @@
             $(this).empty()
             $(this).unbind('mouseenter')
             $(this).unbind('mouseleave')
+            
         })
         $('.peminjaman').each(function() {
             var id = $(this).attr('id')
@@ -274,14 +275,17 @@
                             count++
                             if(count == 1) {
                                 // $(this).text(count)
+                                $(this).addClass('center-align');
                                 $(this).css({ 'background-color': "#26a69a"});
                                 $(this).mouseenter(function() {
                                     $(this).css({ 'background-color': "#30c1b4", 'cursor': 'pointer'})
                                 }).mouseleave(function() {
                                     $(this).css({ 'background-color': "#26a69a", 'cursor': 'default'})
+                                }).click(function() {
+                                    $("#modal"+id).modal('open');
                                 })
                                 console.log(id)
-                                $(this).append('<a href="#modal'+id+'"><i class="white tiny material-icons">open_in_new</i></a>')
+                                $(this).append('<i class="white tiny material-icons">open_in_new</i>')
                             }
                             else {
                                 $(this).empty()
