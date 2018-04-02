@@ -2,6 +2,7 @@ import csv
 import datetime
 import os
 from calendar import monthrange
+from django.core.mail import send_mail, EmailMessage
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect, HttpResponse
 from django.template import loader
@@ -214,17 +215,18 @@ def peminjamanDetail(request, peminjaman_id):
         return render(request, 'peminjaman/peminjaman/detail.html', context)
 
 def peminjamanForm(request):
-    if not request.user.is_authenticated:
-        return HttpResponseRedirect(reverse('login'))
-    else:
+    # if not request.user.is_authenticated:
+    #     return HttpResponseRedirect(reverse('login'))
+    # else:
         all_mobil = Mobil.objects.all()
+        is_authenticated = request.user.is_authenticated;
         context = {
             'all_mobil': all_mobil,
             'MAX_KENDARAAN' : MAX_KENDARAAN,
             'LOOP_RANGE' : range(MAX_KENDARAAN),
+            'is_authenticated' : is_authenticated,
         }
         return render(request, 'peminjaman/peminjaman/create.html', context)
-
 def process_date(date):
     date = date.replace(',', '')
     tokens = date.split(' ')
@@ -269,9 +271,9 @@ def process_time(time):
     return a
 
 def peminjamanCreate(request):
-    if not request.user.is_authenticated:
-        return HttpResponseRedirect(reverse('login'))
-    else:
+    # if not request.user.is_authenticated:
+    #     return HttpResponseRedirect(reverse('login'))
+    # else:
         try:
             # Create new Peminjam record
             nama_peminjam = request.POST['nama_peminjam']
@@ -279,24 +281,47 @@ def peminjamanCreate(request):
             bagian_jurusan_peminjam = request.POST.get('bagian_jurusan', None)
 
             # Create new Peminjaman Kendaraaan record
-            no_surat = request.POST['no_surat']
-            tanggal_surat = process_date(request.POST['tanggal_surat'])
+            if request.user.is_authenticated :
+                no_surat = request.POST['no_surat']
+                tanggal_surat = process_date(request.POST['tanggal_surat'])
+                biaya_perawatan = request.POST['biaya_perawatan']
+                biaya_bbm = request.POST['biaya_bbm']
+                biaya_supir = request.POST['biaya_supir']
+                biaya_tol = request.POST['biaya_tol']
+                biaya_parkir = request.POST['biaya_parkir']
+                biaya_penginapan = request.POST['biaya_penginapan']
+                status_booking = 1
+                email_peminjam = "silahkan@lengkapi.com"
+            else :
+                no_surat = "silahkan dilengkapi"
+                tanggal_surat = '2006-01-01 00:00Z'
+                biaya_perawatan = 0
+                biaya_bbm = 0
+                biaya_supir = 0
+                biaya_tol = 0
+                biaya_parkir = 0
+                biaya_penginapan = 0
+                status_booking = -1
+                email_peminjam = request.POST['email_peminjam']
+                send_mail(
+                    'Peminjaman Baru', # Subject
+                    'Terdapat peminjaman baru', # Message content
+                    settings.EMAIL_HOST_USER, # Sender
+                    [settings.EMAIL_HOST_USER], # Receiver
+                    )
+
             tanggal_booking = process_date(request.POST['tanggal_booking'])
             acara = request.POST['acara']
-            tujuan = request.POST['tujuan']
+            tujuan = request.POST['tujuan'] 
             tanggal_pemakaian = process_date(request.POST['tanggal_pemakaian'])
             waktu_berangkat = process_time(request.POST['waktu_berangkat'])
             waktu_datang = process_time(request.POST['waktu_datang'])
             tanggal_pengembalian = process_date(request.POST['tanggal_pengembalian'])
             tempat_berkumpul = request.POST['tempat_berkumpul']
             keterangan = request.POST.get('keterangan', '')
-            biaya_perawatan = request.POST['biaya_perawatan']
-            biaya_bbm = request.POST['biaya_bbm']
-            biaya_supir = request.POST['biaya_supir']
-            biaya_tol = request.POST['biaya_tol']
-            biaya_parkir = request.POST['biaya_parkir']
-            biaya_penginapan = request.POST['biaya_penginapan']
+            
             STATUS = 0     # status peminjaman
+
             peminjaman = PeminjamanKendaraan(
                 nama_peminjam=nama_peminjam,
                 no_telp_peminjam=no_telp_peminjam,
@@ -320,8 +345,11 @@ def peminjamanCreate(request):
                 biaya_penginapan=biaya_penginapan,
                 odometer_sebelum=0,
                 odometer_sesudah=0,
-                status=STATUS
+                status=STATUS,
+                email_peminjam = email_peminjam,
+                status_booking = status_booking
                 )
+
             peminjaman.save()
             jumlah_kendaraan = int(request.POST['jumlah_kendaraan'])
             for i in range(jumlah_kendaraan):
@@ -334,10 +362,13 @@ def peminjamanCreate(request):
         except (KeyError):
             # Redisplay the form
             return HttpResponseRedirect(reverse('peminjamanForm'))
+            
         else:
             # Display detail peminjaman
-            return HttpResponseRedirect(reverse('peminjamanDetail', args=(peminjaman.id,)))
-
+            if request.user.is_authenticated:
+                return HttpResponseRedirect(reverse('peminjamanDetail', args=(peminjaman.id,)))
+            else :
+                return HttpResponseRedirect(reverse('peminjaman'))
 def peminjamanEditForm(request, peminjaman_id):
     if not request.user.is_authenticated:
         return HttpResponseRedirect(reverse('login'))
@@ -386,6 +417,9 @@ def peminjamanEdit(request, peminjaman_id):
             peminjaman.biaya_tol = request.POST['biaya_tol']
             peminjaman.biaya_parkir = request.POST['biaya_parkir']
             peminjaman.biaya_penginapan = request.POST['biaya_penginapan']
+
+            send = peminjaman.status_booking == -1
+            peminjaman.status_booking = 1
             
             status = request.POST['status']                
             if (status == '0'):
@@ -411,6 +445,20 @@ def peminjamanEdit(request, peminjaman_id):
             if '-' not in tanggal_surat:
                 peminjaman.tanggal_surat = process_date(tanggal_surat)
             peminjaman.save()
+
+            # Send email to user
+            if send:
+                response = export_pdf_konfirmasi_booking(request, peminjaman_id)
+                mail = EmailMessage(
+                        'Biaya Peminjaman',
+                        'Berikut terlampir data peminjaman yang Anda telah lakukan.\n \
+                        Segera konfirmai ke sarpras jika Anda menyetujui rancangan biaya tersebut',
+                        settings.EMAIL_HOST_USER,
+                        [peminjaman.email_peminjam]
+                    )
+                mail.attach('Biaya peminjaman', response.content, 'application/pdf')
+                mail.send()
+                return HttpResponseRedirect(reverse('daftarPeminjam'))
         except (KeyError):
             # Redisplay the form
             return HttpResponseRedirect(reverse('peminjamanEdit'))
@@ -496,6 +544,17 @@ def formFinalEdit(request, peminjaman_id):
             return HttpResponseRedirect(reverse('peminjaman'))
         except:
             return HttpResponseRedirect(reverse('peminjamanFormFinal', args=(peminjaman_id,)))
+
+def daftarPeminjam(request):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse('login'))
+    else :
+        all_peminjaman = list(PeminjamanKendaraan.objects.all())
+        context = {
+            'all_peminjaman' : all_peminjaman,
+        }
+        return render(request, 'peminjaman/daftarpeminjam/index.html', context)
+
 ###################################################################################################################
 #
 # Supir
@@ -1222,7 +1281,7 @@ def export_pdf_konfirmasi_booking(request, peminjaman_id):
     title_booking = 'BOOKING KENDARAAN'
     booking = [['No. Booking', peminjaman_id + '/BK/TR/2018'],
                ['Tanggal Booking', getTanggal(peminjaman.tanggal_booking)],
-               ['Jenis Kendaraan', mobil.jenis],
+               ['Jenis Kendaraan', mobil.nama],
                ['Sebanyak', len(all_mobil)],
                ['Rencana Tanggal Pemakaian', getTanggal(peminjaman.tanggal_pemakaian) + ' s.d. ' + getTanggal(peminjaman.tanggal_pengembalian)],
                ['Asal', peminjaman.tempat_berkumpul],

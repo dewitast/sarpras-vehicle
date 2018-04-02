@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}Daftar Peminjam Online{% endblock %}
+
+
+{% block content %}
+	{% if all_peminjaman %}
+		<table class="bordered striped"> <!-- Table Peminjaman -->
+            <thead>
+                <tr>
+                    <th rowspan="2">Nama Peminjam</th>
+                    <th rowspan="2">Email Peminjam</th>
+                    <th rowspan="2">Status Booking</th>
+                </tr>
+            </thead>
+
+            <tbody>
+				{% for peminjaman in all_peminjaman %}
+					<tr class="clickable" data-href="/peminjaman/{{ peminjaman.id }}/edit" style="cursor: pointer;">
+						{% if peminjaman.status_booking == -1 %}
+						<td>{{peminjaman.nama_peminjam}}</td>
+						<td>{{peminjaman.email_peminjam}}</td>
+						<td><span class="new badge red" data-badge-caption="Belum Disetujui"></span></td>	
+						{% endif %}
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	{% endif %}
+
+{% endblock %}
+
+{% block script %}
+<script>
+	$(document).ready(function() {
+		$(".clickable").click(function() {
+			window.location = $(this).data("href");
+		});
+	});
+</script>
+{% endblock %}
