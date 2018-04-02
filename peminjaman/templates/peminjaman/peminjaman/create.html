@@ -6,17 +6,13 @@
 
 {% block content %}
 <br />
-
 <div class="row">
 	<div class="col s12">
     	<h4>Form Peminjaman Baru</h4>
-    	<p>Jika anda ingin melakukan pemesanan online, silahkan isi formulir di bawah ini.</p>
   	</div>
-	<a class="btn waves-effect waves-light" style="background-color: #1D73BE; margin-top: 40px;" href="/static/form_booking_kendaraan.pdf" name="action">
-            Unduh Formulir
-   	</a>
 	<form action="{% url 'peminjamanCreate' %}" method="post" id="form" enctype="multipart/form-data">
 		{% csrf_token %}
+
 		<div class="row">
 			<div class="col m12">
 				<h5>Data Peminjaman</h5>
@@ -63,7 +59,7 @@
 	          <input id="acara" name="acara" type="text" class="validate">
 	          <label for="acara">Acara*</label>
 		    </div>
-		    {% if is_authenticated %}
+
 			<div class="input-field col s6">
 	          <input id="no_surat" name="no_surat" type="text" class="validate">
 	          <label for="no_surat">No Surat Pemohon*</label>
@@ -73,7 +69,7 @@
 	          <input id="tanggal_surat" name="tanggal_surat" type="date" class="datepicker">
 	          <label for="tanggal_surat">Tanggal Surat Pemohon*</label>
 		    </div>
-		    {% endif %}
+
 		    <div class="input-field col s12">
 	          <textarea id="keterangan" name="keterangan" class="materialize-textarea"></textarea>
 	          <label for="keterangan">Keterangan</label>
@@ -98,14 +94,7 @@
 	          <input id="bagian_jurusan" name="bagian_jurusan" type="text" class="validate">
 	          <label for="bagian_jurusan">Bagian/Jurusan</label>
 		    </div>
-			<div class="input-field col s12">
-	          <input id="email_peminjam" type="email" required name="email_peminjam" type="text" class="validate">
-		    	{% if not is_authenticated %}
-	          		<label for="email_peminjam">Email*</label>
-	          	{% else %}
-	          		<label for="email_peminjam">Email</label>
-	          	{% endif %}
-		    </div>
+
 	    </div>
 
 	    <div class="row">
@@ -132,7 +121,7 @@
 			    </div>
 			{% endfor %}
 	    </div>
-	    {% if is_authenticated %}
+
 	    <div class="row">
 			<div class="col m12">
 				<h5>Rincian Biaya</h5>
@@ -174,7 +163,7 @@
         
 	    </div>
 	    <br />
-	    {% endif %}
+
 	</form>
 	<div class="col m12">
 		<p><strong id="error_message"></strong></p>
@@ -265,10 +254,7 @@
     var total_biaya = $("#total_biaya").val(biaya_perawatan + biaya_bbm + biaya_supir + biaya_tol + biaya_parkir + biaya_penginapan);
     return
   }
-  	function validateEmail(email) {
- 		var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  		return re.test(email);
-	}
+  
 	function validateInput() {
 		$('#error_message').text('')
 		var nama_peminjam = $('#nama_peminjam').val()
@@ -296,7 +282,6 @@
 		}
 
 		var tanggal_pengembalian = $('#tanggal_pengembalian').val()
-		// var is_authenticated = $('#is_authenticated').val()
 		if(tanggal_pengembalian == "") {
 			console.log("Missing: tanggal_pengembalian")
 			$('#tanggal_pengembalian').focus()
@@ -343,23 +328,23 @@
 			$('#error_message').text('Please input Tempat Berkumpul.')
 			return
 		}
-		{% if is_authenticated %}
-			var no_surat = $('#no_surat').val()
-			if(no_surat.trim() == "") {
-				console.log("Missing: no_surat")
-				$('#no_surat').focus()
-				$('#error_message').text('Please input No Surat.')
-				return
-			}
 
-			var tanggal_surat = $('#tanggal_surat').val()
-			if(tanggal_surat == "") {
-				console.log("Missing: tanggal_surat")
-				$('#tanggal_surat').focus()
-				$('#error_message').text('Please input Tanggal Surat.')
-				return
-			}
-		{% endif %}
+		var no_surat = $('#no_surat').val()
+		if(no_surat.trim() == "") {
+			console.log("Missing: no_surat")
+			$('#no_surat').focus()
+			$('#error_message').text('Please input No Surat.')
+			return
+		}
+
+		var tanggal_surat = $('#tanggal_surat').val()
+		if(tanggal_surat == "") {
+			console.log("Missing: tanggal_surat")
+			$('#tanggal_surat').focus()
+			$('#error_message').text('Please input Tanggal Surat.')
+			return
+		}
+
 		var waktu_berangkat = $('#waktu_berangkat').val()
 		if(waktu_berangkat == "") {
 			console.log("Missing: waktu_berangkat")
@@ -375,69 +360,55 @@
 			$('#error_message').text('Please input Waktu Datang.')
 			return
 		}
-		{% if is_authenticated %}
-			var biaya_perawatan = $('#biaya_perawatan').val()
-			if (biaya_perawatan == "") {
-				console.log("Missing: biaya_perawatan")
-				$('#biaya_perawatan').focus()
-				$('#error_message').text('Please input Biaya Perawatan')
-				return
-			}
 
-			var biaya_bbm = $('#biaya_bbm').val()
-			if (biaya_bbm == "") {
-				console.log("Missing: biaya_bbm")
-				$('#biaya_bbm').focus()
-				$('#error_message').text('Please input Biaya BBM')
-				return
-			}
+		var biaya_perawatan = $('#biaya_perawatan').val()
+		if (biaya_perawatan == "") {
+			console.log("Missing: biaya_perawatan")
+			$('#biaya_perawatan').focus()
+			$('#error_message').text('Please input Biaya Perawatan')
+			return
+		}
 
-			var biaya_supir = $('#biaya_supir').val()
-			if (biaya_supir == "") {
-				console.log("Missing: biaya_supir")
-				$('#biaya_supir').focus()
-				$('#error_message').text('Please input Biaya Supir')
-				return
-			}
+		var biaya_bbm = $('#biaya_bbm').val()
+		if (biaya_bbm == "") {
+			console.log("Missing: biaya_bbm")
+			$('#biaya_bbm').focus()
+			$('#error_message').text('Please input Biaya BBM')
+			return
+		}
 
-			var biaya_tol = $('#biaya_tol').val()
-			if (biaya_tol == "") {
-				console.log("Missing: biaya_tol")
-				$('#biaya_tol').focus()
-				$('#error_message').text('Please input Biaya Tol')
-				return
-			}
+		var biaya_supir = $('#biaya_supir').val()
+		if (biaya_supir == "") {
+			console.log("Missing: biaya_supir")
+			$('#biaya_supir').focus()
+			$('#error_message').text('Please input Biaya Supir')
+			return
+		}
 
-			var biaya_parkir = $('#biaya_parkir').val()
-			if (biaya_parkir == "") {
-				console.log("Missing: biaya_parkir")
-				$('#biaya_parkir').focus()
-				$('#error_message').text('Please input Biaya Parkir')
-				return
-			}
+		var biaya_tol = $('#biaya_tol').val()
+		if (biaya_tol == "") {
+			console.log("Missing: biaya_tol")
+			$('#biaya_tol').focus()
+			$('#error_message').text('Please input Biaya Tol')
+			return
+		}
 
-			var biaya_penginapan = $('#biaya_penginapan').val()
-			if (biaya_penginapan == "") {
-				console.log("Missing: biaya_penginapan")
-				$('#biaya_penginapan').focus()
-				$('#error_message').text('Please input Biaya Penginapan')
-				return
-			}
-		{% endif %}
-		{% if not is_authenticated %}
-			var email_peminjam = $('#email_peminjam').val()
-			if(email_peminjam == "") {
-				console.log("Missing: email peminjam")
-				$('#email_peminjam').focus()
-				$('#error_message').text('Please input your email')
-				return
-			} else if (!validateEmail(email_peminjam)) {
-				console.log("Missing: email peminjam")
-				$('#email_peminjam').focus()
-				$('#error_message').text('Please Input Validate Email')
-				return
-			}
-		{% endif %}
+		var biaya_parkir = $('#biaya_parkir').val()
+		if (biaya_parkir == "") {
+			console.log("Missing: biaya_parkir")
+			$('#biaya_parkir').focus()
+			$('#error_message').text('Please input Biaya Parkir')
+			return
+		}
+
+		var biaya_penginapan = $('#biaya_penginapan').val()
+		if (biaya_penginapan == "") {
+			console.log("Missing: biaya_penginapan")
+			$('#biaya_penginapan').focus()
+			$('#error_message').text('Please input Biaya Penginapan')
+			return
+		}
+
 		for (i=0;i<jumlah_kendaraan;++i) {
 		    var mobil_id = $('#mobil_id' + i).find(":selected").val();
 		    if(mobil_id.trim() == "") {

@@ -49,8 +49,6 @@ class PeminjamanKendaraan(models.Model):
 	foto_bukti_transfer = models.ImageField(null=True,upload_to='bukti_transfer/')
 	metode_transfer = models.IntegerField(null=True)
 	status = models.IntegerField()
-	status_booking = models.IntegerField()
-	email_peminjam = models.EmailField(blank=True, default="")
 
 	def getTotalBiaya(self):
 		return self.biaya_perawatan + self.biaya_bbm + self.biaya_supir + self.biaya_tol + self.biaya_parkir + self.biaya_penginapan

@@ -42,7 +42,6 @@
             <strong>Nama Peminjam:</strong> {{ peminjaman.nama_peminjam }} <br />
             <strong>No Telp. Peminjam:</strong> {{ peminjaman.no_telp_peminjam }} <br />
             <strong>Bagian/Jurusan:</strong> {{ peminjaman.bagian_jurusan_peminjam }} <br />
-            <strong>Email:</strong> {{ peminjaman.email_peminjam }} <br />
         </p>
         <p>
             <strong>Kendaraan:</strong>
@@ -75,6 +74,17 @@
             <strong>Waktu Berangkat:</strong> {{ peminjaman.waktu_berangkat }} <br />
             <strong>Waktu Datang:</strong> {{ peminjaman.waktu_datang }}
         </p>
+
+        <p>
+            <strong>Odometer Sebelum:</strong> {{ peminjaman.odometer_sebelum }} <br />
+            <strong>Odometer Sesudah:</strong> {{ peminjaman.odometer_sesudah }}
+        </p>
+
+        <p>
+            <strong>No Surat Pemohon:</strong> {{ peminjaman.no_surat }} <br />
+            <strong>Tanggal Surat Pemohon:</strong> {{ peminjaman.tanggal_surat_formatted }}  <br />
+        </p>
+
         {% load humanize %}
         <p>
             <strong>Biaya Perawatan:</strong> Rp. {{ peminjaman.biaya_perawatan|intcomma }} <br />
