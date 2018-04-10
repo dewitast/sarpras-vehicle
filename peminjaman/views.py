@@ -74,6 +74,12 @@ def index(request):
         status_selesai = 0
         import datetime
         now = datetime.datetime.now()
+
+        all_kendaraan = Mobil.objects.all()
+        counter_kendaraan = {}
+        for element_kendaraan in all_kendaraan:
+            counter_kendaraan[element_kendaraan.nama + element_kendaraan.no_polisi] = 0
+
         for peminjaman in all_peminjaman:
             if str(now.year) == peminjaman.tanggal_pemakaian.strftime('%Y'):
                 month_booking = peminjaman.tanggal_booking.strftime('%B')
@@ -82,7 +88,9 @@ def index(request):
                 count_booking[month_booking] = temp+1
                 temp = count_pemakaian[month_pemakaian]
                 count_pemakaian[month_pemakaian] = temp+1
-
+                data_mobil = MobilPeminjaman.objects.filter(peminjaman_id=peminjaman.id)
+                for jumlah_mobil in data_mobil:
+                    counter_kendaraan[jumlah_mobil.mobil.nama + jumlah_mobil.mobil.no_polisi] += 1
             if peminjaman.status == 0:
                 status_booking_belum_transfer += 1
             elif peminjaman.status == 1:
@@ -103,6 +111,8 @@ def index(request):
             'status_selesai': status_selesai,
             'status_booking_dibatalkan': status_booking_dibatalkan,
             'year': now.year,
+            'counter_kendaraan':counter_kendaraan,
+            'all_kendaraan':all_kendaraan,
         }
         return render(request, 'peminjaman/dashboard.html', context)
 
@@ -1395,11 +1405,11 @@ def download_report(request, month, year):
     all_kendaraan = Mobil.objects.all()
     all_peminjaman = PeminjamanKendaraan.objects.all()
     for peminjaman in all_peminjaman:
-    	peminjam = get_object_or_404(Peminjam, pk=peminjaman.peminjam_id)
-    	setattr(peminjaman, 'nama_peminjam', peminjam.nama)
-    	setattr(peminjaman, 'bagian_jurusan_peminjam', peminjam.bagian_jurusan)
-    	supir = get_object_or_404(Supir, pk=peminjaman.supir_id)
-    	setattr(peminjaman, 'nama_supir', supir.nama)
+        peminjam = get_object_or_404(Peminjam, pk=peminjaman.peminjam_id)
+        setattr(peminjaman, 'nama_peminjam', peminjam.nama)
+        setattr(peminjaman, 'bagian_jurusan_peminjam', peminjam.bagian_jurusan)
+        supir = get_object_or_404(Supir, pk=peminjaman.supir_id)
+        setattr(peminjaman, 'nama_supir', supir.nama)
 
     filename = 'Report_'+month+'-'+year
 
@@ -1885,46 +1895,46 @@ def monthToStringNumber(name):
 
 
 def intToMonth(bulan):
-	if bulan == 1:
-		return "Januari"
-	elif bulan == 2:
-		return "Februari"
-	elif bulan == 3:
-		return "Maret"
-	elif bulan == 4:
-		return "April"
-	elif bulan == 5:
-		return "Mei"
-	elif bulan == 6:
-		return "Juni"
-	elif bulan == 7:
-		return "Juli"
-	elif bulan == 8:
-		return "Agustus"
-	elif bulan == 9:
-		return "September"
-	elif bulan == 10:
-		return "Oktober"
-	elif bulan == 11:
-		return "November"
-	elif bulan == 12:
-		return "Desember"
+    if bulan == 1:
+        return "Januari"
+    elif bulan == 2:
+        return "Februari"
+    elif bulan == 3:
+        return "Maret"
+    elif bulan == 4:
+        return "April"
+    elif bulan == 5:
+        return "Mei"
+    elif bulan == 6:
+        return "Juni"
+    elif bulan == 7:
+        return "Juli"
+    elif bulan == 8:
+        return "Agustus"
+    elif bulan == 9:
+        return "September"
+    elif bulan == 10:
+        return "Oktober"
+    elif bulan == 11:
+        return "November"
+    elif bulan == 12:
+        return "Desember"
 
 def dayToHari(day):
-	if day == "Sunday":
-		return "Minggu"
-	elif day == "Monday":
-		return "Senin"
-	elif day == "Tuesday":
-		return "Selasa"
-	elif day == "Wednesday":
-		return "Rabu"
-	elif day == "Thursday":
-		return "Kamis"
-	elif day == "Friday":
-		return "Jum'at"
-	elif day == "Saturday":
-		return "Sabtu"
+    if day == "Sunday":
+        return "Minggu"
+    elif day == "Monday":
+        return "Senin"
+    elif day == "Tuesday":
+        return "Selasa"
+    elif day == "Wednesday":
+        return "Rabu"
+    elif day == "Thursday":
+        return "Kamis"
+    elif day == "Friday":
+        return "Jum'at"
+    elif day == "Saturday":
+        return "Sabtu"
 
 def getTanggal(date):
     tanggal = ''
