@@ -102,6 +102,9 @@ def index(request):
 
         years = [2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027]
 
+        choices = PeminjamanKendaraan.BAGIAN_JURUSAN_CHOICES
+        data_bagian_jurusan = [PeminjamanKendaraan.objects.filter(bagian_jurusan_peminjam=key).count() for key, _ in choices]
+
         context = {
             'all_peminjaman': all_peminjaman,
             'month_count_booking': count_booking,
@@ -113,6 +116,8 @@ def index(request):
             'year': now.year,
             'counter_kendaraan':counter_kendaraan,
             'all_kendaraan':all_kendaraan,
+            'choices': choices,
+            'data_bagian_jurusan': data_bagian_jurusan,
         }
         return render(request, 'peminjaman/dashboard.html', context)
 
@@ -235,6 +240,7 @@ def peminjamanForm(request):
             'MAX_KENDARAAN' : MAX_KENDARAAN,
             'LOOP_RANGE' : range(MAX_KENDARAAN),
             'is_authenticated' : is_authenticated,
+            'choices' : PeminjamanKendaraan.BAGIAN_JURUSAN_CHOICES
         }
         return render(request, 'peminjaman/peminjaman/create.html', context)
 def process_date(date):

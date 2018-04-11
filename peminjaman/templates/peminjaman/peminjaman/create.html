@@ -95,7 +95,12 @@
 		    </div>
 
 		    <div class="input-field col s12">
-	          <input id="bagian_jurusan" name="bagian_jurusan" type="text" class="validate">
+	          <select id="bagian_jurusan" name="bagian_jurusan" class="validate">
+	          	<option value="" disabled selected>Pilih Bagian Jurusan</option>
+	          	{% for key, value in choices %}
+	          		<option value="{{key}}">{{ value }}</option>
+	          	{% endfor %}
+	          </select>
 	          <label for="bagian_jurusan">Bagian/Jurusan</label>
 		    </div>
 			<div class="input-field col s12">

@@ -181,7 +181,16 @@
 		    </div>
 
 		    <div class="input-field col s12">
-	          <input id="bagian_jurusan" name="bagian_jurusan" type="text" class="validate" value="{{ peminjaman.bagian_jurusan_peminjam }}">
+	          <select id="bagian_jurusan" name="bagian_jurusan" class="validate">
+	          	<option value="" disabled>Pilih Bagian Jurusan</option>
+	          	{% for key, value in peminjaman.BAGIAN_JURUSAN_CHOICES %}
+	          		<option value="{{key}}"
+	          			{% if key == peminjaman.bagian_jurusan_peminjam %}
+	          				selected
+	          			{% endif %}
+	          		>{{ value }}</option>
+	          	{% endfor %}
+	          </select>
 	          <label for="bagian_jurusan">Bagian/Jurusan</label>
 		    </div>
 		    

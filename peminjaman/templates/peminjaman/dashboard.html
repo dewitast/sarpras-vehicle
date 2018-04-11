@@ -15,14 +15,16 @@
     <hr>
     <canvas id="canvasPie" style="max-width: 70%;"></canvas>
   </div>
-<!--   {% for key,values in counter_kendaraan.items %}
-    {{key}} {{values}}<br/>
-  {% endfor %} -->
 </div>
 <div class ="row">
     <span style="font-size: 20px; font-weight: normal; color:#666666;">Jumlah Pemakaian Kendaraan {{year}}</span>
     <hr>
     <canvas id="kendaraanLine"></canvas>
+</div>
+<div class ="row">
+    <span style="font-size: 20px; font-weight: normal; color:#666666;">Bagian/Jurusan Peminjam</span>
+    <hr>
+    <canvas id="bagianJurusanPie"></canvas>
 </div>
 {% endblock %}
 
@@ -120,6 +122,44 @@ $(document).on('change','#year',function(){
       responsive: true
     }
 };
+
+var bagian_jurusan_pie = {
+  type: 'pie',
+  data: {
+    datasets: [{
+      data: [
+        {% for count in data_bagian_jurusan %}
+          {{ count }},
+        {% endfor %}
+      ],
+      backgroundColor: [
+        window.chartColors.red,
+        window.chartColors.green,
+        '#ffa280',
+        '#6ceabe',
+        '#cc6699',
+        '#ffff33',
+        window.chartColors.purple,
+        '#ffdb4d',
+        '#71d3f4',
+        '#de8f6e',
+        window.chartColors.blue,
+        window.chartColors.orange,
+        '#90c9e7',
+      ],
+      label: 'Bagian Jurusan'
+    }],
+    labels: [
+      {% for _, value in choices %}
+        "{{ value }}",
+      {% endfor %}
+    ]
+  },
+  options: {
+    responsive: true
+  }
+};
+
 var kendaraan_line = {
     type: 'line',
      data: {
@@ -170,6 +210,8 @@ var kendaraan_line = {
     window.myPie = new Chart(ctxPie, configPie);
     var ctxKendaraanLine = document.getElementById("kendaraanLine").getContext("2d");
     window.myLine = new Chart(ctxKendaraanLine,kendaraan_line);
+    var ctxBagianJurusanPie = document.getElementById("bagianJurusanPie").getContext("2d");
+    window.myPie = new Chart(ctxBagianJurusanPie, bagian_jurusan_pie);
   };
 
   var colorNames = Object.keys(window.chartColors);
