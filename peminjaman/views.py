@@ -349,10 +349,10 @@ def peminjamanEditForm(request, peminjaman_id):
         return HttpResponseRedirect(reverse('login'))
     else:
         peminjaman = get_object_or_404(PeminjamanKendaraan, pk=peminjaman_id)
-        setattr(peminjaman, 'tanggal_booking_formatted', peminjaman.tanggal_booking.strftime('%d %B %Y'))
-        setattr(peminjaman, 'tanggal_pemakaian_formatted', peminjaman.tanggal_pemakaian.strftime('%d %B %Y'))
-        setattr(peminjaman, 'tanggal_pengembalian_formatted', peminjaman.tanggal_pengembalian.strftime('%d %B %Y'))
-        setattr(peminjaman, 'tanggal_surat_formatted', peminjaman.tanggal_surat.strftime('%d %B %Y'))
+        setattr(peminjaman, 'tanggal_booking_formatted', peminjaman.tanggal_booking.strftime('%Y-%m-%d'))
+        setattr(peminjaman, 'tanggal_pemakaian_formatted', peminjaman.tanggal_pemakaian.strftime('%Y-%m-%d'))
+        setattr(peminjaman, 'tanggal_pengembalian_formatted', peminjaman.tanggal_pengembalian.strftime('%Y-%m-%d'))
+        setattr(peminjaman, 'tanggal_surat_formatted', peminjaman.tanggal_surat.strftime('%Y-%m-%d'))
         setattr(peminjaman, 'waktu_berangkat_formatted', peminjaman.waktu_berangkat.strftime('%H:%M'))
         setattr(peminjaman, 'waktu_datang_formatted', peminjaman.waktu_datang.strftime('%H:%M'))
 
