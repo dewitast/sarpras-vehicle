@@ -103,7 +103,7 @@ def index(request):
         years = [2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027]
 
         choices = PeminjamanKendaraan.BAGIAN_JURUSAN_CHOICES
-        data_bagian_jurusan = [PeminjamanKendaraan.objects.filter(bagian_jurusan_peminjam=key).count() for key, _ in choices]
+        data_bagian_jurusan = [PeminjamanKendaraan.objects.filter(bagian_jurusan_peminjam=key, tanggal_pemakaian__year=now.year).count() for key, _ in choices]
 
         context = {
             'all_peminjaman': all_peminjaman,
@@ -307,7 +307,7 @@ def peminjamanCreate(request):
                 biaya_parkir = request.POST['biaya_parkir']
                 biaya_penginapan = request.POST['biaya_penginapan']
                 status_booking = 1
-                email_peminjam = "silahkan@lengkapi.com"
+                email_peminjam = request.POST.get('email_peminjam', 'silahkan@lengkapi.com')
             else :
                 no_surat = "silahkan dilengkapi"
                 tanggal_surat = '2006-01-01 00:00Z'
