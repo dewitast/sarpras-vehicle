@@ -1557,6 +1557,7 @@ def download_peminjaman_report(request, year):
             pinjam = get_object_or_404(PeminjamanKendaraan, pk=pinjammobil.peminjaman_id)
             mobil = get_object_or_404(Mobil, pk=pinjammobil.mobil_id)
             bulan_pinjam = pinjam.tanggal_pemakaian.strftime('%B')
+            tahun_pinjam = pinjam.tanggal_pemakaian.strftime('%Y')
             if pinjam.foto_bukti_transfer == 0 or pinjam.foto_bukti_transfer == "":
                 ada = ''
                 tidak_ada = 'v'
@@ -1571,7 +1572,7 @@ def download_peminjaman_report(request, year):
             else:
            		valid = False
             	
-            if valid and pinjammobil.supir_id is not None and pinjammobil.odometer_sebelum is not None and pinjammobil.odometer_sesudah is not None :
+            if valid and year == tahun_pinjam and pinjammobil.supir_id is not None and pinjammobil.odometer_sebelum is not None and pinjammobil.odometer_sesudah is not None :
 
                 supir = get_object_or_404(Supir, pk=pinjammobil.supir_id)
 
