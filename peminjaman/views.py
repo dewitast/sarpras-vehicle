@@ -1433,9 +1433,7 @@ def download_report(request, month, year):
         data, 'xlsx', file_name=filename)
 
 def download_peminjaman_report(request, year):
-
     mobilpeminjaman = MobilPeminjaman.objects.all()
-
     response = HttpResponse(content_type='application/ms-excel')
     response['Content-Disposition'] = 'attachment; filename=report_'+ year +'.xls'
     wb = xlwt.Workbook(encoding='utf-8')
@@ -1594,8 +1592,8 @@ def download_peminjaman_report(request, year):
                 ws.write(row_num, 7, pinjam.tujuan, content_font)  # Tujuan
                 ws.write(row_num, 8, supir.nama, content_font)  # Nama Pengemudi
 
-                ws.write(row_num, 9, mobil.nama, content_font)  # Tujuan
-                ws.write(row_num, 10, mobil.no_polisi, content_font)  # Nama Pengemudi
+                ws.write(row_num, 9, mobil.nama, content_font)  # Nama Kendaraan
+                ws.write(row_num, 10, mobil.no_polisi, content_font)  # Nomor Polisi Kendaraan
                 ws.write(row_num, 11, format(pinjam.waktu_berangkat), content_font)  # Waktu : Berangkat
                 ws.write(row_num, 12, format(pinjam.waktu_datang), content_font)  # Waktu : Datang
                 ws.write(row_num, 13, pinjammobil.odometer_sebelum, content_font)  # Odometer : Awal
