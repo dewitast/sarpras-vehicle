@@ -7,7 +7,7 @@ Detail Kendaraan
 {% block content %}
 <br />
 <div class="row">
-    <div class="col m12">
+    <div class="col m12 s12">
         <span style="font-size: 24px; font-weight: normal;">Detail Kendaraan</span>
         {% if user.is_authenticated %}
             <a class="right waves-effect waves-light btn-flat" href="#modal1">
@@ -17,9 +17,6 @@ Detail Kendaraan
                 <i class="large material-icons">mode_edit</i>
             </a>
         {% endif %}
-    </div>
-
-    <div class="col m12">
         <p><strong>Nama:</strong> {{ kendaraan.nama }}</p>
         <p><strong>No Polisi:</strong> {{ kendaraan.no_polisi }}</p>
         <p><strong>Kapasitas:</strong> {{ kendaraan.kapasitas }} seat</p>
@@ -29,7 +26,7 @@ Detail Kendaraan
         {% if all_foto %}
             <div class="row">
                 {% for foto in all_foto %}
-                    <div class="col m3">
+                    <div class="col m4 s12 xl3 l4">
                         <img class="materialboxed" width="200" height="200" src="{{ foto.foto.url }}">
                         {% if user.is_authenticated %}
                             <h7 class="center-align"><a href="{% url 'kendaraanDeleteFoto' kendaraan.id foto.id  %}">Delete this photo</a></h7>
@@ -40,29 +37,33 @@ Detail Kendaraan
         {% else %}
             <p>No picture for this kendaraan.</p>
         {% endif %}
-        {% if user.is_authenticated %}
-
-        <div class="file-field input-field" style="margin-top:0px;">
-          <a onclick="downloadCarReport()" class="btn waves-effect waves-light right" style="background-color: #26a69a;" name="action">Export Excel</a>
-        </div> 
-
-        <form action="{% url 'kendaraanUploadFoto' kendaraan.id %}" enctype="multipart/form-data" method="post" class="right">
-            {% csrf_token %}
-            <div class="file-field input-field col s12" style="margin-top:0px;">
-              <div class="btn" style="background-color: #1D73BE;">
-                <span>Upload Foto Baru</span>
-                <input type="file" name="foto" id="foto">
-              </div>
-              <div id="foto_path" class="file-path-wrapper" style="display: none;">
-                <input class="file-path validate" type="text">
-              </div>
-            </div>
-              <button id="foto_submit" class="btn waves-effect waves-light right" style="background-color: #1D73BE; display: none;" type="submit" name="action">Save
-              </button>
-        </form>
-        {% endif %}
     </div>
 </div>
+
+{% if user.is_authenticated %}
+<div class ="row">    
+    <div class="col m6 s12 right kendaraan-mobile">
+      <a onclick="downloadCarReport()" class="btn waves-effect waves-light right" style="background-color: #26a69a;" name="action">Export Excel</a>
+    </div>
+</div>
+<div class ="row">    
+    <form action="{% url 'kendaraanUploadFoto' kendaraan.id %}" enctype="multipart/form-data" method="post" id="form_foto_kendaraan" class="right kendaraan-mobile">
+        {% csrf_token %}
+        <div class="file-field input-field col m12 s12 l12">
+          <div class="btn" style="background-color: #1D73BE;">
+            <span>Upload Foto Baru</span>
+            <input type="file" name="foto" id="foto">
+          </div>
+          <div id="foto_path" class="file-path-wrapper" style="display: none; margin-left:10px;">
+            <input class="file-path validate" type="text">
+          </div>
+          <button id="foto_submit" class="btn waves-effect waves-light right" style="background-color: #1D73BE; display: none;" type="submit" name="action">Save
+          </button>
+        </div>
+    </form>
+</div>
+{% endif %}
+
 <!-- Modal Structure -->
 <div id="modal1" class="modal">
 <div class="modal-content">
@@ -89,6 +90,7 @@ Detail Kendaraan
 
     $('#foto').change(function() {
         console.log($('#foto').val())
+        $('#form_foto_kendaraan').removeClass("right")
         $('#foto_path').show()
         $('#foto_submit').show()
     })

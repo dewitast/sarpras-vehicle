@@ -17,8 +17,38 @@
       	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
       	<title>
       		{% block title %}
-			{% endblock %}
-		</title>
+          {% endblock %}
+        </title>
+        
+        <!-- Responsive web design -->
+        <style>
+          @media only screen and (max-width: 601px) {
+            .logo_itb {
+              width: 100%;
+              text-align: center;
+            }
+            
+            .logo_itb img {
+              max-width: 50px !important;
+            }
+            
+            .nav-wrapper ul.left li {
+              width: 100%;
+            }
+            
+            .tatacara-mobile div.btn, form.tatacara-mobile {
+              width: 100%;
+            } 
+            
+            .card.kendaraan-mobile .card-content {
+              min-height: 0px !important;
+            }
+            
+            .kendaraan-mobile a, .kendaraan-mobile div.btn, form.kendaraan-mobile {
+              width: 100%;
+            } 
+          }
+        </style>	
     </head>
 
       <body>
@@ -26,50 +56,47 @@
       	<header style="background-color: #1D73BE;">
 	        <div class="container" style="color: #dfdedc;">
     	      	<div class="row" style="margin-bottom: 0px;">
-            		<div class="col m1">
+            		<div class="logo_itb col m1 s12">
               			<a href="{% url 'index' %}">
                 		<img src="{% static 'peminjaman/image/logoitb_header.png' %}" style="max-width: 100%; margin-top: 20px;">
               			</a>
             		</div>
-	            	<div class="col m11">
+	            	<div class="col m11 s12">
 	              		<p style="margin-bottom: 4px; margin-top: 20px;"><b>Direktorat Sarana dan Prasarana ITB</b></p>
 	              		<p style="margin-bottom: 4px; margin-top: 0px;">Pelayanan Transportasi</p>
 	            	</div>
           		</div>
           	<hr style="color: #dfdedc; border-top: 2px solid; margin-top: 0px;">
-            {% if user.is_authenticated %}
-              <nav class="z-depth-0">
-                <div class="nav-wrapper" style="background: #1D73BE;">
-                  <ul class="left hide-on-med-and-down">
-                    <li id="navbar-menu-home"><a href="{% url 'dashboard' %}" style="color:white;">Dashboard</a></li>
-                    <li id="navbar-menu-tatacara"><a href="{% url 'tatacara' %}" style="color:white;">Tata Cara</a></li>
-                    <li id="navbar-menu-peminjaman"><a href="{% url 'peminjaman' %}" style="color:white;">Jadwal Peminjaman</a></li>
-                    <li id="navbar-menu-kendaraan"><a href="{% url 'kendaraan' %}" style="color:white;">Kendaraan</a></li>
-                    <li id="navbar-menu-supir"><a href="{% url 'supir' %}" style="color:white;">Supir</a></li>
-                    <li id="navbar-menu-daftar-peminjam-online"><a href="{% url 'daftarPeminjam' %}" style="color:white;">Daftar Peminjam Online</a></li>
-                  </ul>
-                  <ul class="right">
-                    <li id="navbar-menu-logout"><a href="{% url 'logout' %}" style="color:white;">Logout</a></li>
-                    <li><span class="new badge green" data-badge-caption="Admin"></span></li>
-                  </ul>
-                </div>
-              </nav>
-            {% else %}
-              <nav class="z-depth-0">
-                <div class="nav-wrapper" style="background: #1D73BE;">
-                  <ul class="left hide-on-med-and-down">
+            <div class="row">
+              <nav style="background-color: #1D73BE; box-shadow:none;">
+                <div class="nav-wrapper">
+                  {% if user.is_authenticated %}
+                    <ul class="left">
+                      <li id="navbar-menu-home"><a href="{% url 'dashboard' %}" style="color:white;">Dashboard</a></li>
+                      <li id="navbar-menu-tatacara"><a href="{% url 'tatacara' %}" style="color:white;">Tata Cara</a></li>
+                      <li id="navbar-menu-peminjaman"><a href="{% url 'peminjaman' %}" style="color:white;">Jadwal Peminjaman</a></li>
+                      <li id="navbar-menu-kendaraan"><a href="{% url 'kendaraan' %}" style="color:white;">Kendaraan</a></li>
+                      <li id="navbar-menu-supir"><a href="{% url 'supir' %}" style="color:white;">Supir</a></li>
+                      <li id="navbar-menu-daftar-peminjam-online"><a href="{% url 'daftarPeminjam' %}" style="color:white;">Daftar Peminjam Online</a></li>
+                    </ul>
+                    <ul class="right">
+                      <li id="navbar-menu-logout"><a href="{% url 'logout' %}" style="color:white;">Logout</a></li>
+                      <li><span class="new badge green" data-badge-caption="Admin"></span></li>
+                    </ul>
+                  {% else %} 
+                  <ul class="left">
                     <li id="navbar-menu-home"><a href="{% url 'index' %}" style="color:white;">Home</a></li>
                     <li id="navbar-menu-peminjaman"><a href="{% url 'peminjaman' %}" style="color:white;">Jadwal Peminjaman</a></li>
                     <li id="navbar-menu-kendaraan"><a href="{% url 'kendaraan' %}" style="color:white;">Kendaraan</a></li>
                     <li id="navbar-menu-peminjaman-online"><a href="{% url 'peminjamanForm' %}" style="color:white;">Pemesanan</a></li>
                   </ul>
+                  {% endif %}
                 </div>
               </nav>
-
-            {% endif %}
-        </div>
-
+            </div>
+          </div>
       	</header>
+        
       	<div class="container">
       		{% block content %}
 			    {% endblock %}
@@ -88,14 +115,16 @@
         	</div>
       	</footer>
       	<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-      	<script type="text/javascript" src="{% static 'peminjaman/js/materialize.min.js' %}"></script>
+      	<script type="text/javascript" src="{% static 'peminjaman/js/materialize.min.js' %}">
+
+        </script>
       	<script src="{% static 'peminjaman/node_modules/chart.js/dist/Chart.bundle.js' %}"></script>
       	<script src="{% static 'peminjaman/node_modules/chart.js/samples/utils.js' %}"></script>
         <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
         <script src="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js"></script>
 
       	{% block script %}
-		{% endblock %}
+        {% endblock %}
 
     </body>
 </html>
