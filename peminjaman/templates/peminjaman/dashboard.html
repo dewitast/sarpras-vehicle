@@ -16,6 +16,21 @@
     <canvas id="canvasPie" style="max-width: 70%;"></canvas>
   </div>
 </div>
+<div class ="row">
+    <span style="font-size: 20px; font-weight: normal; color:#666666;">Jumlah Pemakaian Kendaraan {{year}}</span>
+    <hr>
+    <canvas id="kendaraanLine"></canvas>
+</div>
+<div class ="row">
+    <span style="font-size: 20px; font-weight: normal; color:#666666;">Bagian/Jurusan Peminjam</span>
+    <hr>
+    <canvas id="bagianJurusanPie"></canvas>
+</div>
+<div class ="row">
+    <span style="font-size: 20px; font-weight: normal; color:#666666;">Jumlah Kerja Supir {{year}}</span>
+    <hr>
+    <canvas id="supirLine"></canvas>
+</div> 
 {% endblock %}
 
 {% block script %}
@@ -113,11 +128,140 @@ $(document).on('change','#year',function(){
     }
 };
 
+var bagian_jurusan_pie = {
+  type: 'pie',
+  data: {
+    datasets: [{
+      data: [
+        {% for count in data_bagian_jurusan %}
+          {{ count }},
+        {% endfor %}
+      ],
+      backgroundColor: [
+        window.chartColors.red,
+        window.chartColors.green,
+        '#ffa280',
+        '#6ceabe',
+        '#cc6699',
+        '#ffff33',
+        window.chartColors.purple,
+        '#ffdb4d',
+        '#71d3f4',
+        '#de8f6e',
+        window.chartColors.blue,
+        window.chartColors.orange,
+        '#90c9e7',
+      ],
+      label: 'Bagian Jurusan'
+    }],
+    labels: [
+      {% for _, value in choices %}
+        "{{ value }}",
+      {% endfor %}
+    ]
+  },
+  options: {
+    responsive: true
+  }
+};
+
+var kendaraan_line = {
+    type: 'line',
+     data: {
+      labels:  [{% for keys in counter_kendaraan.keys %} "{{ keys }}", {% endfor %}],
+      datasets: [
+      {
+        label: "Pemakaian Kendaraan",
+        visibility: false,
+        fill: false,
+        backgroundColor: window.chartColors.blue,
+        borderColor: window.chartColors.blue,
+        data: [{% for values in counter_kendaraan.values %} "{{ values }}", {% endfor %}],
+      }]
+    },
+    options: {
+      responsive: true,
+      tooltips: {
+        mode: 'index',
+        intersect: false,
+      },
+      hover: {
+        mode: 'nearest',
+        intersect: true
+      },
+      scales: {
+        xAxes: [{
+          display: true,
+          scaleLabel: {
+            display: false,
+            labelString: 'Kendaraan'
+          }
+        }],
+        yAxes: [{
+          display: true,
+          scaleLabel: {
+            display: false,
+            labelString: 'Value'
+          }
+        }]
+      }
+    }
+  };
+  
+  var supir_line = {
+	type: 'line',
+		data: {
+			labels: [{% for keys in counter_supir.keys %} "{{ keys }}", {% endfor %}],
+			datasets: [
+			{
+				label: "Kerja Supir",
+				visibility: false,
+				fill: false,
+				backgroundColor: window.chartColors.blue,
+				borderColor: window.chartColors.blue,
+				data: [{% for values in counter_supir.values %} "{{ values }}", {% endfor %}],
+			}]
+		},
+		options: {
+			responsive: true,
+			tooltips: {
+				mode: 'index',
+				intersect: false,
+			},
+			hover: {
+				mode: 'nearest',
+				intersect: true
+			},
+			scales: {
+				xAxes: [{
+					display: true,
+					scaleLabel: {
+						display: false,
+						labelString: 'Kendaraan'
+					}
+				}],
+				yAxes: [{
+					display: true,
+					scaleLabel: {
+						display: false,
+						labelString: 'Value'
+					}
+				}]
+			}
+		}
+  };
+
   window.onload = function() {
     var ctxLine = document.getElementById("canvasLine").getContext("2d");
     window.myLine = new Chart(ctxLine, configLine);
     var ctxPie = document.getElementById("canvasPie").getContext("2d");
     window.myPie = new Chart(ctxPie, configPie);
+    var ctxKendaraanLine = document.getElementById("kendaraanLine").getContext("2d");
+    window.myLine = new Chart(ctxKendaraanLine,kendaraan_line);
+    var ctxBagianJurusanPie = document.getElementById("bagianJurusanPie").getContext("2d");
+    window.myPie = new Chart(ctxBagianJurusanPie, bagian_jurusan_pie);
+	var ctxSupirLine = document.getElementById("supirLine").getContext("2d");
+	window.myLine = new Chart(ctxSupirLine,supir_line);
   };
 
   var colorNames = Object.keys(window.chartColors);
