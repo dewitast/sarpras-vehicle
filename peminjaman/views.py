@@ -164,6 +164,16 @@ def uploadPerkiraanBiaya(request):
 # Peminjaman
 #
 ###################################################################################################################
+def fix_dt(string):
+    if string == 'midnight':
+        strig_formatted = string.replace('midnight', '0')
+        return datetime.strptime("%a %b %d %H:%M:%S %Y",string_formatted)
+    elif string == 'noon':
+        string_formatted = string.replace('noon', '12')
+        return datetime.strptime("%a %b %d %H:%M:%S %Y",string_formatted)
+    else :
+        return string
+
 def peminjaman(request):
     # if not request.user.is_authenticated:
     #     return HttpResponseRedirect(reverse('login'))
@@ -183,6 +193,9 @@ def peminjaman(request):
         setattr(peminjaman, 'tanggal_pemakaian_formatted', peminjaman.tanggal_pemakaian.strftime('%d %B %Y'))
         setattr(peminjaman, 'tanggal_pengembalian_formatted', peminjaman.tanggal_pengembalian.strftime('%d %B %Y'))
         setattr(peminjaman, 'tanggal_surat_formatted', peminjaman.tanggal_surat.strftime('%d %B %Y'))
+        setattr(peminjaman, 'waktu_berangkat_formatted', fix_dt(peminjaman.waktu_berangkat).strftime('%H:%M'))
+        setattr(peminjaman, 'waktu_datang_formatted', fix_dt(peminjaman.waktu_datang).strftime('%H:%M'))
+
     context = {
         'days': days,
         'years': years,
@@ -207,6 +220,9 @@ def peminjamanDetail(request, peminjaman_id):
         setattr(peminjaman, 'tanggal_pemakaian_formatted', peminjaman.tanggal_pemakaian.strftime('%d %B %Y'))
         setattr(peminjaman, 'tanggal_pengembalian_formatted', peminjaman.tanggal_pengembalian.strftime('%d %B %Y'))
         setattr(peminjaman, 'tanggal_surat_formatted', peminjaman.tanggal_surat.strftime('%d %B %Y'))
+        setattr(peminjaman, 'waktu_berangkat_formatted', fix_dt(peminjaman.waktu_berangkat).strftime('%H:%M'))
+        setattr(peminjaman, 'waktu_datang_formatted', fix_dt(peminjaman.waktu_datang).strftime('%H:%M'))
+
         context = {
             'peminjaman': peminjaman,
             'all_mobil' : data_mobil,
@@ -227,48 +243,6 @@ def peminjamanForm(request):
             'is_authenticated' : is_authenticated,
         }
         return render(request, 'peminjaman/peminjaman/create.html', context)
-def process_date(date):
-    date = date.replace(',', '')
-    tokens = date.split(' ')
-    if len(tokens[0]) == 1:
-        tokens[0] = '0'+tokens[0]
-    if tokens[1] == 'January':
-        month = '01'
-    elif tokens[1] == 'February':
-        month = '02'
-    elif tokens[1] == 'March':
-        month = '03'
-    elif tokens[1] == 'April':
-        month = '04'
-    elif tokens[1] == 'May':
-        month = '05'
-    elif tokens[1] == 'June':
-        month = '06'
-    elif tokens[1] == 'July':
-        month = '07'
-    elif tokens[1] == 'August':
-        month = '08'
-    elif tokens[1] == 'September':
-        month = '09'
-    elif tokens[1] == 'October':
-        month = '10'
-    elif tokens[1] == 'November':
-        month = '11'
-    elif tokens[1] == 'December':
-        month = '12'
-    return     tokens[2]+'-'+month+'-'+tokens[0]+' 00:00Z'
-
-def process_time(time):
-    t = time.split(' ')
-    if t[1] == 'PM':
-        x = t[0].split(':')
-        hour = int(x[0])
-        minute = int(x[1])
-        hour += 12
-        a = '%s:%s' % (hour, minute)
-    else:
-        a = t[0]
-    return a
 
 def peminjamanCreate(request):
     # if not request.user.is_authenticated:
@@ -283,7 +257,7 @@ def peminjamanCreate(request):
             # Create new Peminjaman Kendaraaan record
             if request.user.is_authenticated :
                 no_surat = request.POST['no_surat']
-                tanggal_surat = process_date(request.POST['tanggal_surat'])
+                tanggal_surat = request.POST['tanggal_surat']
                 biaya_perawatan = request.POST['biaya_perawatan']
                 biaya_bbm = request.POST['biaya_bbm']
                 biaya_supir = request.POST['biaya_supir']
@@ -310,13 +284,13 @@ def peminjamanCreate(request):
                     [settings.EMAIL_HOST_USER], # Receiver
                     )
 
-            tanggal_booking = process_date(request.POST['tanggal_booking'])
+            tanggal_booking = request.POST['tanggal_booking']
             acara = request.POST['acara']
             tujuan = request.POST['tujuan'] 
-            tanggal_pemakaian = process_date(request.POST['tanggal_pemakaian'])
-            waktu_berangkat = process_time(request.POST['waktu_berangkat'])
-            waktu_datang = process_time(request.POST['waktu_datang'])
-            tanggal_pengembalian = process_date(request.POST['tanggal_pengembalian'])
+            tanggal_pemakaian = request.POST['tanggal_pemakaian']
+            waktu_berangkat = request.POST['waktu_berangkat']
+            waktu_datang = request.POST['waktu_datang']
+            tanggal_pengembalian = request.POST['tanggal_pengembalian']
             tempat_berkumpul = request.POST['tempat_berkumpul']
             keterangan = request.POST.get('keterangan', '')
             
@@ -369,6 +343,7 @@ def peminjamanCreate(request):
                 return HttpResponseRedirect(reverse('peminjamanDetail', args=(peminjaman.id,)))
             else :
                 return HttpResponseRedirect(reverse('peminjaman'))
+                
 def peminjamanEditForm(request, peminjaman_id):
     if not request.user.is_authenticated:
         return HttpResponseRedirect(reverse('login'))
@@ -378,6 +353,8 @@ def peminjamanEditForm(request, peminjaman_id):
         setattr(peminjaman, 'tanggal_pemakaian_formatted', peminjaman.tanggal_pemakaian.strftime('%Y-%m-%d'))
         setattr(peminjaman, 'tanggal_pengembalian_formatted', peminjaman.tanggal_pengembalian.strftime('%Y-%m-%d'))
         setattr(peminjaman, 'tanggal_surat_formatted', peminjaman.tanggal_surat.strftime('%Y-%m-%d'))
+        setattr(peminjaman, 'waktu_berangkat_formatted', peminjaman.waktu_berangkat.strftime('%H:%M'))
+        setattr(peminjaman, 'waktu_datang_formatted', peminjaman.waktu_datang.strftime('%H:%M'))
 
         mobil_peminjaman = list(MobilPeminjaman.objects.filter(peminjaman_id=peminjaman_id))
         all_mobil = Mobil.objects.all()
@@ -408,8 +385,8 @@ def peminjamanEdit(request, peminjaman_id):
             peminjaman.tempat_berkumpul = request.POST['tempat_berkumpul']
             peminjaman.keterangan = request.POST['keterangan']
             peminjaman.no_surat = request.POST['no_surat']
-            peminjaman.waktu_berangkat = process_time(request.POST['waktu_berangkat'])
-            peminjaman.waktu_datang = process_time(request.POST['waktu_datang'])
+            peminjaman.waktu_berangkat = request.POST['waktu_berangkat']
+            peminjaman.waktu_datang = request.POST['waktu_datang']
 
             peminjaman.biaya_perawatan = request.POST['biaya_perawatan']
             peminjaman.biaya_bbm = request.POST['biaya_bbm']
@@ -433,17 +410,9 @@ def peminjamanEdit(request, peminjaman_id):
               peminjaman.foto_bukti_transfer = None
               
             tanggal_booking = request.POST['tanggal_booking']
-            if '-' not in tanggal_booking:
-                peminjaman.tanggal_booking = process_date(tanggal_booking)
             tanggal_pemakaian = request.POST['tanggal_pemakaian']
-            if '-' not in tanggal_pemakaian:
-                peminjaman.tanggal_pemakaian = process_date(tanggal_pemakaian)
             tanggal_pengembalian = request.POST['tanggal_pengembalian']
-            if '-' not in tanggal_pengembalian:
-                peminjaman.tanggal_pengembalian = process_date(tanggal_pengembalian)
             tanggal_surat = request.POST['tanggal_surat']
-            if '-' not in tanggal_surat:
-                peminjaman.tanggal_surat = process_date(tanggal_surat)
             peminjaman.save()
 
             # Send email to user
