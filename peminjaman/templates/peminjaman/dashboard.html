@@ -26,6 +26,11 @@
     <hr>
     <canvas id="bagianJurusanPie"></canvas>
 </div>
+<div class ="row">
+    <span style="font-size: 20px; font-weight: normal; color:#666666;">Jumlah Kerja Supir {{year}}</span>
+    <hr>
+    <canvas id="supirLine"></canvas>
+</div> 
 {% endblock %}
 
 {% block script %}
@@ -202,6 +207,49 @@ var kendaraan_line = {
       }
     }
   };
+  
+  var supir_line = {
+	type: 'line',
+		data: {
+			labels: [{% for keys in counter_supir.keys %} "{{ keys }}", {% endfor %}],
+			datasets: [
+			{
+				label: "Kerja Supir",
+				visibility: false,
+				fill: false,
+				backgroundColor: window.chartColors.blue,
+				borderColor: window.chartColors.blue,
+				data: [{% for values in counter_supir.values %} "{{ values }}", {% endfor %}],
+			}]
+		},
+		options: {
+			responsive: true,
+			tooltips: {
+				mode: 'index',
+				intersect: false,
+			},
+			hover: {
+				mode: 'nearest',
+				intersect: true
+			},
+			scales: {
+				xAxes: [{
+					display: true,
+					scaleLabel: {
+						display: false,
+						labelString: 'Kendaraan'
+					}
+				}],
+				yAxes: [{
+					display: true,
+					scaleLabel: {
+						display: false,
+						labelString: 'Value'
+					}
+				}]
+			}
+		}
+  };
 
   window.onload = function() {
     var ctxLine = document.getElementById("canvasLine").getContext("2d");
@@ -212,6 +260,8 @@ var kendaraan_line = {
     window.myLine = new Chart(ctxKendaraanLine,kendaraan_line);
     var ctxBagianJurusanPie = document.getElementById("bagianJurusanPie").getContext("2d");
     window.myPie = new Chart(ctxBagianJurusanPie, bagian_jurusan_pie);
+	var ctxSupirLine = document.getElementById("supirLine").getContext("2d");
+	window.myLine = new Chart(ctxSupirLine,supir_line);
   };
 
   var colorNames = Object.keys(window.chartColors);

@@ -74,6 +74,11 @@ def index(request):
         status_selesai = 0
         import datetime
         now = datetime.datetime.now()
+		
+        all_supir = Supir.objects.all()
+        counter_supir = {}
+        for element_supir in all_supir:
+            counter_supir[element_supir.nama] = 0
 
         all_kendaraan = Mobil.objects.all()
         counter_kendaraan = {}
@@ -91,6 +96,7 @@ def index(request):
                 data_mobil = MobilPeminjaman.objects.filter(peminjaman_id=peminjaman.id)
                 for jumlah_mobil in data_mobil:
                     counter_kendaraan[jumlah_mobil.mobil.nama + jumlah_mobil.mobil.no_polisi] += 1
+                    counter_supir[jumlah_mobil.supir.nama] += 1
             if peminjaman.status == 0:
                 status_booking_belum_transfer += 1
             elif peminjaman.status == 1:
@@ -118,6 +124,9 @@ def index(request):
             'all_kendaraan':all_kendaraan,
             'choices': choices,
             'data_bagian_jurusan': data_bagian_jurusan,
+			'year': now.year,
+			'counter_supir':counter_supir,
+			'all_supir':all_supir,
         }
         return render(request, 'peminjaman/dashboard.html', context)
 
