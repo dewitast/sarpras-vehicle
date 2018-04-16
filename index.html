@@ -1,0 +1,387 @@
+{% extends 'base.html' %}
+
+<!-- Load Static -->
+{% load static %}
+
+{% block title %}
+    Daftar Peminjaman
+{% endblock %}
+
+{% block wide_content %}
+<br />
+<div class="row">
+    {% if user.is_authenticated %}
+        <div class="col m12">
+            <a onclick="downloadReport()" class="btn waves-effect waves-light right" style="background-color: #26a69a; margin-left: 20px;" name="action">Export Excel</a>
+            <a class="waves-effect waves-light btn right" href="{% url 'peminjamanForm' %}" style="background-color: #1D73BE;">+ New
+            </a>
+        </div>
+    {% endif %}
+</div>
+
+<div class="row"> 
+    <div class="col m12">
+        <h5>Daftar Peminjaman</h5>
+    </div>
+</div>
+
+<div class="row"> 
+    <div class="input-field col m2">
+        <select id="year">
+            <option value="" disabled selected>Choose year</option>
+            {% for year in years %}
+                <option value="{{year}}"
+                    {% ifequal year|slugify today_year %}
+                        selected
+                    {% endifequal %}
+                >{{year}}</option>
+            {% endfor %}
+        </select>
+        <label>Year</label>
+    </div>
+    <div class="col m10">
+        <ul class="pagination">
+            <li class="waves-effect" id="chevron_left"><a onclick="previousMonth()"><i class="material-icons">chevron_left</i></a></li>
+            <li class="waves-effect months" id="January"><a onclick="selectMonth(id)" id="month1">Jan</a></li>
+            <li class="waves-effect months" id="February"><a onclick="selectMonth(id)" id="month2">Feb</a></li>
+            <li class="waves-effect months" id="March"><a onclick="selectMonth(id)" id="month3">Mar</a></li>
+            <li class="waves-effect months" id="April"><a onclick="selectMonth(id)" id="month4">Apr</a></li>
+            <li class="waves-effect months" id="May"><a onclick="selectMonth(id)" id="month5">May</a></li>
+            <li class="waves-effect months" id="June"><a onclick="selectMonth(id)" id="month6">Jun</a></li>
+            <li class="waves-effect months" id="July"><a onclick="selectMonth(id)" id="month7">Jul</a></li>
+            <li class="waves-effect months" id="August"><a onclick="selectMonth(id)" id="month8">Aug</a></li>
+            <li class="waves-effect months" id="September"><a onclick="selectMonth(id)" id="month9">Sep</a></li>
+            <li class="waves-effect months" id="October"><a onclick="selectMonth(id)" id="month10">Oct</a></li>
+            <li class="waves-effect months" id="November"><a onclick="selectMonth(id)" id="month11">Nov</a></li>
+            <li class="waves-effect months" id="December"><a onclick="selectMonth(id)" id="month12">Dec</a></li>
+            <li class="waves-effect" id="chevron_right"><a onclick="nextMonth()"><i class="material-icons">chevron_right</i></a></li>
+        </ul>
+    </div>
+
+    <div class="col m12">
+        <table class="bordered striped"> <!-- Table Peminjaman -->
+            <thead>
+                <tr>
+                    <th rowspan="2">No</th>
+                    <th rowspan="2">Jenis Kendaraan</th>
+                    <th rowspan="2">Nopol</th>
+                    {% for day in days %}
+                        <th class="header-table">{{day}}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+
+            <tbody>
+                <tbody>
+                    {% if all_kendaraan %}
+                        {% for kendaraan in all_kendaraan %}
+                            <tr id="{{kendaraan.id}}">
+                                <td>{{forloop.counter}}</td>
+                                <td>{{kendaraan.nama}}</td>
+                                <td>{{kendaraan.no_polisi}}</td>
+                                 {% for day in days %}
+                                    <td class='day-cell' day='{{day}}'></td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>No Kendaraan are available.</tr>
+                    {% endif %}
+
+                </tbody>
+            </tbody>
+        </table> <!-- End of Table Peminjaman -->
+    </div>
+</div>
+{% for peminjaman in all_peminjaman %}
+    {% for kendaraan in peminjaman.all_kendaraan %}
+    <!-- Modal Structure -->
+        <div id="modalpeminjaman{{peminjaman.id}}" class="modal modal-fixed-footer">
+            <div class="modal-content">
+            {% if user.is_authenticated %}
+              <h4>{{peminjaman.tanggal_pemakaian_formatted}}</h4>
+              {% if peminjaman.foto_bukti_transfer %}
+                {% if peminjaman.metode_transfer == 1 %}
+                    <span class="new badge green" data-badge-caption="Metode Transfer: Teller"></span>
+                {% else %}
+                    {% if peminjaman.metode_transfer == 2%}
+                        <span class="new badge green" data-badge-caption="Metode Transfer: ATM"></span>
+                    {% else %}
+                        {% if peminjaman.metode_transfer == 3 %}
+                            <span class="new badge green" data-badge-caption="Metode Transfer: SMS Banking"></span>
+                        {% else %}
+                            {% if peminjaman.metode_transfer == 4 %}
+                                <span class="new badge green" data-badge-caption="Metode Transfer: Mobile Banking"></span>
+                            {% else %}
+                                {% if peminjaman.metode_transfer == 5 %}
+                                  <span class="new badge green" data-badge-caption="Metode Transfer: Internet/E-Banking"></span>
+                                {% else %}
+                                  <span class="new badge" data-badge-caption="Belum transfer"></span>
+                                {% endif %}
+                            {% endif %}
+                        {% endif %}
+                    {% endif %}
+                {% endif %}
+              {% endif %}
+              {% if peminjaman.status == 0 %}
+                <span class="new badge yellow" data-badge-caption="Belum Transfer"></span>
+              {% else %}
+                {% if peminjaman.status == 1 %}
+                  <span class="new badge blue" data-badge-caption="Sudah Transfer"></span>
+                {% else %}
+                    {% if peminjaman.status == 2 %}
+                      <span class="new badge" data-badge-caption="Sudah Selesai"></span>
+                    {% else %}
+                      <span class="new badge red" data-badge-caption="Dibatalkan"></span>
+                    {% endif %}
+                {% endif %}
+              {% endif %}
+              <p>
+                  <strong>Nama Peminjam</strong>: {{peminjaman.nama_peminjam}} <br />
+                  <strong>No Telp Peminjam</strong>: {{peminjaman.no_telp_peminjam}} <br />
+              </p>
+              <p>
+                <strong>Acara</strong>: {{peminjaman.acara}}<br />
+                <strong>Tujuan</strong>: {{peminjaman.tujuan}}<br />
+                <strong>Asal</strong>: {{peminjaman.tempat_berkumpul}}<br />
+                <strong>Keterangan</strong>: {{peminjaman.keterangan}}
+              </p>
+              <p>
+                <strong>Tanggal Booking</strong>: {{peminjaman.tanggal_pemakaian_formatted}}<br />
+                <strong>Tanggal Pemakaian</strong>: {{peminjaman.tanggal_pemakaian_formatted}}<br />
+                <strong>Tanggal Pengembalian</strong>: {{peminjaman.tanggal_pengembalian_formatted}}<br />
+                <strong>Waktu Berangkat</strong>: {{ peminjaman.waktu_berangkat }} <br />
+                <strong>Waktu Datang</strong>: {{ peminjaman.waktu_datang }}
+              </p>
+              <p>
+                <strong>Jumlah Biaya</strong>: Rp. {{ peminjaman.getTotalBiaya }}
+              </p>
+            {% else %}
+                <h4>{{peminjaman.tanggal_pemakaian_formatted}}</h4>
+                <p>{{peminjaman.nama_kendaraan}} sudah dibooking pada tanggal ini.</p>
+            {% endif %}
+            </div>
+            <div class="modal-footer">
+                <a href="#" class="modal-action modal-close waves-effect waves-green btn-flat ">Close</a>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'peminjamanDetail' peminjaman.id %}" class="modal-action modal-close waves-effect waves-green btn-flat ">Detail</a>
+                {% endif %}
+            </div>
+        </div>
+
+        <span id="peminjaman{{peminjaman.id}}" style="display: none;" class="peminjaman" tanggal='{{peminjaman.tanggal_pemakaian}}' kendaraan_id="{{kendaraan.mobil_id}}"></span>
+    {% endfor %}
+{% endfor %}
+{% endblock %}
+
+{% block script %}
+<script type="text/javascript">
+    $('#navbar-menu-peminjaman').addClass('active')
+
+    var current_month = '{{today_month}}'
+    $('#'+current_month).addClass('active')
+    var current_year = '{{today_year}}'
+
+    $(document).ready(function() {
+        $('select').material_select();
+        // the "href" attribute of .modal-trigger must specify the modal ID that wants to be triggered
+        $('.modal').modal();
+
+        updateTable(current_month, current_year)
+      });
+
+    function daysInMonth(month, year) {
+        return new Date(year, convert(month), 0).getDate();
+    }
+    function convert(month_name) {
+        if (month_name == "January") {
+            return 1
+        }
+        else if (month_name == "February") {
+            return 2
+        }
+        else if (month_name == "March") {
+            return 3
+        }
+        else if (month_name == "April") {
+            return 4
+        }
+        else if (month_name == "May") {
+            return 5
+        }
+        else if (month_name == "June") {
+            return 6
+        }
+        else if (month_name == "July") {
+            return 7
+        }
+        else if (month_name == "August") {
+            return 8
+        }
+        else if (month_name == "September") {
+            return 9
+        }
+        else if (month_name == "October") {
+            return 10
+        }
+        else if (month_name == "November") {
+            return 11
+        }
+        else if (month_name == "December") {
+            return 12
+        }
+    }
+
+    function updateTable(month, year) {
+        $('.header-table').each(function() {
+            date = $(this).text()
+            no_days = daysInMonth(month, year)
+            if (date <= no_days) {
+                $(this).show()
+                var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+                var dateString = convert(month)+'/'+date+'/'+year
+                var d = new Date(dateString);
+                var dayName = days[d.getDay()];
+                if (dayName == 'Sunday' || dayName == 'Saturday') {
+                    $(this).css({ 'color': '#ee6e73' });
+                }
+                else {
+                    $(this).css({ 'color': '' });
+                }
+            }
+            else {
+                $(this).hide()
+            }
+            // console.log(date+' '+dayName)
+        })
+        $('.day-cell').each(function() {
+            $(this).css({ 'background-color': '' });
+            $(this).empty()
+            $(this).unbind('mouseenter')
+            $(this).unbind('mouseleave')
+            
+        })
+        $('.peminjaman').each(function() {
+            var id = $(this).attr('id')
+            var tanggal = $(this).attr('tanggal')
+            var kendaraan_id = $(this).attr('kendaraan_id')
+            var tokens = tanggal.replace(new RegExp(',', 'g'), '').split(' ')
+            var m = tokens[0]
+            var d = tokens[1]
+            var y = tokens[2]
+            // console.log(tokens)
+            if(y == year && m == month) {
+                $('.day-cell').each(function() {
+                    if($(this).attr('day') == d) {
+                        if($(this).parent().attr('id') == kendaraan_id) {
+                            var count = $(this).text()
+                            if(count == "")
+                                count = 0
+                            count++
+                            if(count == 1) {
+                                // $(this).text(count)
+                                $(this).addClass('center-align');
+                                $(this).css({ 'background-color': "#26a69a"});
+                                $(this).mouseenter(function() {
+                                    $(this).css({ 'background-color': "#30c1b4", 'cursor': 'pointer'})
+                                }).mouseleave(function() {
+                                    $(this).css({ 'background-color': "#26a69a", 'cursor': 'default'})
+                                }).click(function() {
+                                    $("#modal"+id).modal('open');
+                                })
+                                console.log(id)
+                                $(this).append('<i class="white tiny material-icons">open_in_new</i>')
+                            }
+                            else {
+                                $(this).empty()
+                                $(this).css({ 'background-color': "#26a69a"});
+                                $(this).mouseenter(function() {
+                                    $(this).css({ 'background-color': "#30c1b4", 'cursor': 'pointer'})
+                                }).mouseleave(function() {
+                                    $(this).css({ 'background-color': "#26a69a", 'cursor': 'default'})
+                                })
+                                console.log(id)
+                                $(this).append('<a href="#modal'+id+'"><i class="white tiny material-icons">open_in_new</i></a>')
+                            }
+                        }
+                    }
+                })
+            }
+        })
+    }
+
+    function selectMonth(id) {
+        // console.log('#'+id)
+        $('.months').each(function() {
+            $(this).removeClass('active')
+        })
+        $('#'+id).parent().addClass('active')
+        var month_name = $('#'+id).parent().attr('id')
+        current_month = month_name
+        console.log("Updating month:"+month_name)
+        updateTable(current_month, current_year)
+        if(current_month == 'January') {
+            $('#chevron_left').addClass('disabled')
+        }
+        else {
+            $('#chevron_left').removeClass('disabled')
+        }
+        if(current_month == 'December') {
+            $('#chevron_right').addClass('disabled')
+        }
+        else {
+            $('#chevron_right').removeClass('disabled')
+        }
+    }
+
+    function previousMonth() {
+          var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+        for(var i = 0; i < months.length; i++) {
+            if(current_month == months[i])
+                var month_no = i
+        }
+        // console.log(month_no)
+        // console.log("month"+i)
+        if(month_no != 0) {
+            selectMonth("month"+month_no)
+        }
+    }
+
+    function nextMonth() {
+        var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+        for(var i = 0; i < months.length; i++) {
+            if(current_month == months[i])
+                var month_no = i
+        }
+        // console.log(month_no)
+        // console.log("month"+i)
+        month_no += 2
+        if(month_no != 13) {
+            selectMonth("month"+month_no)
+        }
+    }
+
+    function getMonthNo() {
+        var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+        for(var i = 0; i < months.length; i++) {
+            if(current_month == months[i])
+                var month_no = i
+        }
+        return parseInt(month_no)+1
+    }
+
+    function downloadReport() {
+        window.location='/download_report/'+getMonthNo()+'/'+current_year
+        // $.get('/download_report/'+getMonthNo()+'/'+current_year+'', function(data, status){
+        //     alert("Data: " + data + "\nStatus: " + status);
+        // });
+    }
+
+    $('#year').on('change', function() {
+        var year = this.value
+        current_year = year
+        updateTable(current_month, current_year)
+    })
+
+</script>
+{% endblock %}
