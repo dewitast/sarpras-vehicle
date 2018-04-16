@@ -1432,76 +1432,195 @@ def download_report(request, month, year):
     return excel.make_response_from_array(
         data, 'xlsx', file_name=filename)
 
-def download_peminjaman_report(request, month, year):
-    all_kendaraan = Mobil.objects.all()
-    for kendaraan in all_kendaraan:
-        setattr(kendaraan, 'nama_supir', get_object_or_404(Supir, pk=kendaraan.supir_id).nama)
-    all_peminjaman = PeminjamanKendaraan.objects.all()
-    for peminjaman in all_peminjaman:
-        peminjam = get_object_or_404(Peminjam, pk=peminjaman.peminjam_id)
-        setattr(peminjaman, 'nama_peminjam', peminjam.nama)
-        setattr(peminjaman, 'bagian_jurusan_peminjam', peminjam.bagian_jurusan)
-        supir = get_object_or_404(Supir, pk=peminjaman.supir_id)
-        setattr(peminjaman, 'nama_supir', supir.nama)
-
-    filename = 'Report_'+month+'-'+year
-
+def download_peminjaman_report(request, year):
+    mobilpeminjaman = MobilPeminjaman.objects.all()
     response = HttpResponse(content_type='application/ms-excel')
-    response['Content-Disposition'] = 'attachment; filename='+ filename +'.xls'
+    response['Content-Disposition'] = 'attachment; filename=report_'+ year +'.xls'
     wb = xlwt.Workbook(encoding='utf-8')
-    ws = wb.add_sheet("%s %s" % (intToMonth(int(month)), year))
 
-    header_font = xlwt.XFStyle()
-    header_font.alignment.horz = header_font.alignment.HORZ_CENTER
+    for month in range(0, 13):
+    	if month > 0:
+        	ws = wb.add_sheet(intToMonth(month))
+        else:
+        	ws = wb.add_sheet("Rekap")
 
-    borders = xlwt.Borders()
-    borders.left = xlwt.Borders.THIN
-    borders.right = xlwt.Borders.THIN
-    borders.top = xlwt.Borders.THIN
-    borders.bottom = xlwt.Borders.THIN
+        row_num = 0
 
-    header_font.borders = borders
+        #####################
+        # HEADER FILE
+        ####################
+        ws.write_merge(0, 0, 0, 15, "LEMBAR KENDALI KENDARAAN OPERASIONAL ITB")
+        ws.write_merge(2, 2, 0, 15, "Tahun : " + year)
+        if month > 0:
+        	ws.write_merge(3, 3, 0, 15, "Bulan : " + intToMonth(month))
+        row_num += 6
+        ####### end header file ######
 
-    ws.write(0,0, 'No', header_font)
-    ws.write(0,1, 'Jenis Kendaraan', header_font)
-    ws.write(0,2, 'Nama Kendaraan', header_font)
-    ws.write(0,3, 'Nopol', header_font)
-    ws.write(0,4, 'Pengemudi', header_font)
+        #####################
+        # HEADER TABEL
+        ####################
+        header_font = xlwt.XFStyle()
+        header_font.alignment.horz = header_font.alignment.HORZ_CENTER
 
-    days = monthrange(int(year), int(month))[1]
-    i = 1
-    while i < days+1:
-        ws.write(0,i+4, str(i), header_font)
-        i += 1
+        borders = xlwt.Borders()
+        borders.left = xlwt.Borders.THIN
+        borders.right = xlwt.Borders.THIN
+        borders.top = xlwt.Borders.THIN
+        borders.bottom = xlwt.Borders.THIN
 
-    content_font = xlwt.XFStyle()
-    content_font.borders = borders
+        header_font.borders = borders
 
-    i = 1
-    for kendaraan in all_kendaraan:
-        ws.write(i, 0, str(i), content_font)
-        ws.write(i, 1, kendaraan.jenis, content_font)
-        ws.write(i, 2, kendaraan.nama, content_font)
-        ws.write(i, 3, kendaraan.no_polisi, content_font)
-        ws.write(i, 4, kendaraan.nama_supir, content_font)
-        day = 1
-        while day < days+1:
-            hit = False
-            for peminjaman in all_peminjaman:
-                # a = int(peminjaman.tanggal_pemakaian.strftime('%m'))
-                # b = int(peminjaman.tanggal_pemakaian.strftime('%Y'))
-                if peminjaman.mobil_id == kendaraan.id and int(peminjaman.tanggal_pemakaian.strftime('%d')) == day \
-                    and int(peminjaman.tanggal_pemakaian.strftime('%m')) == int(month) \
-                    and int(peminjaman.tanggal_pemakaian.strftime('%Y')) == int(year):
-                    hit = True
-            if not hit:
-                ws.write(i, day+4, '', content_font)
+        ws.write_merge(6, 8, 0, 0, "No", header_font)
+        ws.col(0).width = (len("No. ")*367)
+
+        ws.write_merge(6, 6, 1, 2, "Pemesanan", header_font)
+        ws.write_merge(7, 8, 1, 1, "Hari", header_font)
+        ws.col(1).width = (len("Minggu--")*367)
+        ws.write_merge(7, 8, 2, 2, "Tanggal", header_font)
+        ws.col(2).width = (len("33 Desember 20")*367)
+
+        ws.write_merge(6, 6, 3, 8, "Pelaksanaan", header_font)
+        ws.write_merge(7, 8, 3, 3, "Hari", header_font)
+        ws.col(3).width = (len("Minggu--")*367)
+        ws.write_merge(7, 8, 4, 4, "Tanggal", header_font)
+        ws.col(4).width = (len("33 Desember 20")*367)
+        ws.write_merge(7, 8, 5, 5, "Nama Pemohon", header_font)
+        ws.col(5).width = (len("Nama Pemohon Pemohon")*367)
+        ws.write_merge(7, 8, 6, 6, "Unit/Alamat", header_font)
+        ws.col(6).width = (len("UnitAlamat")*367)
+        ws.write_merge(7, 8, 7, 7, "Tujuan", header_font)
+        ws.col(7).width = (len("Tujuan---")*367)
+        ws.write_merge(7, 8, 8, 8, "Nama Pengemudi", header_font)
+        ws.col(8).width = (len("Nama Pengemudi")*367)
+
+        ws.write_merge(6, 6, 9, 14, "Kendaraan", header_font)
+        ws.write_merge(7, 8, 9, 9, "Nama Kendaraan", header_font)
+        ws.col(9).width = (len("Elf KOIKA (STEI) Elf KOIKA (STEI)")*367)
+        ws.write_merge(7, 8, 10, 10, "Nopol", header_font)
+        ws.col(9).width = (len("D 7159 AP D 7159 AP")*367)
+        ws.write_merge(7, 7, 11, 12, "Waktu", header_font)
+        #ws.col(7).width = (len("Waktu")*367)
+        ws.write_merge(7, 7, 13, 14, "Posisi Odometer", header_font)
+        #ws.col().width = (len("Posisi Odometer")*367)
+        ws.write_merge(8, 8, 11, 11, "Berangkat", header_font)
+        ws.col(9).width = (len("33 Desember 20")*367)
+        ws.write_merge(8, 8, 12, 12, "Datang", header_font)
+        ws.col(10).width = (len("33 Desember 20")*367)
+        ws.write_merge(8, 8, 13, 13, "Awal", header_font)
+        ws.col(11).width = (len("--Awal--")*367)
+        ws.write_merge(8, 8, 14, 14, "Akhir", header_font)
+        ws.col(12).width = (len("--Awal--")*367)
+
+        ws.write_merge(6, 6, 15, 16, "Bukti Biaya Perawatan", header_font)
+        #ws.col(11).width = (len("Bukti Biaya Perawatan")*367)
+        ws.write_merge(7, 8, 15, 15, "Ada", header_font)
+        ws.col(13).width = (len("Ada Ada")*367)
+        ws.write_merge(7, 8, 16, 16, "Tidak", header_font)
+        ws.col(14).width = (len("Ada Ada")*367)
+
+        ws.write_merge(6, 8, 17, 17, "Nomor Surat", header_font)
+        ws.col(15).width = (len("Nomor Surat Nomor Surat")*367)
+        ws.write_merge(6, 8, 18, 18, "Tanggal Surat", header_font)
+        ws.col(16).width = (len("Tanggal Surat")*367)
+
+        ws.write_merge(6, 8, 19, 19, "Keterangan", header_font)
+        ws.col(17).width = (len("Keterangan")*367)
+
+        ws.write_merge(6, 6, 20, 26, "Biaya", header_font)
+        ws.write_merge(7, 8, 20, 20, "Biaya BBM", header_font)
+        ws.col(18).width = (len("Biaya BBM BBM")*367)
+        ws.write_merge(7, 8, 21, 21, "Biaya Parkir", header_font)
+        ws.col(19).width = (len("Biaya Parkir")*367)
+        ws.write_merge(7, 8, 22, 22, "Biaya Penginapan", header_font)
+        ws.col(20).width = (len("Biaya Penginapan")*367)
+        ws.write_merge(7, 8, 23, 23, "Biaya Perawatan", header_font)
+        ws.col(21).width = (len("Biaya Perawatan")*367)
+        ws.write_merge(7, 8, 24, 24, "Biaya Supir", header_font)
+        ws.col(22).width = (len("Biaya Supir")*367)
+        ws.write_merge(7, 8, 25, 25, "Biaya Tol", header_font)
+        ws.col(23).width = (len("Biaya Tol Tol")*367)
+        ws.write_merge(7, 8, 26, 26, "Biaya Total", header_font)
+        ws.col(24).width = (len("Biaya Total Total")*367)
+        ##### end header table #######
+
+        #############################
+        # CONTENT
+        ############################
+        content_font = xlwt.XFStyle()
+        content_font.borders = borders
+        row_num = 9
+        no = 1
+        subtotal = 0
+
+        for pinjammobil in mobilpeminjaman:
+
+            pinjam = get_object_or_404(PeminjamanKendaraan, pk=pinjammobil.peminjaman_id)
+            mobil = get_object_or_404(Mobil, pk=pinjammobil.mobil_id)
+            bulan_pinjam = pinjam.tanggal_pemakaian.strftime('%B')
+            tahun_pinjam = pinjam.tanggal_pemakaian.strftime('%Y')
+            if pinjam.foto_bukti_transfer == 0 or pinjam.foto_bukti_transfer == "":
+                ada = ''
+                tidak_ada = 'v'
             else:
-                text = 'Pengguna: '+peminjaman.nama_peminjam+'('+peminjaman.bagian_jurusan_peminjam+')'+' Tujuan: '+peminjaman.tujuan+' Pengemudi: '+peminjaman.nama_supir
-                ws.write(i, day+4, text, content_font)
-            day += 1
-        i += 1
+                ada = 'v'
+                tidak_ada = ''
 
+            if month == 0:
+            	valid = True
+            elif month == int(monthToStringNumber(bulan_pinjam)):
+           		valid = True
+            else:
+           		valid = False
+            	
+            if valid and year == tahun_pinjam and pinjammobil.supir_id is not None and pinjammobil.odometer_sebelum is not None and pinjammobil.odometer_sesudah is not None :
+
+                supir = get_object_or_404(Supir, pk=pinjammobil.supir_id)
+
+                totalbiaya = pinjam.biaya_bbm + pinjam.biaya_parkir + pinjam.biaya_penginapan + pinjam.biaya_perawatan + pinjam.biaya_supir + pinjam.biaya_tol
+
+                day_pemesanan = datetime.strptime(pinjam.tanggal_booking.strftime('%d %B %Y'), '%d %B %Y').strftime('%A')
+                day_pelaksanaan = datetime.strptime(pinjam.tanggal_pemakaian.strftime('%d %B %Y'), '%d %B %Y').strftime('%A')
+
+                ws.write(row_num, 0, no, content_font)  # No
+
+                ws.write(row_num, 1, dayToHari(day_pemesanan), content_font)  # Hari
+                ws.write(row_num, 2, pinjam.tanggal_booking.strftime('%d %B %Y'), content_font)  # Tanggal
+
+                ws.write(row_num, 3, dayToHari(day_pelaksanaan), content_font)  # Hari
+                ws.write(row_num, 4, pinjam.tanggal_pemakaian.strftime('%d %B %Y'), content_font)  # Tanggal
+                ws.write(row_num, 5, pinjam.nama_peminjam, content_font)  # Nama Pemohon
+                ws.write(row_num, 6, pinjam.bagian_jurusan_peminjam, content_font)  # Unit / Alamat
+                ws.write(row_num, 7, pinjam.tujuan, content_font)  # Tujuan
+                ws.write(row_num, 8, supir.nama, content_font)  # Nama Pengemudi
+
+                ws.write(row_num, 9, mobil.nama, content_font)  # Nama Kendaraan
+                ws.write(row_num, 10, mobil.no_polisi, content_font)  # Nomor Polisi Kendaraan
+                ws.write(row_num, 11, format(pinjam.waktu_berangkat), content_font)  # Waktu : Berangkat
+                ws.write(row_num, 12, format(pinjam.waktu_datang), content_font)  # Waktu : Datang
+                ws.write(row_num, 13, pinjammobil.odometer_sebelum, content_font)  # Odometer : Awal
+                ws.write(row_num, 14, pinjammobil.odometer_sesudah, content_font)  # Odometer : Akhir
+
+                ws.write(row_num, 15, ada, content_font)  # Perawatan : Ada
+                ws.write(row_num, 16, tidak_ada, content_font)  # Perawatan : Tidak
+
+                ws.write(row_num, 17, pinjam.no_surat, content_font)  # Nomor Surat
+                ws.write(row_num, 18, pinjam.tanggal_surat.strftime('%d %B %Y'), content_font)  # Tanggal Surat
+                ws.write(row_num, 19, pinjam.keterangan, content_font)  # Keterangan
+
+                ws.write(row_num, 20, pinjam.biaya_bbm, content_font)  # Biaya BBM
+                ws.write(row_num, 21, pinjam.biaya_parkir, content_font)  # Biaya Parkir
+                ws.write(row_num, 22, pinjam.biaya_penginapan, content_font)  # Biaya Penginapan
+                ws.write(row_num, 23, pinjam.biaya_perawatan, content_font)  # Biaya Perawatan
+                ws.write(row_num, 24, pinjam.biaya_supir, content_font)  # Biaya Supir
+                ws.write(row_num, 25, pinjam.biaya_tol, content_font)  # Biaya Tol
+                ws.write(row_num, 26, totalbiaya, content_font)  # Biaya Total
+
+                no += 1
+                row_num += 1
+                subtotal += totalbiaya
+
+        ws.write_merge(row_num, row_num, 20, 25, "Total", header_font) 
+        ws.write(row_num, 26, subtotal, content_font) # Biaya Subtotal
 
     wb.save(response)
     return response
