@@ -26,7 +26,7 @@ Detail Kendaraan
         {% if all_foto %}
             <div class="row">
                 {% for foto in all_foto %}
-                    <div class="col m4 s12 xl3 l4">
+                    <div class="col m4 s12 xl3 l4" style="margin-top: 10px;">
                         <img class="materialboxed" width="200" height="200" src="{{ foto.foto.url }}">
                         {% if user.is_authenticated %}
                             <h7 class="center-align"><a href="{% url 'kendaraanDeleteFoto' kendaraan.id foto.id  %}">Delete this photo</a></h7>
