@@ -127,13 +127,13 @@
 
 		    <div class="input-field col m6 s12">
 		      <span>Waktu Berangkat*</span>
-	          <input id="waktu_berangkat" name="waktu_berangkat" class="timepicker" value="{{ peminjaman.waktu_berangkat }}">
+	          <input id="waktu_berangkat" name="waktu_berangkat" class="timepicker" value="{{ peminjaman.waktu_berangkat_formatted }}">
 	          <!-- <label for="waktu_berangkat">Waktu Berangkat*</label> -->
 		    </div>
 
 		    <div class="input-field col m6 s12">
 		      <span>Waktu Datang*</span>
-	          <input id="waktu_datang" name="waktu_datang" class="timepicker" value="{{ peminjaman.waktu_datang }}">
+	          <input id="waktu_datang" name="waktu_datang" class="timepicker" value="{{ peminjaman.waktu_datang_formatted }}">
 	          <!-- <label for="waktu_datang">Waktu Datang*</label> -->
 		    </div>
 
@@ -184,7 +184,16 @@
 		    </div>
 
 		    <div class="input-field col s12">
-	          <input id="bagian_jurusan" name="bagian_jurusan" type="text" class="validate" value="{{ peminjaman.bagian_jurusan_peminjam }}">
+	          <select id="bagian_jurusan" name="bagian_jurusan" class="validate">
+	          	<option value="" disabled>Pilih Bagian Jurusan</option>
+	          	{% for key, value in peminjaman.BAGIAN_JURUSAN_CHOICES %}
+	          		<option value="{{key}}"
+	          			{% if key == peminjaman.bagian_jurusan_peminjam %}
+	          				selected
+	          			{% endif %}
+	          		>{{ value }}</option>
+	          	{% endfor %}
+	          </select>
 	          <label for="bagian_jurusan">Bagian/Jurusan</label>
 		    </div>
 		    
@@ -322,7 +331,7 @@
 	$(document).ready(function() {
 		$('select').material_select();
 		$(document).ready(function(){
-		    $('input.timepicker').timepicker({});
+		    $('input.timepicker').timepicker({ 'timeFormat': 'HH:mm', scrollbar: true, dynamic: false });
         if ($('#status').val() == 0) {
           $('#foto_bukti_metode_transfer').hide()
         } else {
@@ -331,9 +340,18 @@
 		});
     updateTotalBiaya();
 	});
+  
 	// Initialize date picker
 	$('.datepicker').pickadate({
-		selectMonths: true, // Creates a dropdown to control month
+    // Strings and translations
+    //monthsFull: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+    //monthsShort: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+    //weekdaysFull: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+    //weekdaysShort: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+    
+		//format: 'dd mmmm yyyy', //14 Apr 2018
+		format: 'yyyy-mm-dd',   //2018-04-14
+    selectMonths: true, // Creates a dropdown to control month
 		selectYears: 15 // Creates a dropdown of 15 years to control year
 	});
   $('#status').change(function() {

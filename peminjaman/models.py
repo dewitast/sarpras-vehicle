@@ -24,9 +24,25 @@ class PerkiraanBiaya(models.Model):
 	pdf = models.FileField(upload_to='perkiraan_biaya/')
 
 class PeminjamanKendaraan(models.Model):
+	BAGIAN_JURUSAN_CHOICES = [
+		(0, 'FITB'),
+		(1, 'FMIPA'),
+		(2, 'FSRD'),
+		(3, 'FTI'),
+		(4, 'FTMD'),
+		(5, 'FTTM'),
+		(6, 'FTSL'),
+		(7, 'SAPPK'),
+		(8, 'SBM'),
+		(9, 'SF'),
+		(10, 'SITH'),
+		(11, 'STEI'),
+		(12, 'Other'),
+	]
+
 	nama_peminjam = models.CharField(max_length=100)
 	no_telp_peminjam = models.CharField(max_length=100)
-	bagian_jurusan_peminjam = models.CharField(max_length=100)
+	bagian_jurusan_peminjam = models.IntegerField(choices=BAGIAN_JURUSAN_CHOICES)
 	no_surat = models.CharField(max_length=100)
 	tanggal_surat = models.DateTimeField()
 	tanggal_booking = models.DateTimeField()
