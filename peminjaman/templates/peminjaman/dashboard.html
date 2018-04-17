@@ -5,32 +5,32 @@
 {% block content %}
 <br />
 <div class="row">
-  <div class="col m6">
+  <div class="col m8 s12" style="margin-top:20px;">
     <span style="font-size: 20px; font-weight: normal; color:#666666;">Peminjaman per Bulan Tahun {{year}}</span>
     <hr>
     <canvas id="canvasLine"></canvas>
   </div>
-  <div class="col m6">
+  <div class="col m8 s12" style="margin-top:20px;">
     <span style="font-size: 20px; font-weight: normal; color:#666666;">Status Peminjaman</span>
     <hr>
     <canvas id="canvasPie" style="max-width: 70%;"></canvas>
   </div>
-</div>
-<div class ="row">
+  <div class="col m8 s12" style="margin-top:20px;">
     <span style="font-size: 20px; font-weight: normal; color:#666666;">Jumlah Pemakaian Kendaraan {{year}}</span>
     <hr>
     <canvas id="kendaraanLine"></canvas>
-</div>
-<div class ="row">
+  </div>
+  <div class="col m8 s12" style="margin-top:20px;">
     <span style="font-size: 20px; font-weight: normal; color:#666666;">Bagian/Jurusan Peminjam</span>
     <hr>
     <canvas id="bagianJurusanPie"></canvas>
-</div>
-<div class ="row">
+  </div>
+  <div class="col m8 s12" style="margin-top:20px;">
     <span style="font-size: 20px; font-weight: normal; color:#666666;">Jumlah Kerja Supir {{year}}</span>
     <hr>
     <canvas id="supirLine"></canvas>
-</div> 
+  </div> 
+</div>
 {% endblock %}
 
 {% block script %}

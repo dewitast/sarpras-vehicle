@@ -96,7 +96,8 @@ def index(request):
                 data_mobil = MobilPeminjaman.objects.filter(peminjaman_id=peminjaman.id)
                 for jumlah_mobil in data_mobil:
                     counter_kendaraan[jumlah_mobil.mobil.nama + jumlah_mobil.mobil.no_polisi] += 1
-                    counter_supir[jumlah_mobil.supir.nama] += 1
+                    if(jumlah_mobil.supir):
+                      counter_supir[jumlah_mobil.supir.nama] += 1
             if peminjaman.status == 0:
                 status_booking_belum_transfer += 1
             elif peminjaman.status == 1:
