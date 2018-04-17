@@ -7,7 +7,6 @@
 <div class="row">
   <div class="col m12">
     <h5>Tata Cara Peminjaman Kendaraan</h5>
-    <hr>
     <br>
     <table> 
       <tr>
@@ -26,29 +25,35 @@
     {{tata_cara|linebreaks}}
     <br>
     <div class="row">
-	<a class="btn waves-effect waves-light" style="background-color: #1D73BE; margin-top: 40px;" href="/static/form_booking_kendaraan.pdf" name="action">
-            Unduh Formulir
-    </a>
-    <a class="btn waves-effect waves-light" style="background-color: #1D73BE; margin-top: 40px;" href= "{{ file_perkiraan_biaya.pdf.url }}" name="action">
-      Unduh Perkiraan Biaya
-    </a>
+      <div class="col m5 s12 xl3">
+        <a class="btn waves-effect waves-light" style="background-color: #1D73BE; margin-top:10px; width:100%" href="/static/form_booking_kendaraan.pdf" name="action">
+          Unduh Formulir
+        </a>
+      </div>
+      <div class="col m7 s12 xl4">
+        <a class="btn waves-effect waves-light" style="background-color: #1D73BE; margin-top:10px; width:100%" href= "{{ file_perkiraan_biaya.pdf.url }}" name="action">
+          Unduh Perkiraan Biaya
+        </a>
+      </div>  
     </div>
     
     {% if user.is_authenticated %}
-    <form id="form_file_perkiraan_biaya" action="{% url 'uploadPerkiraanBiaya' %}" enctype="multipart/form-data" method="post" class="right">
+    <div class="row">
+      <form id="form_file_perkiraan_biaya" action="{% url 'uploadPerkiraanBiaya' %}" enctype="multipart/form-data" method="post" class="right tatacara-mobile">
       {% csrf_token %}
-        <div class="file-field input-field row">
+        <div class="file-field input-field col m12 s12 l12">
           <div class="btn" style="background-color: #1D73BE;">
             <span>Upload File Perkiraan Biaya</span>
             <input type="file" name="file_perkiraan_biaya" id="file_perkiraan_biaya">
           </div>
-          <div id="file_perkiraan_biaya_path" class="file-path-wrapper" style="display: none;">
+          <div id="file_perkiraan_biaya_path" class="file-path-wrapper" style="display: none; margin-left:10px;">
             <input class="file-path validate" type="text">
           </div>
+          <button id="file_perkiraan_biaya_submit" class="btn waves-effect waves-light right" style="background-color: #1D73BE; display: none;" type="submit" name="action">Save
+          </button>
         </div>
-       <button id="file_perkiraan_biaya_submit" class="btn waves-effect waves-light right" style="background-color: #1D73BE; display: none;" type="submit" name="action">Save
-       </button>
       </form> 
+    </div>
     {% endif %}
 
   </div>

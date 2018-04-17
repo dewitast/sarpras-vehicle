@@ -9,14 +9,18 @@
 	<div class="col s12">
 		<h5> Form Peminjaman Final </h5>	
 	</div>
+</div>  
+<div class="row">
+	<div class="col s12">
 	<input type="hidden" id="jumlah_kendaraan" name="jumlah_kendaraan" value="{{mobil_peminjaman|length}}">
 	<form action="{% url 'formFinalEdit' peminjaman_id %}" method="post" id ="formfinal" enctype="multipart/form-data" >
 		{% csrf_token %}
 		<div class="row">
 			<ul>
 			{% for daftar_mobil in mobil_peminjaman %}	
-				<li>{{daftar_mobil.mobil.nama}}</li>
-				
+				<div class="input-field col s12" style="padding-bottom:10px;">
+          <li>{{daftar_mobil.mobil.nama}}</li>
+				</div>
 				<div class="input-field col s12">
 					{% if all_supir %}
 						<select id="supir_id{{forloop.counter}}" name="supir_id{{forloop.counter}}">
@@ -46,7 +50,7 @@
 			</ul>
 		</div>
 	</form>
-
+  </div>
 	<div class="col m12">
 		<p><strong id="error_message"></strong></p>
 		<button class="btn waves-effect waves-light" style="background-color: #1D73BE; margin-top: 40px;" onclick="validateInput()" name="action">

@@ -10,15 +10,17 @@
   <div class="col s12">
       <h5>Form Edit Kendaraan</h5>
   </div>
-  <form id="form" class="col m12" action="{% url 'kendaraanEdit' kendaraan.id %}" method="post">
+</div>
+<div class="row">
+  <form id="form" action="{% url 'kendaraanEdit' kendaraan.id %}" method="post">
     {% csrf_token %}
 
-    <div class="input-field col s12">
+    <div class="input-field col m12 s12">
         <input id="nama" name="nama" type="text" class="validate" value="{{kendaraan.nama}}">
         <label for="nama">Nama Kendaraan</label>
     </div>
 
-    <div class="input-field col s12">
+    <div class="input-field col m12 s12">
         <select id="jenis" name="jenis">
           <option value="" disabled>Pilih jenis kendaraan</option>
           {% if kendaraan.jenis == "Kendaraan Titipan" %}
@@ -40,12 +42,12 @@
         <label for="jenis">Jenis Kendaraan</label>
     </div>
 
-    <div class="input-field col s12">
+    <div class="input-field col m12 s12">
         <input id="no_polisi" name="no_polisi" type="text" class="validate" value="{{kendaraan.no_polisi}}">
         <label for="no_polisi">No Polisi</label>
     </div>
 
-    <div class="input-field col s12">
+    <div class="input-field col m12 s12">
         <input id="kapasitas" name="kapasitas" type="text" class="validate" value="{{kendaraan.kapasitas}}">
         <label for="kapasitas">Kapasitas (seat)</label>
     </div>

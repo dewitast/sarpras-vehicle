@@ -9,11 +9,14 @@
 <div class="row">
 	<div class="col s12">
     	<h5>Form Edit Peminjaman</h5>
-  	</div>
+  </div>
+</div>  
+<div class="row">
+  <div class="col m12 s12">
 	<form action="{% url 'peminjamanEdit' peminjaman.id %}" method="post" id="form">
 		{% csrf_token %}
 		<div class="row">
-			<div class="input-field col m12">
+			<div class="input-field col m12 s12">
           <select id="status" name="status">
 					{% if peminjaman.status == 0 %}
 						<option selected value="0">Belum Transfer</option>
@@ -42,9 +45,9 @@
 					{% endif %}
 				</select>
 				<label>Status Peminjaman</label>
-			</div>
+    </div>
       
-      <div id="foto_bukti_metode_transfer" class="input-field col m12">
+    <div id="foto_bukti_metode_transfer" class="input-field col m12 s12">
         <select id="metode_transfer" name="metode_transfer">
 				{% if peminjaman.metode_transfer == 1 %}
           <option selected value="1">Teller</option>
@@ -112,23 +115,23 @@
 	          <label for="tanggal_booking">Tanggal Booking*</label>
 		    </div>
 
-		    <div class="input-field col s6">
+		    <div class="input-field col m6 s12">
 	          <input id="tanggal_pemakaian" name="tanggal_pemakaian" type="date" class="datepicker" value="{{ peminjaman.tanggal_pemakaian_formatted }}">
 	          <label for="tanggal_pemakaian">Rencana Tanggal Pemakaian*</label>
 		    </div>
 
-		    <div class="input-field col s6">
+		    <div class="input-field col m6 s12">
 	          <input id="tanggal_pengembalian" name="tanggal_pengembalian" type="date" class="datepicker" value="{{ peminjaman.tanggal_pengembalian_formatted }}">
 	          <label for="tanggal_pengembalian">Rencana Tanggal Pengembalian*</label>
 		    </div>
 
-		    <div class="input-field col s6">
+		    <div class="input-field col m6 s12">
 		      <span>Waktu Berangkat*</span>
 	          <input id="waktu_berangkat" name="waktu_berangkat" class="timepicker" value="{{ peminjaman.waktu_berangkat_formatted }}">
 	          <!-- <label for="waktu_berangkat">Waktu Berangkat*</label> -->
 		    </div>
 
-		    <div class="input-field col s6">
+		    <div class="input-field col m6 s12">
 		      <span>Waktu Datang*</span>
 	          <input id="waktu_datang" name="waktu_datang" class="timepicker" value="{{ peminjaman.waktu_datang_formatted }}">
 	          <!-- <label for="waktu_datang">Waktu Datang*</label> -->
@@ -149,12 +152,12 @@
 	          <label for="acara">Acara*</label>
 		    </div>
 
-			<div class="input-field col s6">
+			<div class="input-field col m6 s12">
 	          <input id="no_surat" name="no_surat" type="text" class="validate" value="{{ peminjaman.no_surat }}">
 	          <label for="no_surat">No Surat Pemohon*</label>
 		    </div>
 
-		    <div class="input-field col s6">
+		    <div class="input-field col m6 s12">
 	          <input id="tanggal_surat" name="tanggal_surat" type="date" class="datepicker" value="{{ peminjaman.tanggal_surat_formatted }}">
 	          <label for="tanggal_surat">Tanggal Surat Pemohon*</label>
 		    </div>
@@ -167,15 +170,15 @@
 	    </div>
 
 		<div class="row">
-			<div class="col m12">
+			<div class="col m12 s12">
 				<h5>Data Peminjam</h5>
 			</div>
-			<div class="input-field col s6">
+			<div class="input-field col m6 s12">
 	          <input id="nama_peminjam" name="nama_peminjam" type="text" class="validate" value="{{ peminjaman.nama_peminjam }}">
 	          <label for="nama_peminjam">Nama Peminjam*</label>
 		    </div>
 
-		    <div class="input-field col s6">
+		    <div class="input-field col m6 s12">
 	          <input id="no_telepon_peminjam" name="no_telepon_peminjam" type="text" class="validate" value="{{ peminjaman.no_telp_peminjam }}">
 	          <label for="no_telepon_peminjam">No. Kontak Peminjam*</label>
 		    </div>
@@ -289,7 +292,8 @@
 	    </div>
 	    <br />	
 	</form>
-	<div class="col m12">
+  </div>
+	<div class="col m12 s12">
 		<p><strong id="error_message"></strong></p>
 		<button class="btn waves-effect waves-light" style="background-color: #1D73BE; margin-top: 40px;" onclick="validateInput()" name="action">
 			Save
