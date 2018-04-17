@@ -10,15 +10,17 @@
   <div class="col s12">
     <h5>Form Kendaraan Baru</h5>
   </div>
-  <form id="form" class="col m12" action="{% url 'kendaraanCreate' %}" enctype="multipart/form-data" method="post">
+</div>
+<div class="row">    
+  <form id="form" action="{% url 'kendaraanCreate' %}" enctype="multipart/form-data" method="post">
     {% csrf_token %}
     {{kendaraan.nama}}
-    <div class="input-field col s12">
+    <div class="input-field col m12 s12">
         <input id="nama" name="nama" type="text" class="validate" value="">
         <label for="nama">Nama Kendaraan*</label>
     </div>
 
-    <div class="input-field col s12">
+    <div class="input-field col m12 s12">
         <select id="jenis" name="jenis">
           <option value="" disabled selected>Pilih jenis kendaraan</option>
           <option value="Kendaraan Titipan">Kendaraan Titipan</option>
@@ -28,17 +30,17 @@
         <label for="jenis">Jenis Kendaraan*</label>
     </div>
 
-    <div class="input-field col s12">
+    <div class="input-field col m12 s12">
         <input id="no_polisi" name="no_polisi" type="text" class="validate">
         <label for="no_polisi">No Polisi*</label>
     </div>
 
-    <div class="input-field col s12">
+    <div class="input-field col m12 s12">
         <input id="kapasitas" name="kapasitas" type="text" class="validate">
         <label for="kapasitas">Kapasitas (seat)*</label>
     </div>
 
-    <div class="file-field input-field col s12">
+    <div class="file-field input-field col m12 s12">
       <div class="btn" style="background-color: #1D73BE;">
         <span>Foto</span>
         <input type="file" name="foto">
@@ -47,8 +49,6 @@
         <input class="file-path validate" type="text">
       </div>
     </div>
-
-    
   </form>
   <div class="col s12">
     <p><strong><span id="error_message"></span></strong></p>

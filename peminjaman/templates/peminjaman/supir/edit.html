@@ -10,18 +10,19 @@
   <div class="col s12">
     <h5>Form Edit Supir</h5>
   </div>
-  <form id="form" class="col m12" action="{% url 'supirEdit' supir.id %}" method="post">
+</div>  
+<div class="row">
+  <form id="form" action="{% url 'supirEdit' supir.id %}" method="post">
     {% csrf_token %}
-    <div class="input-field col s12">
+    <div class="input-field col m12 s12">
         <input id="nama" name="nama" type="text" class="validate" value="{{supir.nama}}">
         <label for="nama">Nama Supir*</label>
     </div>
 
-    <div class="input-field col s12">
+    <div class="input-field col m12 s12">
         <input id="no_telepon" name="no_telepon" type="text" class="validate" value="{{supir.no_telepon}}">
         <label for="no_telepon">No Telepon*</label>
     </div>
-    
   </form>
   <div class="col s12">
     <p><strong><span id="error_message"></span></strong></p>
