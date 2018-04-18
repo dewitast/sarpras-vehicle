@@ -7,8 +7,10 @@
 {% block content %}
 <br />
 <div class="row">
-    <div class="col m12">
+    <div class="col m5 s2">
         <span style="font-size: 20px; font-weight: normal; color:#666666;">Detail Peminjaman Kendaraan</span>
+    </div>
+    <div class="col m7 s10">
         <a class="right waves-effect waves-light btn-flat modal-trigger" href="#modal-delete">
             <i class="large material-icons">delete</i>
         </a>
@@ -21,7 +23,10 @@
         <a class="right waves-effect waves-teal btn-flat modal-trigger" href="#modal-print">
             <i class="large material-icons">print</i>
         </a>
-
+    </div>
+</div>
+<div class="row">
+    <div class="col m12">
         <p>
             {% if peminjaman.status == 0 %}
                 <strong>Status:</strong> Belum Transfer
@@ -88,13 +93,12 @@
         <p>
           {% if peminjaman.foto_bukti_transfer %}
               <h6><strong>Foto Bukti Transfer</strong></h6>
-              <div class="row">
-                  <img class="materialboxed" width="200" height="200" src="{{ peminjaman.foto_bukti_transfer.url }}">
-                  {% if user.is_authenticated %}
-                      <h7 class="center-align"><a href="{% url 'deleteBuktiTransfer' peminjaman.id %}">Delete this photo</a></h7>
-                  {% endif %}
-              </div>
-              <div class = "row">
+              <img class="materialboxed" width="200" height="200" src="{{ peminjaman.foto_bukti_transfer.url }}">
+              {% if user.is_authenticated %}
+                  <h7 class="center-align"><a href="{% url 'deleteBuktiTransfer' peminjaman.id %}">Delete this photo</a></h7>
+              {% endif %}
+              <br/>
+              <br/>
               {% if peminjaman.metode_transfer == 1 %}
                   <strong>Metode Transfer:</strong> Teller
               {% else %}
@@ -116,7 +120,6 @@
                       {% endif %}
                   {% endif %}
               {% endif %}
-              </div>
               
           {% else %}
               <p>Belum ada bukti transfer.</p>
@@ -184,9 +187,13 @@
       </form>
       {% endif %}
     </div>
-    <button class="btn waves-effect waves-light" style="background-color: #1D73BE; margin-top: 40px;" onclick="location.href='{% url 'peminjamanFormFinal' peminjaman.id %}'" name="action">
-            Isi Form Final
-    </button>
+    <div class="row">
+      <div class="col s12 peminjaman-mobile">
+        <div class="btn waves-effect waves-light" style="background-color: #1D73BE; margin-top: 40px;" onclick="location.href='{% url 'peminjamanFormFinal' peminjaman.id %}'" name="action">
+                Isi Form Final
+        </div>
+      </div>
+    </div>
 </div>
 
 <!-- Modal Structure -->
@@ -196,12 +203,12 @@
       <p>Which one do you want to print?</p>
     </div>
     <div class="modal-footer">
-        <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Cancel</a>
         <a class="modal-action modal-close waves-effect waves-green btn-flat" href="{% url 'export_pdf_konfirmasi_booking' peminjaman.id %}" title="Konfirmasi">Surat Konfirmasi</a>
         <a class="modal-action modal-close waves-effect waves-green btn-flat" href="{% url 'export_pdf_peminjaman' peminjaman.id %}" title="Perizinan">
             Formulir Persetujuan
         </a>
         <a class="modal-action modal-close waves-effect waves-green btn-flat" href="{% url 'export_pdf_surat_tugas' peminjaman.id %}" title="Konfirmasi">Surat Tugas</a>
+        <a href="#!" class="left modal-action modal-close waves-effect waves-green btn-flat">Cancel</a>
     </div>
 </div>
 
