@@ -26,7 +26,7 @@
     </div>
 </div>
 <div class="row">
-    <div class="col m12">
+    <div class="col m12 s12">
         <p>
             {% if peminjaman.status == 0 %}
                 <strong>Status:</strong> Belum Transfer
@@ -126,10 +126,10 @@
           {% endif %}
         </p>
         {% if user.is_authenticated and not peminjaman.foto_bukti_transfer %}
-        <form action="{% url 'uploadBuktiTransfer' peminjaman.id %}" enctype="multipart/form-data" method="post" class="right">
+        <form action="{% url 'uploadBuktiTransfer' peminjaman.id %}" enctype="multipart/form-data" method="post" id="form_foto_bukti_transfer" class="right peminjaman-mobile">
             {% csrf_token %}
           <div class="row">
-            <div class="file-field input-field col">
+            <div class="file-field input-field col s12 peminjaman-mobile" style="width:100%;">
               <div class="btn" style="background-color: #1D73BE;">
                 <span>Upload Bukti Transfer</span>
                 <input type="file" name="foto_bukti_transfer" id="foto_bukti_transfer">
@@ -137,48 +137,48 @@
               <div id="foto_bukti_transfer_path" class="file-path-wrapper" style="display: none;">
                 <input class="file-path validate" type="text">
               </div>
-            </div>
-            <div id="foto_bukti_metode_transfer" class="input-field col" style="display: none;">
-              <select id="metode_transfer" name="metode_transfer">
-              {% if peminjaman.metode_transfer == 1 %}
-                <option selected value="1">Teller</option>
-                <option value="2">ATM</option>
-                <option value="3">SMS Banking</option>
-                <option value="4">Mobile Banking</option>
-                <option value="5">Internet/E-Banking</option>
-              {% else %}
-                {% if peminjaman.metode_transfer == 2 %}
-                <option value="1">Teller</option>
-                <option selected value="2">ATM</option>
-                <option value="3">SMS Banking</option>
-                <option value="4">Mobile Banking</option>
-                <option value="5">Internet/E-Banking</option>
+              <div id="foto_bukti_metode_transfer" class="input-field col" style="display: none;">
+                <select id="metode_transfer" name="metode_transfer">
+                {% if peminjaman.metode_transfer == 1 %}
+                  <option selected value="1">Teller</option>
+                  <option value="2">ATM</option>
+                  <option value="3">SMS Banking</option>
+                  <option value="4">Mobile Banking</option>
+                  <option value="5">Internet/E-Banking</option>
                 {% else %}
-                  {% if peminjaman.metode_transfer == 3 %}
-                    <option value="1">Teller</option>
-                    <option value="2">ATM</option>
-                    <option selected value="3">SMS Banking</option>
-                    <option value="4">Mobile Banking</option>
-                    <option value="5">Internet/E-Banking</option>
+                  {% if peminjaman.metode_transfer == 2 %}
+                  <option value="1">Teller</option>
+                  <option selected value="2">ATM</option>
+                  <option value="3">SMS Banking</option>
+                  <option value="4">Mobile Banking</option>
+                  <option value="5">Internet/E-Banking</option>
                   {% else %}
-                    {% if peminjaman.metode_transfer == 4 %}
+                    {% if peminjaman.metode_transfer == 3 %}
                       <option value="1">Teller</option>
                       <option value="2">ATM</option>
-                      <option value="3">SMS Banking</option>
-                      <option selected value="4">Mobile Banking</option>
+                      <option selected value="3">SMS Banking</option>
+                      <option value="4">Mobile Banking</option>
                       <option value="5">Internet/E-Banking</option>
                     {% else %}
-                      <option value="1">Teller</option>
-                      <option value="2">ATM</option>
-                      <option value="3">SMS Banking</option>
-                      <option value="4">Mobile Banking</option>
-                      <option selected value="5">Internet/E-Banking</option>
+                      {% if peminjaman.metode_transfer == 4 %}
+                        <option value="1">Teller</option>
+                        <option value="2">ATM</option>
+                        <option value="3">SMS Banking</option>
+                        <option selected value="4">Mobile Banking</option>
+                        <option value="5">Internet/E-Banking</option>
+                      {% else %}
+                        <option value="1">Teller</option>
+                        <option value="2">ATM</option>
+                        <option value="3">SMS Banking</option>
+                        <option value="4">Mobile Banking</option>
+                        <option selected value="5">Internet/E-Banking</option>
+                      {% endif %}
                     {% endif %}
                   {% endif %}
                 {% endif %}
-              {% endif %}
-              </select>
-              <label>Metode Transfer</label>
+                </select>
+                <label>Metode Transfer</label>
+              </div>
             </div>
           </div>
         </div>  
@@ -246,6 +246,7 @@
         $('#foto_bukti_transfer_path').show()
         $('#foto_bukti_transfer_submit').show()
         $('#foto_bukti_metode_transfer').show()
+        $('#form_foto_bukti_transfer').removeClass('right')
     })
     $('#metode_transfer').change(function() {
       console.log($('#metode_transfer').find(":selected").val())
