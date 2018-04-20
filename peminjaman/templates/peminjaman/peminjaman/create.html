@@ -196,7 +196,11 @@
 
 {% block script %}
 <script type="text/javascript">
-    $('#navbar-menu-peminjaman').addClass('active')
+    {% if is_authenticated %}
+        $('#navbar-menu-peminjaman').addClass('active')
+    {% else %}
+        $('#navbar-menu-peminjaman-online').addClass('active')
+    {% endif %}
     function addInput() {
     	var jumlah_kendaraan = document.getElementById('jumlah_kendaraan').value;
     	if (jumlah_kendaraan != "") {
