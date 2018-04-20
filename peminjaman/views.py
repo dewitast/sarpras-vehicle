@@ -310,55 +310,55 @@ def peminjamanCreate(request):
                     [settings.EMAIL_HOST_USER], # Receiver
                     )
 
-                acara = request.POST['acara']
-                tanggal_booking = request.POST['tanggal_booking']
-                tujuan = request.POST['tujuan'] 
-                tanggal_pemakaian = request.POST['tanggal_pemakaian']
-                waktu_berangkat = request.POST['waktu_berangkat']
-                waktu_datang = request.POST['waktu_datang']
-                tanggal_pengembalian = request.POST['tanggal_pengembalian']
-                tempat_berkumpul = request.POST['tempat_berkumpul']
-                keterangan = request.POST.get('keterangan', '')
+            acara = request.POST['acara']
+            tanggal_booking = request.POST['tanggal_booking']
+            tujuan = request.POST['tujuan'] 
+            tanggal_pemakaian = request.POST['tanggal_pemakaian']
+            waktu_berangkat = request.POST['waktu_berangkat']
+            waktu_datang = request.POST['waktu_datang']
+            tanggal_pengembalian = request.POST['tanggal_pengembalian']
+            tempat_berkumpul = request.POST['tempat_berkumpul']
+            keterangan = request.POST.get('keterangan', '')
 
-                STATUS = 0     # status peminjaman
+            STATUS = 0     # status peminjaman
 
-                peminjaman = PeminjamanKendaraan(
-                    nama_peminjam=nama_peminjam,
-                    no_telp_peminjam=no_telp_peminjam,
-                    bagian_jurusan_peminjam=bagian_jurusan_peminjam,
-                    no_surat=no_surat,
-                    tanggal_surat=tanggal_surat,
-                    tanggal_booking=tanggal_booking,
-                    acara=acara,
-                    tujuan=tujuan,
-                    tanggal_pemakaian=tanggal_pemakaian,
-                    tanggal_pengembalian=tanggal_pengembalian,
-                    waktu_berangkat=waktu_berangkat,
-                    waktu_datang=waktu_datang,
-                    tempat_berkumpul=tempat_berkumpul,
-                    keterangan=keterangan,
-                    biaya_perawatan=biaya_perawatan,
-                    biaya_bbm=biaya_bbm,
-                    biaya_supir=biaya_supir,
-                    biaya_tol=biaya_tol,
-                    biaya_parkir=biaya_parkir,
-                    biaya_penginapan=biaya_penginapan,
-                    odometer_sebelum=0,
-                    odometer_sesudah=0,
-                    status=STATUS,
-                    email_peminjam = email_peminjam,
-                    status_booking = status_booking
+            peminjaman = PeminjamanKendaraan(
+                nama_peminjam=nama_peminjam,
+                no_telp_peminjam=no_telp_peminjam,
+                bagian_jurusan_peminjam=bagian_jurusan_peminjam,
+                no_surat=no_surat,
+                tanggal_surat=tanggal_surat,
+                tanggal_booking=tanggal_booking,
+                acara=acara,
+                tujuan=tujuan,
+                tanggal_pemakaian=tanggal_pemakaian,
+                tanggal_pengembalian=tanggal_pengembalian,
+                waktu_berangkat=waktu_berangkat,
+                waktu_datang=waktu_datang,
+                tempat_berkumpul=tempat_berkumpul,
+                keterangan=keterangan,
+                biaya_perawatan=biaya_perawatan,
+                biaya_bbm=biaya_bbm,
+                biaya_supir=biaya_supir,
+                biaya_tol=biaya_tol,
+                biaya_parkir=biaya_parkir,
+                biaya_penginapan=biaya_penginapan,
+                odometer_sebelum=0,
+                odometer_sesudah=0,
+                status=STATUS,
+                email_peminjam = email_peminjam,
+                status_booking = status_booking
+            )
+
+            peminjaman.save()
+            jumlah_kendaraan = int(request.POST['jumlah_kendaraan'])
+            for i in range(jumlah_kendaraan):
+                mobil_id = request.POST.get('mobil_id' + str(i))
+                mobilpeminjaman = MobilPeminjaman(
+                    peminjaman_id = peminjaman.id,
+                    mobil_id = mobil_id
                 )
-
-                peminjaman.save()
-                jumlah_kendaraan = int(request.POST['jumlah_kendaraan'])
-                for i in range(jumlah_kendaraan):
-                    mobil_id = request.POST.get('mobil_id' + str(i))
-                    mobilpeminjaman = MobilPeminjaman(
-                        peminjaman_id = peminjaman.id,
-                        mobil_id = mobil_id
-                    )
-                    mobilpeminjaman.save()
+                mobilpeminjaman.save()
         except (KeyError):
             # Redisplay the form
             return HttpResponseRedirect(reverse('peminjamanForm'))
